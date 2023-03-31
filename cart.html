@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/10c30652a2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="css/pages/cart.css">
+    <title>Brand | Cart</title>
+</head>
+
+<body>
+    <section class="header-block">
+        <div>Navbar</div>
+    </section>
+    <section class="cart container-sm">
+        <div class="cart-link">
+            <a href="">Trang chủ </a><span id="seperate">/</span><a href=""> Cart</a>
+        </div>
+        <div class="cart-container">
+            <div class="cart-row row">
+                <div class="col-xl-7">
+                    <div class="row">
+                        <div class="cart-title-delete">
+                            <div class="cart-title">
+                                <h4>Giỏ hàng</h4>
+                            </div>
+                            <div class="cart-delete">
+                                <span class="delete">Xoá tất cả</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cart-table_container table-responsive-xxl text-nowrap">
+                            <table class="cart-table table table-xxl table-borderless">
+                                <thead class="table-head">
+                                    <tr class="table-head_row">
+                                        <th class="table-head_item">STT</th>
+                                        <th class="table-head_item">Brand</th>
+                                        <th class="table-head_item">Đơn giá</th>
+                                        <th class="table-head_item">Số lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                    <tr class="table-body_row">
+                                        <td class="table-body_item">1</td>
+                                        <td class="table-body_item">
+                                            <div class="product-container">
+                                                <div class="product-img_container">
+                                                    <img class="product-img" src="Laptop.webp" alt="" width="80px"
+                                                        height="80px">
+                                                </div>
+                                                <div class="product-name_container">
+                                                    <span class="product-name">Laptop Hung ne</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="table-body_item">
+                                            <div class="product-price_container">
+                                                <div class="product-price">9.000.000 VND</div>
+                                                <div class="product-cost">10.000.000 VND</div>
+                                            </div>
+                                        </td>
+                                        <td class="table-body_item">
+                                            <div class="product-amount_container">
+                                                <button class="product-amount_minus">-</button>
+                                                <input type="number" name="amount" id="amount" min="1" value="1">
+                                                <button class="product-amount_plus">+</button>
+                                            </div>
+                                            <div class="delete-product">Xoá</div>
+                                        </td>
+                                    </tr>
+                                    <tr class="table-body_row">
+                                        <td class="table-body_item">2</td>
+                                        <td class="table-body_item">
+                                            <div class="product-container">
+                                                <div class="product-img_container">
+                                                    <img class="product-img" src="Laptop.webp" alt="" width="80px"
+                                                        height="80px">
+                                                </div>
+                                                <div class="product-name_container">
+                                                    <span class="product-name">Laptop Hung ne</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="table-body_item">
+                                            <div class="product-price_container">
+                                                <div class="product-price">9.000.000 VND</div>
+                                                <div class="product-cost">10.000.000 VND</div>
+                                            </div>
+                                        </td>
+                                        <td class="table-body_item">
+                                            <div class="product-amount_container">
+                                                <button class="product-amount_minus">-</button>
+                                                <input type="number" name="amount" id="amount" min="1" value="1">
+                                                <button class="product-amount_plus">+</button>
+                                            </div>
+                                            <div class="delete-product">Xoá</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl">
+                    <div class="empty-row row"></div>
+                    <div class="row">
+                        <div class="total-container">
+                            <div class="total-title">
+                                <h5>Thành tiền</h5>
+                            </div>
+                            <div class="pre-price_container">
+                                <div class="pre-price_title">Tổng tạm tính</div>
+                                <div class="pre-price">18.000.000 VND</div>
+                            </div>
+                            <div class="total-price_container">
+                                <div class="total-price_title">Thành tiền</div>
+                                <div class="total-price">18.000.000 VND</div>
+                            </div>
+                            <div class="purchase-btn_container">
+                                <button class="purchase-btn">THANH TOÁN</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+    <div class="modal fade" id="delete-all" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">Bạn có muốn xoá tất cả không?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- <div class="modal-body">
+              Show a second modal and hide this one with the button below.
+            </div> -->
+                <div class="modal-footer d-flex flex-nowrap">
+                    <button class="btn btn-secondary w-100" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal"
+                        data-bs-dismiss="modal">Hủy</button>
+                    <button class="btn btn-primary w-100">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="delete-product" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+        tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">Bạn có muốn xoá không?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- <div class="modal-body">
+              Show a second modal and hide this one with the button below.
+            </div> -->
+                <div class="modal-footer d-flex flex-nowrap">
+                    <button class="btn btn-secondary w-100" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal"
+                        data-bs-dismiss="modal">Hủy</button>
+                    <button class="btn btn-primary w-100">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="purchase" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">Xin mời bạn điền các thông tin dưới đây</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="purchase-form_info-name">
+                        <div class="purchase-form_info-label">Họ tên</div>
+                        <input type="text" name="Name" id="Name" placeholder="họ và tên">
+                    </div>
+                    <div class="purchase-form_info-tel">
+                        <div class="purchase-form_info-label">Số điện thoại</div>
+                        <input type="number" name="Tel" id="Tel" placeholder="số điện thoại">
+                    </div>
+                    <div class="purchase-form_info-address">
+                        <div class="purchase-form_info-label">Địa chỉ</div>
+                        <input type="text" name="Address" id="Address" placeholder="địa chỉ">
+                    </div>
+                    <div class="purchase-form_info-paid">
+                        <div class="purchase-form_info-label">Phương thức thanh toán</div>
+                        <select class="mb-5" name="Paid" id="Paid">
+                            <option value="PAR">Trả sau khi nhận hàng</option>
+                            <option value="PBR">Trả trước khi nhận hàng</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer d-flex flex-nowrap pb-0 px-0">
+                        <button class="btn btn-secondary w-100" data-bs-target="#exampleModalToggle2"
+                            data-bs-toggle="modal" data-bs-dismiss="modal">Hủy</button>
+                        <button class="btn btn-primary w-100 btn-yes">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="purchase-form_container">
+
+        </section>
+        <script src="./js/vendor/jquery.min.js"></script>
+        <script src="./js/vendor/popper.min.js"></script>
+        <script src="./js/vendor/bootstrap.bundle.js"></script>
+        <script>
+            $(".delete").click(() => {
+                $("#delete-all").modal("show");
+            })
+            $(".delete-product").click(() => {
+                $("#delete-product").modal("show");
+            })
+            $(".purchase-btn").click(() => {
+                $("#purchase").modal("show");
+            })
+        </script>
+</body>
+
+</html>

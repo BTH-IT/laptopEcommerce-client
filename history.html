@@ -1,10 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brand | History</title>
-  </head>
-  <body></body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/10c30652a2.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/vendor/daterangepicker.css">
+  <link rel="stylesheet" href="css/pages/history.css">
+  <title>Brand | History</title>
+</head>
+
+<body>
+  <section class="header-block">
+    <div>Navbar</div>
+  </section>
+  <section class="history container-sm">
+    <div class="history__link">
+      <a href="">Trang chủ </a><span id="seperate">/</span><a href=""> Lịch sử mua hàng</a>
+    </div>
+    <div class="history__header">
+      <div class="history__header-title">Lịch sử mua hàng</div>
+      <div class="history__header-date-container">
+        <input type="text" name="dates" class="history__header-date" value="01/01/2023 - 03/20/2023">
+      </div>
+    </div>
+    <div class="history__menu">
+      <ul class="history__menu-list">
+        <li class="history__menu-item">Tất cả</li>
+        <li class="history__menu-item active">Chờ xử lý</li>
+        <li class="history__menu-item">Đang giao</li>
+        <li class="history__menu-item">Hoàn thành</li>
+        <li class="history__menu-item">Đã huỷ</li>
+      </ul>
+    </div>
+    <div class="container">
+      <div class="history__table table-responsive-xxl text-nowrap">
+        <table class="table table-xxl table-borderless">
+          <thead class="history__table-header mb-10">
+            <tr>
+              <th class="history__table-header-item">Mã đơn hàng</th>
+              <th class="history__table-header-item">Hình thức thanh toán</th>
+              <th class="history__table-header-item">Thời gian</th>
+              <th class="history__table-header-item">Tổng tiền</th>
+              <th class="history__table-header-item">Trạng thái</th>
+              <th class="history__table-header-item">Xem chi tiết</th>
+            </tr>
+          </thead>
+          <tbody class="history__table-body">
+            <tr>
+              <td class="history__table-body-item">126</td>
+              <td class="history__table-body-item">
+                <span class="paid-item">Trả sau</span>
+              </td>
+              <td class="history__table-body-item">03/07/2023</td>
+              <td class="history__table-body-item">
+                <span class="price-item">126.000.000 VND</span>
+              </td>
+              <td class="history__table-body-item">
+                <span class="status-item completed">Hoàn thành</span>
+                <!-- <span class="status-item shipping">Đang giao hàng</span> -->
+                <!-- <span class="status-item waiting">Chờ xử lý</span> -->
+                <!-- <span class="status-item canceled">Đã huỷ</span> -->
+              </td>
+              <td class="history__table-body-item">
+                <span class="info-item">
+                  <i class="fa-solid fa-circle-info"></i>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="history__table-body-item">126</td>
+              <td class="history__table-body-item">
+                <span class="paid-item">Trả sau</span>
+              </td>
+              <td class="history__table-body-item">03/07/2023</td>
+              <td class="history__table-body-item">
+                <span class="price-item">126.000.000 VND</span>
+              </td>
+              <td class="history__table-body-item">
+                <span class="status-item completed">Hoàn thành</span>
+                <!-- <span class="status-item shipping">Đang giao hàng</span> -->
+                <!-- <span class="status-item waiting">Chờ xử lý</span> -->
+                <!-- <span class="status-item canceled">Đã huỷ</span> -->
+              </td>
+              <td class="history__table-body-item">
+                <span class="info-item">
+                  <i class="fa-solid fa-circle-info"></i>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <div class="modal fade" id="detail" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalToggleLabel">Thông tin chi tiết</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-info">
+            <!-- <div class="detail-info_name">
+              <div class="detail-info_label">Họ tên</div>
+              <input type="text" name="Name" id="Name">
+            </div>
+            <div class="detail-info_tel">
+              <div class="detail-info_label">Số điện thoại</div>
+              <input type="number" name="Tel" id="Tel">
+            </div>
+            <div class="detail-info_address">
+              <div class="detail-info_label">Địa chỉ</div>
+              <input type="text" name="Address" id="Address">
+            </div> -->
+            <div class="detail-info_paid">
+              <div class="detail-info_label">Phương thức thanh toán</div>
+              <select name="Paid" id="Paid" disabled>
+                <option value="PAR">Trả sau khi nhận hàng</option>
+                <option value="PBR">Trả trước khi nhận hàng</option>
+              </select>
+            </div>
+            <div class="detail-info_date-status">
+              <div class="detail-info_date-container">
+                <span class="detail-info_date-title">Ngày đặt hàng:</span>
+                <span class="detail-info_date">03/07/2023</span>
+              </div>
+              <div class="detail-info_status-container">
+                <span class="detail-info_status-title">Trạng thái:</span>
+                <span class="detail-info_status">Hoàn thành</span>
+              </div>
+            </div>
+            <div class="detail-info_paid-list-title">Các sản phẩm đã đặt</div>
+            <div class="detail-info_paid-list-container">
+              <ul class="detail-info_paid-list">
+                <li class="detail-info_paid-item">
+                  <div class="paid-item_container container">
+                    <div class="paid-item_row row">
+                      <div class="col-4">
+                        <div class="paid-item_img-container">
+                          <img class="paid-item_img" src="Laptop.webp" alt="" width="70px" height="70px">
+                        </div>
+                      </div>
+                      <div class="col-8">
+                        <div class="paid-item_info">
+                          <div class="paid-item_name">Laptop Hưng nè</div>
+                          <span class="paid-item_price">9.000.000 VND</span>
+                          <span class="paid-item_amount"> x2</span><br>
+                          <span class="paid-item_cost">10.000.000 VND</span>
+                          <span class="paid-item_discount">-10%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="detail-info_paid-item">
+                  <div class="paid-item_container container">
+                    <div class="paid-item_row row">
+                      <div class="col-4">
+                        <div class="paid-item_img-container">
+                          <img class="paid-item_img" src="Laptop.webp" alt="" width="70px" height="70px">
+                        </div>
+                      </div>
+                      <div class="col-8">
+                        <div class="paid-item_info">
+                          <div class="paid-item_name">Laptop Hưng nè</div>
+                          <span class="paid-item_price">9.000.000 VND</span>
+                          <span class="paid-item_amount"> x2</span><br>
+                          <span class="paid-item_cost">10.000.000 VND</span>
+                          <span class="paid-item_discount">-10%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="detail-info_paid-item">
+                  <div class="paid-item_container container">
+                    <div class="paid-item_row row">
+                      <div class="col-4">
+                        <div class="paid-item_img-container">
+                          <img class="paid-item_img" src="Laptop.webp" alt="" width="70px" height="70px">
+                        </div>
+                      </div>
+                      <div class="col-8">
+                        <div class="paid-item_info">
+                          <div class="paid-item_name">Laptop Hưng nè</div>
+                          <span class="paid-item_price">9.000.000 VND</span>
+                          <span class="paid-item_amount"> x2</span><br>
+                          <span class="paid-item_cost">10.000.000 VND</span>
+                          <span class="paid-item_discount">-10%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="detail-info_total-container">
+            <div class="detail-info_total-title">Tổng tiền:</div>
+            <div class="detail-info_total-money">36.000.000 VND</div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex flex-nowrap">
+          <button class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-dismiss="modal">Thoát</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/vendor/jquery.min.js"></script>
+  <script src="./js/vendor/popper.min.js"></script>
+  <script src="./js/vendor/bootstrap.bundle.js"></script>
+  <script src="./js/vendor/moment.min.js"></script>
+  <script src="./js/vendor/daterangepicker.min.js"></script>
+  <script>
+    $(".info-item").click(() => {
+      $("#detail").modal("show");
+    })
+    $(function () {
+      $('input[name="dates"]').daterangepicker({
+        opens: 'left'
+      }, function (start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+      });
+    });
+  </script>
+</body>
+
 </html>

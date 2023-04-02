@@ -2,17 +2,17 @@
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
 body {
-    background-color: rgb(248,248,252);
+    background-color: rgb(248, 248, 252);
 }
 
 .header-block {
@@ -38,8 +38,12 @@ body {
     color: var(--gray-500);
 }
 
-.product__link a{
+.product-slider a {
     text-decoration: none;
+    color: black;
+}
+
+.product__link a {
     color: var(--gray-500);
 }
 
@@ -76,7 +80,7 @@ body {
     margin-left: 20px;
 }
 
-.product__info-img_main-img img{
+.product__info-img_main-img img {
     width: 300px;
     aspect-ratio: 1;
 }
@@ -88,7 +92,7 @@ body {
     cursor: pointer;
 }
 
-.product__info-img_sub-img img:hover{
+.product__info-img_sub-img img:hover {
     border: 1px solid var(--primary);
     border-radius: 7px;
 }
@@ -101,12 +105,19 @@ body {
 .product__info-status {
     width: fit-content;
     font-size: .75rem;
-    background-color: rgb(220,251,231);
+    background-color: rgb(220, 251, 231);
     color: var(--green);
     margin-bottom: 5px;
     padding: 3px 15px;
     border: 2px solid #BFEECE;
     border-radius: 6px;
+}
+
+.product__info-status:is(.empty) {
+    background-color: rgb(251, 220, 220) !important;
+    color: red !important;
+    border: 2px solid #eebfbf !important;
+
 }
 
 .product__info-name {
@@ -190,6 +201,10 @@ body {
     width: 50%;
 }
 
+.product__detail-table td:nth-child(even) {
+    padding-left: 10px;
+}
+
 .similar-product {
     background-color: white;
     margin-top: 20px;
@@ -202,7 +217,7 @@ body {
 
 .similar-product-title {
     font-weight: 600;
-    margin: 10px 0 0 17px;   
+    margin: 10px 0 0 17px;
 }
 
 .slick-initialized .slick-slide {
@@ -274,13 +289,17 @@ body {
     object-fit: cover;
 }
 
-.product-card-name, .product-card-price, .product-card-cost, .product-card-save {
+.product-card-name,
+.product-card-price,
+.product-card-cost,
+.product-card-save {
     margin-inline: 12px;
 }
 
 .product-card-name {
     font-size: 1.3rem;
     font-weight: 500;
+    margin-block: 10px;
 }
 
 .product-card-price {
@@ -308,7 +327,7 @@ body {
     cursor: pointer;
 }
 
-@media only screen and (width <= 960px) {
+@media only screen and (width <=960px) {
     .product__info-row {
         display: flex;
         justify-content: center;
@@ -319,7 +338,7 @@ body {
     }
 }
 
-@media only screen and (width <= 680px) {
+@media only screen and (width <=680px) {
     .product__info-btn_container {
         margin: 0;
     }

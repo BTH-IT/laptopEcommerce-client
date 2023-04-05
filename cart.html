@@ -43,64 +43,7 @@
                                         <th class="table-head_item">Số lượng</th>
                                     </tr>
                                 </thead>
-                                <tbody class="table-body">
-                                    <tr class="table-body_row">
-                                        <td class="table-body_item">1</td>
-                                        <td class="table-body_item">
-                                            <div class="product-container">
-                                                <div class="product-img_container">
-                                                    <img class="product-img" src="Laptop.webp" alt="" width="80px"
-                                                        height="80px">
-                                                </div>
-                                                <div class="product-name_container">
-                                                    <span class="product-name">Laptop Hung ne</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="table-body_item">
-                                            <div class="product-price_container">
-                                                <div class="product-price">9.000.000 VND</div>
-                                                <div class="product-cost">10.000.000 VND</div>
-                                            </div>
-                                        </td>
-                                        <td class="table-body_item">
-                                            <div class="product-amount_container">
-                                                <button class="product-amount_minus">-</button>
-                                                <input type="number" name="amount" id="amount" min="1" value="1">
-                                                <button class="product-amount_plus">+</button>
-                                            </div>
-                                            <div class="delete-product">Xoá</div>
-                                        </td>
-                                    </tr>
-                                    <tr class="table-body_row">
-                                        <td class="table-body_item">2</td>
-                                        <td class="table-body_item">
-                                            <div class="product-container">
-                                                <div class="product-img_container">
-                                                    <img class="product-img" src="Laptop.webp" alt="" width="80px"
-                                                        height="80px">
-                                                </div>
-                                                <div class="product-name_container">
-                                                    <span class="product-name">Laptop Hung ne</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="table-body_item">
-                                            <div class="product-price_container">
-                                                <div class="product-price">9.000.000 VND</div>
-                                                <div class="product-cost">10.000.000 VND</div>
-                                            </div>
-                                        </td>
-                                        <td class="table-body_item">
-                                            <div class="product-amount_container">
-                                                <button class="product-amount_minus">-</button>
-                                                <input type="number" name="amount" id="amount" min="1" value="1">
-                                                <button class="product-amount_plus">+</button>
-                                            </div>
-                                            <div class="delete-product">Xoá</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                                <tbody class="table-body"></tbody>
                             </table>
                         </div>
                     </div>
@@ -200,23 +143,22 @@
                 </div>
             </div>
         </div>
-        <section class="purchase-form_container">
-
-        </section>
-        <script src="./js/vendor/jquery.min.js"></script>
-        <script src="./js/vendor/popper.min.js"></script>
-        <script src="./js/vendor/bootstrap.bundle.js"></script>
-        <script>
-            $(".delete").click(() => {
-                $("#delete-all").modal("show");
-            })
-            $(".delete-product").click(() => {
-                $("#delete-product").modal("show");
-            })
-            $(".purchase-btn").click(() => {
-                $("#purchase").modal("show");
-            })
-        </script>
+    </div>
+    <script src="./js/vendor/jquery.min.js"></script>
+    <script src="./js/vendor/popper.min.js"></script>
+    <script src="./js/vendor/bootstrap.bundle.js"></script>
+    <script type="module" src="js/pages/cart.js"></script>
+    <script>
+        $(".delete").click(() => {
+            $("#delete-all").modal("show");
+        })
+        $(".delete-product").click(() => {
+            $("#delete-product").modal("show");
+        })
+        $(".purchase-btn").click(() => {
+            $("#purchase").modal("show");
+        })
+    </script>
 </body>
 
 </html>

@@ -181,6 +181,28 @@ body {
 
 }
 
+.buy-btn:active,
+.addToCart-btn:active {
+    opacity: 0.7;
+    transition: all 0.7s ease;
+}
+
+.buy-btn:active {
+    color: var(--primary);
+    background: white;
+}
+
+.addToCart-btn:active {
+    color: white;
+    background: var(--primary);
+}
+
+.buy-btn:disabled,
+.addToCart-btn:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
 .product__detail {
     background-color: white;
     border: transparent;

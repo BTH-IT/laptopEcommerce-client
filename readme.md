@@ -43,3 +43,29 @@ Clone github -> Ctrl + J -> Gõ lệnh: npm i -> npm run dev
 - Slick JS: [Slick JS](https://kenwheeler.github.io/slick/): tạo slider
 - Axios API: [Axios](https://github.com/axios/axios): call API
 - JWT-Encode: [JWT-Encode](https://www.npmjs.com/package/jwt-encode)
+
+### INPUT & SELECT HTML
+<div class="select_container">
+  <label for="gender-employee-create" class="label">Giới tính</label>
+  <div class="select">
+    <select name="" id="gender-employee-create" rules="required">
+      <option value="" hidden selected>Chọn giới tính</option>
+      <option value="1">Nam</option>
+      <option value="0">Nữ</option>
+    </select>
+  </div>
+  <span class="text-danger mb-1 error"></span>
+</div>
+<div class="input_container">
+  <label for="salary-employee-create" class="label">Mức lương</label>
+  <div class="input">
+    <input
+      id="salary-employee-create"
+      type="text"
+      placeholder="Mức lương..."
+      rules="required|positive"
+    />
+    VNĐ
+  </div>
+  <span class="text-danger mb-1 error"></span>
+</div>

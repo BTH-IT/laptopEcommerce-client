@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
+<<<<<<< HEAD
   baseURL: 'http://localhost:80/ecommerce-api/index.php',
+=======
+  baseURL: 'http://localhost:80/laptopEcommerce-server/index.php',
+>>>>>>> 6b51e4206ef344d8df8500db977c6a534bef1df2
   headers: {
     'Content-Type': 'application/json;',
   },

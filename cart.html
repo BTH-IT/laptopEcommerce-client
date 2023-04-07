@@ -57,11 +57,11 @@
                             </div>
                             <div class="pre-price_container">
                                 <div class="pre-price_title">Tổng tạm tính</div>
-                                <div class="pre-price">18.000.000 VND</div>
+                                <div class="pre-price">0 VND</div>
                             </div>
                             <div class="total-price_container">
                                 <div class="total-price_title">Thành tiền</div>
-                                <div class="total-price">18.000.000 VND</div>
+                                <div class="total-price">0 VND</div>
                             </div>
                             <div class="purchase-btn_container">
                                 <button class="purchase-btn">THANH TOÁN</button>
@@ -70,6 +70,7 @@
                     </div>
                 </div>
             </div>
+        </div>
     </section>
     <div class="modal fade" id="delete-all" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -84,7 +85,7 @@
                 <div class="modal-footer d-flex flex-nowrap">
                     <button class="btn btn-secondary w-100" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal"
                         data-bs-dismiss="modal">Hủy</button>
-                    <button class="btn btn-primary w-100">Ok</button>
+                    <button class="btn btn-primary btn-delete-all w-100">Ok</button>
                 </div>
             </div>
         </div>
@@ -97,17 +98,15 @@
                     <h5 class="modal-title" id="exampleModalToggleLabel">Bạn có muốn xoá không?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <!-- <div class="modal-body">
-              Show a second modal and hide this one with the button below.
-            </div> -->
                 <div class="modal-footer d-flex flex-nowrap">
-                    <button class="btn btn-secondary w-100" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal"
+                    <button class="btn btn-secondary w-100" data-bs-target="#delete-product" data-bs-toggle="modal"
                         data-bs-dismiss="modal">Hủy</button>
-                    <button class="btn btn-primary w-100">Ok</button>
+                    <button class="btn btn-primary btn-delete w-100">Ok</button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="purchase" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -117,48 +116,52 @@
                 </div>
                 <div class="modal-body">
                     <div class="purchase-form_info-name">
-                        <div class="purchase-form_info-label">Họ tên</div>
-                        <input type="text" name="Name" id="Name" placeholder="họ và tên">
+                        <label for="Name" class="label">Họ và tên</label>
+                        <div class="input">
+                            <input id="Name" type="text" placeholder="Họ và tên" rules="required|positive" disabled/>
+                        </div>
+                        <span class="text-danger mb-1 error"></span>
                     </div>
                     <div class="purchase-form_info-tel">
-                        <div class="purchase-form_info-label">Số điện thoại</div>
-                        <input type="number" name="Tel" id="Tel" placeholder="số điện thoại">
+                        <label for="Tel" class="label">Số điện thoại</label>
+                        <div class="input">
+                            <input id="Tel" type="text" placeholder="Số điện thoại" rules="required|positive" disabled/>
+                        </div>
+                        <span class="text-danger mb-1 error"></span>
                     </div>
                     <div class="purchase-form_info-address">
-                        <div class="purchase-form_info-label">Địa chỉ</div>
-                        <input type="text" name="Address" id="Address" placeholder="địa chỉ">
+                        <label for="Address" class="label">Địa chỉ</label>
+                        <div class="input">
+                            <input id="Address" type="text" placeholder="Địa chỉ" rules="required|positive" disabled/>
+                        </div>
+                        <span class="text-danger mb-1 error"></span>
                     </div>
-                    <div class="purchase-form_info-paid">
-                        <div class="purchase-form_info-label">Phương thức thanh toán</div>
-                        <select class="mb-5" name="Paid" id="Paid">
-                            <option value="PAR">Trả sau khi nhận hàng</option>
-                            <option value="PBR">Trả trước khi nhận hàng</option>
-                        </select>
+                    <div class="select_container">
+                        <label for="Paid" class="label">Phương thức thanh toán</label>
+                        <div class="select">
+                            <select name="" id="Paid" rules="required">
+                                <option value="" hidden selected>Phương thức thanh toán</option>
+                                <option value="postpaid">Trả sau khi nhận hàng</option>
+                                <option value="prepaid">Trả trước khi nhận hàng</option>
+                            </select>
+                        </div>
+                        <span class="text-danger mb-1 error"></span>
                     </div>
                     <div class="modal-footer d-flex flex-nowrap pb-0 px-0">
                         <button class="btn btn-secondary w-100" data-bs-target="#exampleModalToggle2"
                             data-bs-toggle="modal" data-bs-dismiss="modal">Hủy</button>
-                        <button class="btn btn-primary w-100 btn-yes">Ok</button>
+                        <button class="btn btn-primary btn-purchase w-100 btn-yes">Ok</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="" id="toast"></div>
     <script src="./js/vendor/jquery.min.js"></script>
     <script src="./js/vendor/popper.min.js"></script>
     <script src="./js/vendor/bootstrap.bundle.js"></script>
+
     <script type="module" src="js/pages/cart.js"></script>
-    <script>
-        $(".delete").click(() => {
-            $("#delete-all").modal("show");
-        })
-        $(".delete-product").click(() => {
-            $("#delete-product").modal("show");
-        })
-        $(".purchase-btn").click(() => {
-            $("#purchase").modal("show");
-        })
-    </script>
 </body>
 
 </html>

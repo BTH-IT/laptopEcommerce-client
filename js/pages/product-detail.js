@@ -1,4 +1,5 @@
 import productApi from '../api/productApi';
+import { toast } from '../utils/toast';
 
 const params = new URLSearchParams(window.location.search);
 
@@ -12,7 +13,8 @@ let amount;
 
 async function getDatabyID(id) {
   try {
-    return await productApi.getById(id);
+    let req = await productApi.getById(id);
+    return req;
   } catch (error) {
     console.error(error);
   }
@@ -20,17 +22,17 @@ async function getDatabyID(id) {
 
 async function getAllData() {
   try {
-    return await productApi.getAll();
+    let req = await productApi.getAll();
+    return req;
   } catch (error) {
     console.error(error);
   }
 }
 
 async function renderProductDetail() {
-  let req = getDatabyID(productID);
-  req.then(function (data) {
-    amount = data.so_luong;
-    let productSection = `
+  let data = await getDatabyID(productID);
+  amount = data.so_luong;
+  let productSection = `
       <div class="product__info-row row" id="${data.ma_san_pham}">
         <div class="product__info-img_container col-lg-3">
           <div class="product__info-img_main-img"><img src="${data.hinh_anh[0]}" alt=""></div>
@@ -61,16 +63,24 @@ async function renderProductDetail() {
           </div>
           <div class="container p-0">
             <div class="product__info-btn_container row">
-              <button type="button" class="buy-btn col-md-4">MUA NGAY</button>
-              <button type="button" class="addToCart-btn col-md">THÊM VÀO GIỎ HÀNG</button>
+              <button type="button" class="buy-btn col-md-4"
+              data-name="${data.ten_san_pham}"
+              data-img="${data.hinh_anh[0]}"
+              data-cost="${data.gia_goc}"
+              data-discount="${data.giam_gia}">MUA NGAY</button>
+              <button type="button" class="addToCart-btn col-md" 
+              data-name="${data.ten_san_pham}"
+              data-img="${data.hinh_anh[0]}"
+              data-cost="${data.gia_goc}"
+              data-discount="${data.giam_gia}">THÊM VÀO GIỎ HÀNG</button>
             </div>
           </div>
         </div>
       </div>`;
 
-    let detailString = data.mo_ta_san_pham;
+  let detailString = data.mo_ta_san_pham;
 
-    let detailSection = `
+  let detailSection = `
       <tr>
         <td>Thương hiệu</td>
         <td>${data.thuong_hieu}</td>
@@ -160,18 +170,16 @@ async function renderProductDetail() {
         <td>${data.man_hinh_cam_ung ? data.man_hinh_cam_ung : 'Không'}</td>
       </tr>`;
 
-    $('.product__info').html(productSection);
-    $('.product__detail-description').text(detailString);
-    $('.product__detail-table').html(detailSection);
-    if (data.so_luong <= 0) {
-      $('.buy-btn').attr("disabled", true);
-      $('.addToCart-btn').attr("disabled", true);
-    } 
-    else {
-      $('.buy-btn').on('click', BuyBtnHandler);
-      $('.addToCart-btn').on('click', AddToCartBtnHandler);
-    }
-  });
+  $('.product__info').html(productSection);
+  $('.product__detail-description').text(detailString);
+  $('.product__detail-table').html(detailSection);
+  if (data.so_luong <= 0) {
+    $('.buy-btn').attr('disabled', true);
+    $('.addToCart-btn').attr('disabled', true);
+  } else {
+    $('.buy-btn').on('click', BuyBtnHandler);
+    $('.addToCart-btn').on('click', AddToCartBtnHandler);
+  }
 }
 
 async function renderSimilarProduct() {
@@ -226,56 +234,104 @@ async function renderSimilarProduct() {
 }
 
 function BuyBtnHandler() {
+  let ten_san_pham = this.dataset.name;
+  let hinh_anh = this.dataset.img;
+  let gia_goc = parseInt(this.dataset.cost);
+  let giam_gia = parseInt(this.dataset.discount);
+
   let CartList = JSON.parse(localStorage.getItem('CartList'));
+
   if (!CartList) {
-    let CartItem = [{ productID: productID, amount: 1 }];
+    let CartItem = [
+      {
+        ma_san_pham: productID,
+        ten_san_pham: ten_san_pham,
+        hinh_anh: hinh_anh,
+        gia_goc: gia_goc,
+        giam_gia: giam_gia,
+        so_luong: 1,
+      },
+    ];
     localStorage.setItem('CartList', JSON.stringify(CartItem));
   } else {
-    localStorage.removeItem('CartList');
     let found = false;
 
     CartList.forEach((item) => {
-      if (item.productID === productID) {
-        item.amount++;
+      if (item.ma_san_pham === productID) {
+        item.so_luong++;
         found = true;
       }
     });
 
     if (!found) {
-      let CartItem = { productID: productID, amount: 1 };
+      let CartItem = {
+        ma_san_pham: productID,
+        ten_san_pham: ten_san_pham,
+        hinh_anh: hinh_anh,
+        gia_goc: gia_goc,
+        giam_gia: giam_gia,
+        so_luong: 1,
+      };
       CartList.push(CartItem);
     }
 
     localStorage.setItem('CartList', JSON.stringify(CartList));
   }
 
-  let CartURL = window.location.protocol + "//" + window.location.hostname + ":5173/cart.html";
-  window.location.href  = CartURL;
+  let CartURL = window.location.protocol + '//' + window.location.hostname + ':5173/cart.html';
+  window.location.href = CartURL;
 }
 
 function AddToCartBtnHandler() {
+  let ten_san_pham = this.dataset.name;
+  let hinh_anh = this.dataset.img;
+  let gia_goc = parseInt(this.dataset.cost);
+  let giam_gia = parseInt(this.dataset.discount);
+
   let CartList = JSON.parse(localStorage.getItem('CartList'));
+
   if (!CartList) {
-    let CartItem = [{ productID: productID, amount: 1 }];
+    let CartItem = [
+      {
+        ma_san_pham: productID,
+        ten_san_pham: ten_san_pham,
+        hinh_anh: hinh_anh,
+        gia_goc: gia_goc,
+        giam_gia: giam_gia,
+        so_luong: 1,
+      },
+    ];
     localStorage.setItem('CartList', JSON.stringify(CartItem));
   } else {
-    localStorage.removeItem('CartList');
     let found = false;
 
     CartList.forEach((item) => {
-      if (item.productID === productID) {
-        item.amount++;
+      if (item.ma_san_pham === productID) {
+        item.so_luong++;
         found = true;
       }
     });
 
     if (!found) {
-      let CartItem = { productID: productID, amount: 1 };
+      let CartItem = {
+        ma_san_pham: productID,
+        ten_san_pham: ten_san_pham,
+        hinh_anh: hinh_anh,
+        gia_goc: gia_goc,
+        giam_gia: giam_gia,
+        so_luong: 1,
+      };
       CartList.push(CartItem);
     }
 
     localStorage.setItem('CartList', JSON.stringify(CartList));
   }
+
+  toast({
+    title: 'Add to Cart successfully',
+    type: 'success',
+    duration: 1000,
+  });
 }
 
 await renderProductDetail();

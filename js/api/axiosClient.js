@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:80/laptopEcommerce-server/index.php',
+  baseURL: 'http://localhost:80/ecommerce-server/index.php',
   headers: {
     'Content-Type': 'application/json;',
   },
@@ -13,9 +13,9 @@ axiosClient.interceptors.request.use(
     // Do something before request is sent
 
     const accessToken = localStorage.getItem('access_token');
-    // if (accessToken) {
-    //   config.headers.Authorization = `Bearer ${accessToken.replace(/^"(.*)"$/, '$1')}`;
-    // }
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken.replace(/^"(.*)"$/, '$1')}`;
+    }
 
     return config;
   },

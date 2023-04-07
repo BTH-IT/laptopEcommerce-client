@@ -5,10 +5,6 @@
   z-index: 100;
 }
 
-.toast:not(.showing):not(.show) {
-  opacity: 1 !important;
-}
-
 @media screen and (max-width: 426px){
   #toast {
     top: 10px;

@@ -7,18 +7,22 @@ Clone github -> Ctrl + J -> Gõ lệnh: npm i -> npm run dev
 - Trang login (login.html), register (register.html)
 - Layout header, footer, slider cho các trang
 - Các chức năng của các trang trên
+- Hổ trợ responsive, testing trang manager.html và trang search.html
+- [Giao diện các trang](https://www.youtube.com/watch?v=yhZoDaRvMKU)
 
 #### Nguyễn Phúc Huy:
 - Trang product detail (product-detail.html)
 - Trang history (history.html)
 - Trang cart (cart.html)
 - Các chức năng của các trang trên
+- Hổ trợ responsive, testing trang manager.html và trang search.html
+- [Giao diện các trang](https://www.youtube.com/watch?v=CSpDKQVtL-0)
 
 #### Biện Thành Hưng:
 - Trang search (search.html)
-- Trang admin (admin.html)
 - Trang manager (manager.html)
 - Các chức năng của các trang trên
+- Hổ trợ các thành viên trong team
 
 ### Giao diện các trang
 [Giao diện các trang](https://youtu.be/FE4VlYgMTtw)
@@ -38,3 +42,4 @@ Clone github -> Ctrl + J -> Gõ lệnh: npm i -> npm run dev
 - Apexcharts JS: [Apexcharts JS](https://apexcharts.com/javascript-chart-demos/): tạo chart
 - Slick JS: [Slick JS](https://kenwheeler.github.io/slick/): tạo slider
 - Axios API: [Axios](https://github.com/axios/axios): call API
+- JWT-Encode: [JWT-Encode](https://www.npmjs.com/package/jwt-encode)

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:80/ecommerce-server/index.php',
+  baseURL: 'http://localhost:80/laptopEcommerce-server/index.php',
   headers: {
     'Content-Type': 'application/json;',
   },

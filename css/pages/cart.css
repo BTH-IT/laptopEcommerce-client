@@ -1,5 +1,6 @@
 @import '../utils/variables.css';
 @import '../layouts/toast.css';
+@import '../utils/reset.css';
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -10,6 +11,14 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+h5 {
+    font-size: 1.2rem;
 }
 
 button:active {
@@ -58,6 +67,10 @@ body {
 .col-4,
 .col-8 {
     padding: 0;
+}
+
+.detele-row {
+    margin-bottom: 10px;
 }
 
 .cart-title-delete {
@@ -171,13 +184,13 @@ body {
     border-bottom-left-radius: 6px;
 }
 
-.product-amount_minus:disabled {
+.product-amount_minus:disabled, .product-amount_plus:disabled {
     cursor: not-allowed;
 }
 
 .delete-product {
     color: var(--primary);
-    padding-block: 5px;
+    padding-block: 10px;
     cursor: pointer;
 }
 
@@ -189,17 +202,21 @@ body {
     height: 48px;
 }
 
+.total-title {
+    margin-block: 6px;
+}
+
 .total-container {
     background-color: white;
     border-radius: 10px;
-    padding: 10px 20px;
+    padding: 15px 20px;
 }
 
 .pre-price_container,
 .total-price_container {
     display: flex;
     justify-content: space-between;
-    line-height: 2;
+    line-height: 2.8;
 }
 
 .total-price {
@@ -208,7 +225,7 @@ body {
 }
 
 .purchase-btn_container {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .purchase-btn {
@@ -217,7 +234,7 @@ body {
     color: white;
     border: transparent;
     border-radius: 6px;
-    padding-block: 5px;
+    padding-block: 7px;
 }
 
 .purchase-btn:disabled, input:disabled {
@@ -257,13 +274,40 @@ select:focus {
 #Tel,
 #Address,
 #Paid {
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     width: 100%;
 }
 
 #Paid {
-    margin-bottom: 5px;
-    padding-block: 5px;
+    margin-bottom: 10px !important;
+    padding-block: 6px;
+}
+
+option {
+    font-size: 1rem;
+}
+
+.no-product-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    padding-block: 20px;
+}
+
+.no-product-info {
+    color: var(--gray-600);
+    margin-block: 20px;
+}
+
+.no-product-btn {
+    color: white;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    padding: 10px;
+    background-color: var(--primary);
 }
 
 @media only screen and (width <=520px) {

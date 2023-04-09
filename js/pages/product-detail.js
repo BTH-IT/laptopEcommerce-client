@@ -1,4 +1,5 @@
 import productApi from '../api/productApi';
+import { renderProductCard } from '../utils/product-card';
 import { toast } from '../utils/toast';
 
 const params = new URLSearchParams(window.location.search);
@@ -35,11 +36,13 @@ async function renderProductDetail() {
   let productSection = `
       <div class="product__info-row row" id="${data.ma_san_pham}">
         <div class="product__info-img_container col-lg-3">
-          <div class="product__info-img_main-img"><img src="${data.hinh_anh[0]}" alt=""></div>
-          <div class="product__info-img_sub-img">
-            <img src="${data.hinh_anh[0]}" alt="" width="50px" height="50px">
-            <img src="${data.hinh_anh[1]}" alt="" width="50px" height="50px">
-          </div>
+          <div class="product__info-img_main-img"><img class="main-img" src="http://localhost:80/laptopEcommerce-server/images/${data.hinh_anh[0]}" alt=""></div>
+          <div class="product__info-img_sub-img">`;
+
+  data.hinh_anh.forEach((img, idx) => {
+    productSection += `<img class="sub-img" id="${idx}" src="http://localhost:80/laptopEcommerce-server/images/${img}" alt="" width="50px" height="50px">`;
+  });
+  productSection += `</div>
         </div>
         <div class="product__info-container col-lg">
           ${
@@ -61,18 +64,20 @@ async function renderProductDetail() {
               <span class="product__info-discount">-${data.giam_gia}%</span>
             </div>
           </div>
-          <div class="container p-0">
+          <div class="p-0">
             <div class="product__info-btn_container row">
               <button type="button" class="buy-btn col-md-4"
               data-name="${data.ten_san_pham}"
               data-img="${data.hinh_anh[0]}"
               data-cost="${data.gia_goc}"
-              data-discount="${data.giam_gia}">MUA NGAY</button>
+              data-discount="${data.giam_gia}"
+              data-amount="${amount}">MUA NGAY</button>
               <button type="button" class="addToCart-btn col-md" 
               data-name="${data.ten_san_pham}"
               data-img="${data.hinh_anh[0]}"
               data-cost="${data.gia_goc}"
-              data-discount="${data.giam_gia}">THÊM VÀO GIỎ HÀNG</button>
+              data-discount="${data.giam_gia}"
+              data-amount="${amount}">THÊM VÀO GIỎ HÀNG</button>
             </div>
           </div>
         </div>
@@ -180,6 +185,13 @@ async function renderProductDetail() {
     $('.buy-btn').on('click', BuyBtnHandler);
     $('.addToCart-btn').on('click', AddToCartBtnHandler);
   }
+
+  $('.sub-img').on('mouseover', (e) => {
+    $('.main-img').attr(
+      'src',
+      `http://localhost:80/laptopEcommerce-server/images/${data.hinh_anh[e.target.id]}`
+    );
+  });
 }
 
 async function renderSimilarProduct() {
@@ -187,7 +199,6 @@ async function renderSimilarProduct() {
   req.then(function (data) {
     let jsonLength = Object.keys(data['data']).length - 1;
     let productIdx = data['data'].findIndex((item) => item.ma_san_pham === productID);
-    let nextProductID = productID;
     let similarProductCard = ``;
     let nextProductIdx = productIdx;
 
@@ -197,36 +208,7 @@ async function renderSimilarProduct() {
         nextProductIdx = 0;
       }
 
-      let saveMoney =
-        (data['data'][productIdx].gia_goc * (100 - data['data'][productIdx].giam_gia)) / 100 -
-        (data['data'][nextProductIdx].gia_goc * (100 - data['data'][nextProductIdx].giam_gia)) /
-          100;
-      similarProductCard += `
-        <a href="http://localhost:5173/product-detail.html?id=${
-          data['data'][nextProductIdx].ma_san_pham
-        }">
-          <div class="product-card-container">
-            <div class="product-card-img">
-              <img src="Laptop.webp" alt="">
-            </div>
-            <div class="product-card-name">${data['data'][nextProductIdx].ten_san_pham}</div>
-            <div class="product-card-price">${(
-              (data['data'][nextProductIdx].gia_goc *
-                (100 - data['data'][nextProductIdx].giam_gia)) /
-              100
-            ).toLocaleString('vi-VN')} VND</div>
-            <div class="product-card-cost">${data['data'][nextProductIdx].gia_goc.toLocaleString(
-              'vi-VN'
-            )}</div>
-            <div class="product-card-save">
-              <span>Save</span>
-              <span class="product-card-save_money">${(saveMoney > 0
-                ? saveMoney
-                : 0
-              ).toLocaleString('vi-VN', { maximumSignificantDigits: 3 })} VND</span>
-            </div>
-          </div>
-        </a>`;
+      similarProductCard += renderProductCard(data['data'][nextProductIdx]);
     }
 
     $('.product-slider').slick('slickAdd', similarProductCard);
@@ -238,6 +220,8 @@ function BuyBtnHandler() {
   let hinh_anh = this.dataset.img;
   let gia_goc = parseInt(this.dataset.cost);
   let giam_gia = parseInt(this.dataset.discount);
+  let so_luong = parseInt(this.dataset.amount);
+  let outOfStock = false;
 
   let CartList = JSON.parse(localStorage.getItem('CartList'));
 
@@ -258,8 +242,28 @@ function BuyBtnHandler() {
 
     CartList.forEach((item) => {
       if (item.ma_san_pham === productID) {
-        item.so_luong++;
-        found = true;
+        if (item.so_luong == so_luong) {
+          toast({
+            title: 'Xin lỗi',
+            message: 'Đã hết hàng trong kho',
+            type: 'error',
+            duration: 2000,
+          });
+
+          found = true;
+          outOfStock = true;
+        } else {
+          item.so_luong++;
+          localStorage.setItem('CartList', JSON.stringify(CartList));
+          found = true;
+
+          toast({
+            title: 'Thành công',
+            message: 'Đã thêm vào giỏ hàng',
+            type: 'success',
+            duration: 2000,
+          });
+        }
       }
     });
 
@@ -273,13 +277,21 @@ function BuyBtnHandler() {
         so_luong: 1,
       };
       CartList.push(CartItem);
-    }
+      localStorage.setItem('CartList', JSON.stringify(CartList));
 
-    localStorage.setItem('CartList', JSON.stringify(CartList));
+      toast({
+        title: 'Thành công',
+        message: 'Đã thêm vào giỏ hàng',
+        type: 'success',
+        duration: 2000,
+      });
+    }
   }
 
-  let CartURL = window.location.protocol + '//' + window.location.hostname + ':5173/cart.html';
-  window.location.href = CartURL;
+  if (!outOfStock) {
+    let CartURL = window.location.protocol + '//' + window.location.hostname + ':5173/cart.html';
+    window.location.href = CartURL;
+  }
 }
 
 function AddToCartBtnHandler() {
@@ -287,6 +299,7 @@ function AddToCartBtnHandler() {
   let hinh_anh = this.dataset.img;
   let gia_goc = parseInt(this.dataset.cost);
   let giam_gia = parseInt(this.dataset.discount);
+  let so_luong = parseInt(this.dataset.amount);
 
   let CartList = JSON.parse(localStorage.getItem('CartList'));
 
@@ -299,16 +312,43 @@ function AddToCartBtnHandler() {
         gia_goc: gia_goc,
         giam_gia: giam_gia,
         so_luong: 1,
+        so_luong_kho: so_luong,
       },
     ];
     localStorage.setItem('CartList', JSON.stringify(CartItem));
+
+    toast({
+      title: 'Thành công',
+      message: 'Đã thêm vào giỏ hàng',
+      type: 'success',
+      duration: 2000,
+    });
   } else {
     let found = false;
 
     CartList.forEach((item) => {
       if (item.ma_san_pham === productID) {
-        item.so_luong++;
-        found = true;
+        if (item.so_luong == so_luong) {
+          toast({
+            title: 'Xin lỗi',
+            message: 'Đã hết hàng trong kho',
+            type: 'error',
+            duration: 2000,
+          });
+
+          found = true;
+        } else {
+          item.so_luong++;
+          localStorage.setItem('CartList', JSON.stringify(CartList));
+          found = true;
+
+          toast({
+            title: 'Thành công',
+            message: 'Đã thêm vào giỏ hàng',
+            type: 'success',
+            duration: 2000,
+          });
+        }
       }
     });
 
@@ -320,18 +360,19 @@ function AddToCartBtnHandler() {
         gia_goc: gia_goc,
         giam_gia: giam_gia,
         so_luong: 1,
+        so_luong_kho: so_luong,
       };
       CartList.push(CartItem);
+      localStorage.setItem('CartList', JSON.stringify(CartList));
+
+      toast({
+        title: 'Thành công',
+        message: 'Đã thêm vào giỏ hàng',
+        type: 'success',
+        duration: 2000,
+      });
     }
-
-    localStorage.setItem('CartList', JSON.stringify(CartList));
   }
-
-  toast({
-    title: 'Add to Cart successfully',
-    type: 'success',
-    duration: 1000,
-  });
 }
 
 await renderProductDetail();

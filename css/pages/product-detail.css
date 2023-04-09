@@ -1,5 +1,7 @@
 @import '../utils/variables.css';
 @import '../layouts/toast.css';
+@import '../utils/reset.css';
+@import '../components/product-card.css';
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -14,6 +16,10 @@ input[type=number] {
 
 body {
     background-color: rgb(248, 248, 252);
+}
+
+h4 {
+    font-size: 1.5rem;
 }
 
 .header-block {
@@ -105,11 +111,11 @@ body {
 
 .product__info-status {
     width: fit-content;
-    font-size: .75rem;
+    font-size: .9rem;
     background-color: rgb(220, 251, 231);
     color: var(--green);
-    margin-bottom: 5px;
-    padding: 3px 15px;
+    margin-bottom: 10px;
+    padding: 5px 20px;
     border: 2px solid #BFEECE;
     border-radius: 6px;
 }
@@ -124,12 +130,13 @@ body {
 .product__info-name {
     font-size: 1.4rem;
     font-weight: 700;
+    padding-bottom: 5px;
 }
 
 .product__info-brand {
     font-size: 1rem;
     color: var(--gray-500);
-    padding-bottom: 20px;
+    padding-bottom: 30px;
 }
 
 .product__info-price_container {
@@ -140,6 +147,7 @@ body {
     font-size: 1.6rem;
     font-weight: 700;
     color: var(--primary);
+    padding-bottom: 5px;
 }
 
 .product__info-cost {
@@ -156,7 +164,7 @@ body {
 .product__info-btn_container {
     width: 100%;
     margin-right: 0;
-    margin-top: 20px;
+    margin-top: 40px;
     padding-top: 25px;
     border-top: 1px solid var(--gray-300);
 }
@@ -216,11 +224,11 @@ body {
 }
 
 .product__detail-table tr:nth-child(even) {
-    background-color: var(--gray-200);
+    background-color: #F6F6F6;
 }
 
 .product__detail-table td {
-    padding-block: 6px;
+    padding-block: 12px;
     width: 50%;
 }
 

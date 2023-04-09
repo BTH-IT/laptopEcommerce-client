@@ -14,7 +14,7 @@ export function renderProductCard(product, className = '') {
             ${product['giam_gia']}%<br>OFF
           </span>
           <div class='product-card_image'>
-            <img src='http://localhost:80/ecommerce-api/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
+            <img src='http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
           </div>
           <div class='product-card_info'>
             <h6 class='product-card_title'>${product['ten_san_pham']}</h6>

@@ -9,17 +9,6 @@ let htmlString = ``;
 
 let CartList;
 
-$('h4').on('click', function () {
-  
-  toast({
-    title: 'Thành công',
-    message: 'Cảm ơn bạn đã mua hàng',
-    type: 'success',
-    duration: 1000000,
-  });
-});
-
-
 async function createOrder(data) {
   try {
     await orderApi.add(data);
@@ -48,13 +37,16 @@ $('.purchase-btn').on('click', () => {
 
 function renderCartList() {
   CartList = JSON.parse(localStorage.getItem('CartList'));
+  console.log(CartList.length);
   if (CartList.length > 0) {
     CartList.forEach((item, idx) => {
       let htmlString = `
         <tr class="table-body_row" id=${idx + 1}>
             <td class="table-body_item">${idx + 1}</td>
             <td class="table-body_item">
-          <a class="product-link" href="http://localhost:5173/product-detail.html?id=${item.ma_san_pham}">
+          <a class="product-link" href="http://localhost:5173/product-detail.html?id=${
+            item.ma_san_pham
+          }">
               <div class="product-container">
                   <div class="product-img_container">
                       <img class="product-img" src="${item.hinh_anh}" alt="" width="80px"
@@ -81,8 +73,12 @@ function renderCartList() {
       }>-</button>
                   <input class = "amount-${
                     idx + 1
-                  }" type="number" name="amount" id="amount" min="1" value="${item.so_luong}">
-                  <button class="product-amount_plus" id="${idx + 1}">+</button>
+                  }" type="number" name="amount" id="amount" data-amount="${
+        item.so_luong_kho
+      }" min="1" value="${item.so_luong}">
+                  <button class="product-amount_plus" data-amount="${item.so_luong_kho}" id="${
+        idx + 1
+      }" ${item.so_luong == item.so_luong_kho ? 'disabled' : ''}>+</button>
               </div>
               <div class="delete-product" id=${item.ma_san_pham}>Xoá</div>
             </td>
@@ -92,11 +88,24 @@ function renderCartList() {
     });
     $('.product-amount_minus').on('click', minusBtnHandler);
     $('.product-amount_plus').on('click', plusBtnHandler);
+    $('#amount').on('change', valueValidation);
     $('.delete-product').on('click', (e) => {
       $('#delete-product').modal('show');
       let ID = e.target.id;
       $('.btn-delete').attr('id', ID);
     });
+  } else {
+    let htmlString = `
+    <div class="cart-link">
+      <a href="">Trang chủ </a><span id="seperate">/</span><a href=""> Cart</a>
+    </div>
+    <div class="no-product-container">
+      <img src="https://shopfront-cdn.tekoapis.com/static/empty_cart.png" width="25%" height="25%">
+      <p class="no-product-info">Giỏ hàng chưa có sản phẩm nào</p>
+      <a href="http://localhost:5173/index.html"><button class="no-product-btn">Mua sắm ngay</button></a>
+    </div>`;
+
+    $('.cart').html(htmlString);
   }
 }
 
@@ -108,13 +117,14 @@ function renderTotal() {
     CartList.forEach((item, idx) => {
       total += ((item.gia_goc * (100 - item.giam_gia)) / 100) * item.so_luong;
     });
-  } else {
-    $('.purchase-btn').attr('disabled', true);
   }
+
   $('.pre-price, .total-price').text(total.toLocaleString('vi-VN') + ' VND');
 }
 
 function minusBtnHandler() {
+  $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', false);
+
   let val = parseInt($(`.amount-${this.id}`).val());
   if (val > 2) {
     $(`.amount-${this.id}`).val(val - 1);
@@ -130,9 +140,12 @@ function minusBtnHandler() {
 }
 
 function plusBtnHandler() {
+  $(`button[id=${this.id}][class="product-amount_minus"]`).attr('disabled', false);
+
   let val = parseInt($(`.amount-${this.id}`).val());
-  if (val == 1) {
-    $(`button[id=${this.id}][class="product-amount_minus"]`).attr('disabled', false);
+
+  if (val >= parseInt(this.dataset.amount) - 1) {
+    $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', true);
   }
   $(`.amount-${this.id}`).val(val + 1);
 
@@ -140,6 +153,18 @@ function plusBtnHandler() {
   localStorage.setItem('CartList', JSON.stringify(CartList));
 
   renderTotal();
+}
+
+function valueValidation() {
+  if ($(this).val() > parseInt(this.dataset.amount)) {
+    toast({
+      title: 'Xin lỗi',
+      message: 'Không đủ hàng trong kho',
+      type: 'error',
+      duration: 2000,
+    });
+    $(this).val(this.dataset.amount);
+  }
 }
 
 function deteleBtnHandler() {
@@ -162,7 +187,7 @@ function deteleAllBtnHandler() {
   renderTotal();
 }
 
-async function purchaseBtnHandler(e) {
+async function purchaseBtnHandler() {
   let mes = validation($('#Paid')[0]);
   if (!mes) {
     let method = $('#Paid').val();
@@ -203,7 +228,7 @@ async function purchaseBtnHandler(e) {
       title: 'Thành công',
       message: 'Cảm ơn bạn đã mua hàng',
       type: 'success',
-      duration: 1000,
+      duration: 2000,
     });
   }
 }

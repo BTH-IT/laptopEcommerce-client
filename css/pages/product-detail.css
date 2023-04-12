@@ -76,6 +76,7 @@ h4 {
     border: transparent;
     border-radius: 20px;
     margin-bottom: 20px;
+    padding-block: 10px;
 }
 
 .row {
@@ -125,6 +126,10 @@ h4 {
     color: red !important;
     border: 2px solid #eebfbf !important;
 
+}
+
+.product__detail-container {
+    margin: 0;
 }
 
 .product__info-name {

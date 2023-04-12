@@ -1,6 +1,7 @@
 @import '../utils/variables.css';
 @import '../layouts/toast.css';
 @import '../utils/reset.css';
+@import '../components/select.css';
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -272,15 +273,17 @@ select:focus {
 
 #Name,
 #Tel,
-#Address,
-#Paid {
+#Address {
     margin-bottom: 25px;
     width: 100%;
 }
 
+.select {
+    padding: 0 !important;
+}
+
 #Paid {
-    margin-bottom: 10px !important;
-    padding-block: 6px;
+    padding: 6px;
 }
 
 option {

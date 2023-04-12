@@ -1,5 +1,6 @@
 @import '../utils/variables.css';
 @import '../utils/reset.css';
+@import '../layouts/toast.css';
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -89,6 +90,10 @@ body {
     border-bottom: 1px solid var(--primary);
 }
 
+.container {
+    margin-top: 5px !important;
+}
+
 .history__table {
     background-color: #fff;
     text-align: center;
@@ -129,16 +134,22 @@ body {
     border: 1px solid var(--green);
 }
 
+.postpaid {
+    padding-inline: 31px;
+}
+
 .status-item.waiting {
     background-color: #fef9c3;
     border-color: #fde047;
     color: #eab308;
+    padding-inline: 33px;
 }
 
 .status-item.shipping {
     background-color: #ecfccb;
     border-color: #bef264;
     color: #84cc16;
+    padding-inline: 30px;
 }
 
 .status-item.completed {
@@ -151,6 +162,7 @@ body {
     background-color: #fee2e2;
     border-color: #fca5a5;
     color: #ef4444;
+    padding-inline: 42px;
 }
 
 .price-item {
@@ -166,15 +178,6 @@ body {
 
 .detail-container {
     overflow: scroll;
-}
-
-.background-blur:is(.active) {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.473);
-    z-index: 200;
 }
 
 .detail:is(.active) {
@@ -233,18 +236,41 @@ select:focus {
 
 }
 
+.btn-primary:disabled {
+    cursor: not-allowed;
+    pointer-events: all !important;
+}
+
+.btn-cancel:disabled {
+    cursor: not-allowed;
+    pointer-events: all !important;
+}
+
 .history__header-date {
     margin: 0 !important;
 }
 
-#Name,
-#Tel,
-#Address {
-    padding-block: 3px;
-}
-
 #Paid {
     padding-block: 5px;
+}
+
+option {
+    font-size: 1rem;
+}
+
+.btn-cancel {
+    color: white !important;
+    background-color: #ef4444;
+}
+
+.btn-cancel:hover {
+    color: #fff;
+    background-color: rgb(194, 63, 63);
+    border-color: rgb(194, 63, 63);
+}
+
+#Paid:disabled {
+    cursor: not-allowed;
 }
 
 .detail-info_date-status {
@@ -258,8 +284,17 @@ select:focus {
     font-weight: normal;
 }
 
-.detail-info_status {
+.detail-info_status.waiting {
+    color: #eab308;
+}
+.detail-info_status.shipping {
+    color: #84cc16;
+}
+.detail-info_status.completed {
     color: var(--green);
+}
+.detail-info_status.canceled {
+    color: #ef4444;
 }
 
 .detail-info_paid-list {

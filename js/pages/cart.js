@@ -3,10 +3,6 @@ import { convertCurrency } from '../utils/constains';
 import { validation } from '../utils/validation';
 import { toast } from '../utils/toast';
 
-const port = 80;
-
-let htmlString = ``;
-
 let CartList;
 
 async function createOrder(data) {
@@ -49,7 +45,7 @@ function renderCartList() {
           }">
               <div class="product-container">
                   <div class="product-img_container">
-                      <img class="product-img" src="${item.hinh_anh}" alt="" width="80px"
+                      <img class="product-img" src="http://localhost:80/laptopEcommerce-server/images/${item.hinh_anh}" alt="" width="80px"
                           height="80px">
                   </div>
                   <div class="product-name_container">
@@ -184,6 +180,7 @@ function deteleAllBtnHandler() {
   $('.table-body').children().remove();
   $('#delete-all').modal('hide');
 
+  renderCartList();
   renderTotal();
 }
 
@@ -198,7 +195,7 @@ async function purchaseBtnHandler() {
       let PurchaseItem = {
         ma_san_pham: item.ma_san_pham,
         ten_san_pham: item.ten_san_pham,
-        don_gia: (item.gia_goc * (100 - item.giam_gia)) / 100,
+        don_gia: item.gia_goc,
         giam_gia_san_pham: item.giam_gia,
         so_luong_da_mua: item.so_luong,
       };

@@ -195,24 +195,23 @@ async function renderProductDetail() {
 }
 
 async function renderSimilarProduct() {
-  let req = getAllData();
-  req.then(function (data) {
-    let jsonLength = Object.keys(data['data']).length - 1;
-    let productIdx = data['data'].findIndex((item) => item.ma_san_pham === productID);
-    let similarProductCard = ``;
-    let nextProductIdx = productIdx;
+  let data = await getAllData();
+  
+  let jsonLength = Object.keys(data['data']).length - 1;
+  let productIdx = data['data'].findIndex((item) => item.ma_san_pham === productID);
+  let similarProductCard = ``;
+  let nextProductIdx = productIdx;
 
-    for (let i = 1; i <= similarProduct; i++) {
-      nextProductIdx++;
-      if (nextProductIdx > jsonLength) {
-        nextProductIdx = 0;
-      }
-
-      similarProductCard += renderProductCard(data['data'][nextProductIdx]);
+  for (let i = 1; i <= similarProduct; i++) {
+    nextProductIdx++;
+    if (nextProductIdx > jsonLength) {
+      nextProductIdx = 0;
     }
 
-    $('.product-slider').slick('slickAdd', similarProductCard);
-  });
+    similarProductCard += renderProductCard(data['data'][nextProductIdx]);
+  }
+
+  $('.product-slider').slick('slickAdd', similarProductCard);
 }
 
 function BuyBtnHandler() {

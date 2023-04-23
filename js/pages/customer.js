@@ -1,9 +1,21 @@
 import customerApi from '../api/customerApi';
+import { handleSearching, handleSorting } from './manager';
 import { isAccessAction, renderLoadingManager } from '../utils/constains';
 
-async function renderCustomer() {
+async function renderCustomer(params = '') {
   try {
-    const { data } = await customerApi.getAll();
+    const { data } = await customerApi.getAll(params);
+
+    if (data.length <= 0) {
+      $('.customer-content').html(`
+        <tr>
+          <td colspan="3">
+            <h1 class="text-center my-5 w-100">Không có khách hàng nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const dataHTML = data
       .map((customer) => {
@@ -46,7 +58,7 @@ async function renderCustomer() {
       $('#username-customer-view').val(id);
       $('#fullname-customer-view').val(customer['ten_khach_hang']);
       $('#birth-date-customer-view').val(date[2] + '-' + date[0] + '-' + date[1]);
-      $('#gender-customer-view').val(data['gioi_tinh'] ? '1' : '0');
+      $('#gender-customer-view').val(customer['gioi_tinh'] ? '1' : '0');
       $('#phone-customer-view').val(customer['so_dien_thoai']);
       $('#address-customer-view').val(customer['dia_chi']);
     });
@@ -66,12 +78,30 @@ export function renderCustomerPage() {
           <i class="fa-solid fa-circle-plus"></i> thêm khách hàng
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên khách hàng" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="customer-table-container">
         <table class="customer-table">
           <thead>
             <tr align="center">
-              <th>Mã khách hàng</th>
-              <th>Tên khách hàng</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã khách hàng
+                  <div class="icon-sort active before" data-value="ma_khach_hang" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên khách hàng
+                  <div class="icon-sort" data-value="ten_khach_hang" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -83,11 +113,33 @@ export function renderCustomerPage() {
     </div>
   `);
 
-  renderCustomer();
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderCustomer({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+    handleSearching(e.target.value, renderCustomer);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderCustomer);
+  });
 
   $('.customer-header div').click(() => {
     if (!isAccessAction('customers', 'CREATE')) return;
     $('#createCustomerModal').modal('show');
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderCustomer);
   });
 }
 

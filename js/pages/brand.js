@@ -1,12 +1,24 @@
 import brandApi from '../api/brandApi';
 import uploadApi from '../api/uploadApi';
+import { handleSearching, handleSorting } from './manager';
 import { isAccessAction, renderLoadingManager } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 
-async function renderBrand() {
+async function renderBrand(params = '') {
   try {
-    const { data: brandList } = await brandApi.getAll();
+    const { data: brandList } = await brandApi.getAll(params);
+
+    if (brandList.length <= 0) {
+      $('.brand-content').html(`
+        <tr>
+          <td colspan="3">
+            <h1 class="text-center my-5 w-100">Không có nhóm quyền nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const brandHTML = brandList
       .map(
@@ -18,7 +30,7 @@ async function renderBrand() {
           </td>
           <td>
             <div class="brand-img">
-              <img src="http://localhost:80/ecommerce-api/images/${brand['hinh_anh']}" alt="${brand['ten_thuong_hieu']}" />
+              <img src="http://localhost:80/laptopEcommerce-server/images/${brand['hinh_anh']}" alt="${brand['ten_thuong_hieu']}" />
             </div>
           </td>
           <td>
@@ -52,7 +64,7 @@ async function renderBrand() {
         $('#update_icon').val(data['icon']);
         $('label[for="update_brandImage"] img').attr(
           'src',
-          'http://localhost:80/ecommerce-api/images/' + data['hinh_anh']
+          'http://localhost:80/laptopEcommerce-server/images/' + data['hinh_anh']
         );
 
         $('#updateBrandModal').modal('show');
@@ -275,11 +287,24 @@ export function renderBrandPage() {
           <i class="fa-solid fa-circle-plus"></i> thêm thương hiệu
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo tên thương hiệu" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="brand-table-container">
         <table class="brand-table">
           <thead>
             <tr align="center">
-              <th>Thương hiệu</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Thương hiệu
+                  <div class="icon-sort active before" data-value="ten_thuong_hieu" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hình ảnh</th>
               <th>Hành động</th>
             </tr>
@@ -292,10 +317,33 @@ export function renderBrandPage() {
     </div>
   `);
 
-  renderBrand();
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderBrand({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
 
   $('.brand-header div').click(() => {
     if (!isAccessAction('brands', 'CREATE')) return;
     $('#createBrandModal').modal('show');
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+
+    handleSearching(e.target.value, renderBrand);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderBrand);
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderBrand);
   });
 }

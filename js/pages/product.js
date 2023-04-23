@@ -1,13 +1,25 @@
 import brandApi from '../api/brandApi';
 import productApi from '../api/productApi';
 import uploadApi from '../api/uploadApi';
+import { handleSearching, handleSorting } from './manager';
 import { isAccessAction, renderLoadingManager } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 
-async function renderProduct() {
+async function renderProduct(params = '') {
   try {
-    const { data } = await productApi.getAll();
+    const { data } = await productApi.getAll(params);
+
+    if (data.length <= 0) {
+      $('.product .product-content').html(`
+        <tr>
+          <td colspan="4">
+            <h1 class="text-center my-5 w-100">Không có sản phẩm nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const dataHTML = data
       .map((product) => {
@@ -120,9 +132,9 @@ async function renderProduct() {
 
       const dataHTML = product['hinh_anh'].map((image) => {
         return `
-          <div class="col-6 product-preview-image_item mb-3">
+          <div class="col-12 col-sm-6 product-preview-image_item mb-3">
             <img
-              src="http://localhost:80/ecommerce-api/images/${image}"
+              src="http://localhost:80/laptopEcommerce-server/images/${image}"
               alt=""
             />
             <i class="fa-solid fa-trash product-preview-image_icon" data-name='${image}'></i>
@@ -431,9 +443,6 @@ $('#viewAndUpdateProductModal .btn-update').click(async () => {
   }
 });
 
-renderProduct();
-renderBrandSelect();
-
 let fileAddList = [];
 let fileUpdateList = [];
 
@@ -467,9 +476,9 @@ function previewProductImage(data, id) {
   const dataHTML = data.map((file) => {
     if (!file.name)
       return `
-      <div class="col-6 product-preview-image_item mb-3">
+      <div class="col-12 col-sm-6 product-preview-image_item mb-3">
         <img
-          src="http://localhost:80/ecommerce-api/image/${file}"
+          src="http://localhost:80/laptopEcommerce-server/image/${file}"
           alt=""
         />
         <i class="fa-solid fa-trash product-preview-image_icon" data-name='${file}'></i>
@@ -477,7 +486,7 @@ function previewProductImage(data, id) {
     `;
 
     return `
-      <div class="col-6 product-preview-image_item mb-3">
+      <div class="col-12 col-sm-6 product-preview-image_item mb-3">
         <img
           src="${URL.createObjectURL(file)}"
           alt=""
@@ -539,11 +548,24 @@ export function renderProductPage() {
           <i class="fa-solid fa-circle-plus"></i> thêm sản phẩm
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên, thương hiệu sản phẩm" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="product-table-container">
         <table class="product-table">
           <thead>
             <tr align="center">
-              <th>Mã sản phẩm</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã sản phẩm
+                  <div class="icon-sort active before" data-value="ma_san_pham" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Nổi bật</th>
               <th>Hàng trong kho</th>
               <th>Hành động</th>
@@ -557,11 +579,36 @@ export function renderProductPage() {
     </div>
   `);
 
-  renderProduct();
+  renderBrandSelect();
+
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderProduct({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
 
   $('.product-header div').click(() => {
     if (!isAccessAction('products', 'CREATE')) return;
 
     $('#createProductModal').modal('show');
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+
+    handleSearching(e.target.value, renderProduct);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderProduct);
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderProduct);
   });
 }

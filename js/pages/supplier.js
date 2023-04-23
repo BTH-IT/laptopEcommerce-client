@@ -1,12 +1,23 @@
 import supplierApi from '../api/supplierApi';
-import uploadApi from '../api/uploadApi';
+import { handleSearching, handleSorting } from './manager';
 import { isAccessAction, renderLoadingManager } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 
-async function renderSupplier() {
+async function renderSupplier(params = '') {
   try {
-    const { data: supplierList } = await supplierApi.getAll();
+    const { data: supplierList } = await supplierApi.getAll(params);
+
+    if (supplierList.length <= 0) {
+      $('.supplier-content').html(`
+        <tr>
+          <td colspan="3">
+            <h1 class="text-center my-5 w-100">Không có nhà cung cấp nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const supplierHTML = supplierList.map(
       (supplier) => `
@@ -48,6 +59,7 @@ async function renderSupplier() {
         $('#address-supplier-update').val(data['dia_chi']);
 
         $('#updateSupplierModal').modal('show');
+        $('#updateSupplierModal').attr('data-id', id);
       } catch (error) {
         console.log(error.message);
       }
@@ -76,9 +88,9 @@ $('#updateSupplierModal .btn-save').click(async () => {
 
     const id = $('#updateSupplierModal').attr('data-id');
 
-    const name = $('#name-supplier-create').val();
-    const phone = $('#phone-supplier-create').val();
-    const address = $('#address-supplier-create').val();
+    const name = $('#name-supplier-update').val();
+    const phone = $('#phone-supplier-update').val();
+    const address = $('#address-supplier-update').val();
 
     const data = {
       ma_nha_cung_cap: id,
@@ -211,12 +223,30 @@ export function renderSupplierPage() {
           <i class="fa-solid fa-circle-plus"></i> thêm nhà cung cấp
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên nhà cung cấp" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="supplier-table-container">
         <table class="supplier-table">
           <thead>
             <tr align="center">
-              <th>Mã nhà cung cấp</th>
-              <th>Tên nhà cung cấp</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã nhà cung cấp
+                  <div class="icon-sort active before" data-value="ma_nha_cung_cap" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên nhà cung cấp
+                  <div class="icon-sort" data-value="ten_nha_cung_cap" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -228,10 +258,32 @@ export function renderSupplierPage() {
     </div>
   `);
 
-  renderSupplier();
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderSupplier({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+    handleSearching(e.target.value, renderSupplier);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderSupplier);
+  });
 
   $('.supplier-header div').click(() => {
     if (!isAccessAction('suppliers', 'CREATE')) return;
     $('#createSupplierModal').modal('show');
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderSupplier);
   });
 }

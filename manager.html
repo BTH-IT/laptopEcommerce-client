@@ -7,28 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Brand | Dashboard Manager</title>
     <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" type="text/css" href="/css/vendor/bootstrap.min.css" />
 
     <!-- Date Range Picker -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-    />
+    <link rel="stylesheet" type="text/css" href="/css/vendor/daterangepicker.css" />
 
     <!-- Apexcharts CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.36.3/apexcharts.min.css"
-      integrity="sha512-tJYqW5NWrT0JEkWYxrI4IK2jvT7PAiOwElIGTjALSyr8ZrilUQf+gjw2z6woWGSZqeXASyBXUr+WbtqiQgxUYg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" type="text/css" href="/css/vendor/apexcharts.min.css" />
 
     <!-- font awesome -->
     <script src="https://kit.fontawesome.com/10c30652a2.js" crossorigin="anonymous"></script>
@@ -386,6 +371,32 @@
 
     <div
       class="modal fade"
+      id="deleteImportOrderModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Bạn có chắc chắn muốn xóa không?</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="button" class="btn btn-primary btn-yes">Có</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
       id="updateBrandModal"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
@@ -549,7 +560,7 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-guarantee-update" class="label fw-bold">Bảo hành</label>
                   <div class="input">
@@ -579,7 +590,7 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-price-update" class="label fw-bold">Giá bán</label>
                   <div class="input">
@@ -608,7 +619,7 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-cpu-gen-update" class="label fw-bold">Thế hệ CPU</label>
                   <div class="input">
@@ -686,7 +697,7 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-ram-name-update" class="label fw-bold">Tên RAM</label>
                   <div class="input">
@@ -834,11 +845,11 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
-                  <label for="product-series-laptop-update" class="label fw-bold"
-                    >Series laptop</label
-                  >
+                  <label for="product-series-laptop-update" class="label fw-bold">
+                    Series laptop
+                  </label>
                   <div class="input">
                     <input
                       id="product-series-laptop-update"
@@ -1003,7 +1014,7 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-guarantee-create" class="label fw-bold">Bảo hành</label>
                   <div class="input">
@@ -1033,7 +1044,7 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-price-create" class="label fw-bold">Giá bán</label>
                   <div class="input">
@@ -1062,7 +1073,7 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-cpu-gen-create" class="label fw-bold">Thế hệ CPU</label>
                   <div class="input">
@@ -1140,7 +1151,7 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-ram-name-create" class="label fw-bold">Tên RAM</label>
                   <div class="input">
@@ -1246,7 +1257,7 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
                   <label for="product-size-create" class="label fw-bold">Kích thước</label>
                   <div class="input">
@@ -1288,11 +1299,11 @@
                 </div>
               </div>
 
-              <div class="d-flex justify-content-between gap-3">
+              <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
                 <div class="input_container">
-                  <label for="product-series-laptop-create" class="label fw-bold"
-                    >Series laptop</label
-                  >
+                  <label for="product-series-laptop-create" class="label fw-bold">
+                    Series laptop
+                  </label>
                   <div class="input">
                     <input
                       id="product-series-laptop-create"
@@ -1997,6 +2008,20 @@
               <h3 class="decentralization-action_title">Thống kê</h3>
               <div class="decentralization-action_list">
                 <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-statistics"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-statistics">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
+                <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
                     <input
@@ -2015,6 +2040,20 @@
             <div class="decentralization-action">
               <h3 class="decentralization-action_title">Sản phẩm</h3>
               <div class="decentralization-action_list">
+                <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-product"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-product">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
                 <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
@@ -2077,6 +2116,20 @@
               <h3 class="decentralization-action_title">Đơn hàng</h3>
               <div class="decentralization-action_list">
                 <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-order"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-order">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
+                <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
                     <input
@@ -2123,6 +2176,20 @@
             <div class="decentralization-action">
               <h3 class="decentralization-action_title">Thương hiệu</h3>
               <div class="decentralization-action_list">
+                <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-brand"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-brand">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
                 <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
@@ -2185,6 +2252,20 @@
               <h3 class="decentralization-action_title">Khách hàng</h3>
               <div class="decentralization-action_list">
                 <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-customer"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-customer">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
+                <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
                     <input
@@ -2245,6 +2326,20 @@
             <div class="decentralization-action">
               <h3 class="decentralization-action_title">Nhân viên</h3>
               <div class="decentralization-action_list">
+                <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-employee"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-employee">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
                 <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
@@ -2307,6 +2402,20 @@
               <h3 class="decentralization-action_title">Nhóm quyền</h3>
               <div class="decentralization-action_list">
                 <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-auth-group"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-auth-group">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
+                <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
                     <input
@@ -2368,6 +2477,20 @@
               <h3 class="decentralization-action_title">Phân quyền</h3>
               <div class="decentralization-action_list">
                 <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-decentralization"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-decentralization">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
+                <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
                     <input
@@ -2400,6 +2523,20 @@
             <div class="decentralization-action">
               <h3 class="decentralization-action_title">Phiếu nhập</h3>
               <div class="decentralization-action_list">
+                <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-import-order"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-import-order">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
                 <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
@@ -2461,6 +2598,20 @@
             <div class="decentralization-action">
               <h3 class="decentralization-action_title">Bảo hành</h3>
               <div class="decentralization-action_list">
+                <div class="decentralization-action_item">
+                  <p>Tất cả</p>
+                  <div class="toggle">
+                    <input
+                      type="checkbox"
+                      id="toggle-all-guarantee"
+                      name="outstanding-decentralization"
+                      hidden
+                    />
+                    <label for="toggle-all-guarantee">
+                      <div class="toggle"></div>
+                    </label>
+                  </div>
+                </div>
                 <div class="decentralization-action_item">
                   <p>Xem</p>
                   <div class="toggle">
@@ -3003,12 +3154,23 @@
     <div id="toast"></div>
 
     <!-- JQUERY -->
-    <script type="text/javascript" src="/js/vendor/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/vendor/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"
+    ></script>
 
     <!-- Boostrap JS -->
-    <script src="/js/vendor/popper.min.js"></script>
-    <script src="/js/vendor/bootstrap.bundle.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+      integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- DATERANGEPICKER -->
     <script
@@ -3021,7 +3183,12 @@
     ></script>
 
     <!-- APEXCHARTS -->
-    <script src="/js/vendor/apexcharts.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.36.3/apexcharts.min.js"
+      integrity="sha512-sa449wQ9TM6SvZV7TK7Zx/SjVR6bc7lR8tRz1Ar4/R6X2jOLaFln/9C+6Ak2OkAKZ/xBAKJ94dQMeYa0JT1RLg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
 
     <!-- JS -->
     <script type="module" src="/js/manager.js"></script>

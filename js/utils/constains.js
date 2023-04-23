@@ -198,7 +198,7 @@ export function renderCartList(cartList) {
         <li class="action-cart_item">
           <div class="action-cart_item-image">
             <img
-              src="http://localhost:80/ecommerce-api/images/${cart['hinh_anh']}"
+              src="http://localhost:80/laptopEcommerce-server/images/${cart['hinh_anh']}"
               alt="${cart['ten_san_pham']}">
           </div>
           <div class="action-cart_item-info">

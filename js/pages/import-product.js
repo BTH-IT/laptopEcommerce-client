@@ -1,19 +1,31 @@
-import detailProductApi from './api/detailProductApi';
-import importOrderApi from './api/importOrderApi';
-import productApi from './api/productApi';
-import supplierApi from './api/supplierApi';
+import detailProductApi from '../api/detailProductApi';
+import importOrderApi from '../api/importOrderApi';
+import productApi from '../api/productApi';
+import supplierApi from '../api/supplierApi';
+import { handleSearching, handleSorting } from './manager';
 import {
   convertCurrency,
   getLocalStorage,
   isAccessAction,
   renderLoadingManager,
-} from './utils/constains';
+} from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 
-async function renderImportProduct() {
+async function renderImportProduct(params = '') {
   try {
-    const { data } = await productApi.getAll();
+    const { data } = await productApi.getAll(params);
+
+    if (data.length <= 0) {
+      $('.import-product-content').html(`
+        <tr>
+          <td colspan="4">
+            <h1 class="text-center my-5 w-100">Không có sản phẩm nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const dataHTML = data
       .map((product) => {
@@ -22,7 +34,7 @@ async function renderImportProduct() {
             <td>${product['ma_san_pham']}</td>
             <td>
               <div class="import-product-img">
-                <img src="http://localhost:80/ecommerce-api/images/${product['hinh_anh'][0]}" alt="${product['ten_san_pham']}" />
+                <img src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}" alt="${product['ten_san_pham']}" />
               </div>
             </td>
             <td>
@@ -87,7 +99,7 @@ async function renderImportProductModalContent(ckbList) {
     <div class="product-item">
       <div class="product-img">
         <img
-          src="http://localhost:80/ecommerce-api/images/${product['hinh_anh'][0]}"
+          src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}"
           alt="${product['ten_san_pham']}"
         />
       </div>
@@ -268,13 +280,31 @@ export function renderImportProductPage() {
           <i class="fa-solid fa-circle-plus"></i> nhập hàng
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên, thương hiệu sản phẩm" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="import-product-table-container">
         <table class="import-product-table">
           <thead>
             <tr align="center">
-              <th>Mã sản phẩm</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã sản phẩm
+                  <div class="icon-sort active before" data-value="ma_san_pham" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hình ảnh</th>
-              <th>Tên sản phẩm</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên sản phẩm
+                  <div class="icon-sort" data-value="ten_san_pham" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -286,7 +316,26 @@ export function renderImportProductPage() {
     </div>
   `);
 
-  renderImportProduct();
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderImportProduct({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+
+    handleSearching(e.target.value, renderImportProduct);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderImportProduct);
+  });
 
   $('.import-product-header div').click(async () => {
     if (!isAccessAction('import-orders', 'CREATE')) return;
@@ -341,6 +390,10 @@ export function renderImportProductPage() {
       }
     });
   });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderImportProduct);
+  });
 }
 
 $('#createImportProductModal .btn-add').click(async () => {
@@ -355,6 +408,11 @@ $('#createImportProductModal .btn-add').click(async () => {
 
   validList.forEach((item) => {
     if (validation(item)) {
+      if (item.tagName === 'SELECT') {
+        item.parentElement.classList.add('select-error');
+      } else {
+        item.parentElement.classList.add('input-error');
+      }
       isValid = false;
     }
   });

@@ -84,7 +84,7 @@ export function renderBestsellerReport(data, from, to) {
         <div class="bestseller-product_container">
           <div class="bestseller-product_image">
             <img
-              src="http://localhost:80/ecommerce-api/images/${product['hinh_anh']}"
+              src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh']}"
               alt=""
             />
           </div>
@@ -305,51 +305,56 @@ export function renderOverviewPage() {
     </div>
   `);
 
-  $('input[name="report-daterange"]').daterangepicker(
-    {
-      startDate: moment(date).format('L'),
-      endDate: moment(now).format('L'),
-      opens: 'left',
-    },
-    async function (start, end, label) {
-      const startDate = new Date(start.format('YYYY-MM-DD'));
-      const endDate = new Date(end.format('YYYY-MM-DD'));
+  $(document).ready(() => {
+    $('input[name="report-daterange"]').daterangepicker(
+      {
+        startDate: moment(date).format('L'),
+        endDate: moment(now).format('L'),
+        opens: 'left',
+      },
+      async function (start, end, label) {
+        console.log(moment(date).format('L'));
+        const startDate = new Date(start.format('YYYY-MM-DD'));
+        const endDate = new Date(end.format('YYYY-MM-DD'));
 
-      const from = startDate.getTime() / 1000;
-      const to = endDate.getTime() / 1000;
+        const from = startDate.getTime() / 1000;
+        const to = endDate.getTime() / 1000;
 
-      try {
-        const orderList = await orderApi.getAll();
+        try {
+          const orderList = await orderApi.getAll();
 
-        renderGeneralReport(orderList, from, to);
-      } catch (error) {
-        console.log(error.message);
+          renderGeneralReport(orderList, from, to);
+        } catch (error) {
+          console.log(error.message);
+        }
       }
-    }
-  );
+    );
+  });
 
-  $('input[name="bestseller-daterange"]').daterangepicker(
-    {
-      startDate: moment(date).format('L'),
-      endDate: moment(now).format('L'),
-      opens: 'left',
-    },
-    async function (start, end, label) {
-      const startDate = new Date(start.format('YYYY-MM-DD'));
-      const endDate = new Date(end.format('YYYY-MM-DD'));
+  $(document).ready(() => {
+    $('input[name="bestseller-daterange"]').daterangepicker(
+      {
+        startDate: moment(date).format('L'),
+        endDate: moment(now).format('L'),
+        opens: 'left',
+      },
+      async function (start, end, label) {
+        const startDate = new Date(start.format('YYYY-MM-DD'));
+        const endDate = new Date(end.format('YYYY-MM-DD'));
 
-      const from = startDate.getTime() / 1000;
-      const to = endDate.getTime() / 1000;
+        const from = startDate.getTime() / 1000;
+        const to = endDate.getTime() / 1000;
 
-      try {
-        const orderList = await orderApi.getAll();
+        try {
+          const orderList = await orderApi.getAll();
 
-        renderBestsellerReport(orderList, from, to);
-      } catch (error) {
-        console.log(error.message);
+          renderBestsellerReport(orderList, from, to);
+        } catch (error) {
+          console.log(error.message);
+        }
       }
-    }
-  );
+    );
+  });
 
   return initOverview();
 }

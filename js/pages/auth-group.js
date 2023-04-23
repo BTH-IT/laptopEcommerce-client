@@ -1,11 +1,23 @@
-import authGroupApi from './api/authGroupApi';
+import authGroupApi from '../api/authGroupApi';
+import { handleSearching, handleSorting } from './manager';
 import { isAccessAction, renderLoadingManager } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 
-async function renderAuthGroup() {
+async function renderAuthGroup(params = '') {
   try {
-    const { data } = await authGroupApi.getAll();
+    const { data } = await authGroupApi.getAll(params);
+
+    if (data.length <= 0) {
+      $('.auth-group-content').html(`
+        <tr>
+          <td colspan="4">
+            <h1 class="text-center my-5 w-100">Không có nhóm quyền nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const dataFilter = data.filter((group) => group['mac_dinh'] === false);
 
@@ -94,12 +106,30 @@ export function renderAuthGroupPage() {
           <i class="fa-solid fa-circle-plus"></i> thêm nhóm quyền
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên nhóm quyền" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="auth-group-table-container">
         <table class="auth-group-table">
           <thead>
             <tr align="center">
-              <th>Mã nhóm quyền</th>
-              <th>Tên nhóm quyền</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã nhóm quyền
+                  <div class="icon-sort active before" data-value="ma_nhom_quyen" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên nhóm quyền
+                  <div class="icon-sort" data-value="ten_nhom_quyen" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
@@ -112,11 +142,33 @@ export function renderAuthGroupPage() {
     </div>
   `);
 
-  renderAuthGroup();
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderAuthGroup({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+    handleSearching(e.target.value, renderAuthGroup);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderAuthGroup);
+  });
 
   $('.auth-group .auth-group-header div').click(() => {
     if (!isAccessAction('auth-groups', 'CREATE')) return;
     $('#createAuthGroupModal').modal('show');
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderAuthGroup);
   });
 }
 
@@ -141,7 +193,16 @@ $('#viewAndUpdateAuthGroupModal .btn-update').click(async () => {
       type: 'success',
     });
 
-    renderAuthGroup();
+    const url = new URL(window.location);
+    const searchingVal = url.searchParams.get('searching') ?? '';
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    renderAuthGroup({
+      sortAction: sortActionVal,
+      sortName: sortNameVal,
+      searching: searchingVal,
+    });
   } catch (error) {
     toast({
       title: 'Thay đổi nhóm quyền không thành công',
@@ -175,7 +236,16 @@ $('#createAuthGroupModal .btn-add').click(async () => {
       type: 'success',
     });
 
-    renderAuthGroup();
+    const url = new URL(window.location);
+    const searchingVal = url.searchParams.get('searching') ?? '';
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    renderAuthGroup({
+      sortAction: sortActionVal,
+      sortName: sortNameVal,
+      searching: searchingVal,
+    });
   } catch (error) {
     toast({
       title: 'Tạo nhóm quyền mới không thành công',

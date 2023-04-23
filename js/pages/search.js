@@ -14,8 +14,11 @@ import { initPagination, initURL, renderPagination } from '../utils/pagination';
 initHeader();
 
 const rangeInputList = $('.price-range-input input');
+const rangeInputMobileList = $('.price-range-input-mobile input');
 const textInputList = $('.price-input input');
+const textInputMobileList = $('.price-input-mobile input');
 const progress = $('.price-progress');
+const progressMobile = $('.price-progress-mobile');
 
 async function initSearchPage() {
   try {
@@ -61,6 +64,18 @@ rangeInputList.on('mouseup', () => {
   handleFilterChange('max_price', maxVal);
 });
 
+rangeInputMobileList.on('mouseup', () => {
+  let minVal = Number(rangeInputMobileList[0].value);
+  let maxVal = Number(rangeInputMobileList[1].value);
+
+  const url = new URL(window.location);
+  url.searchParams.set('_page', 1);
+  history.pushState({}, '', url);
+
+  handleFilterChange('min_price', minVal);
+  handleFilterChange('max_price', maxVal);
+});
+
 rangeInputList.on('input', (e) => {
   let minVal = Number(rangeInputList[0].value);
   let maxVal = Number(rangeInputList[1].value);
@@ -83,6 +98,33 @@ rangeInputList.on('input', (e) => {
     });
 
     progress.css({
+      right: percentRight + '%',
+    });
+  }
+});
+
+rangeInputMobileList.on('input', (e) => {
+  let minVal = Number(rangeInputMobileList[0].value);
+  let maxVal = Number(rangeInputMobileList[1].value);
+
+  if (maxVal - minVal < priceGap) {
+    if (e.target.className === 'range-min') {
+      rangeInputMobileList[0].value = maxVal - priceGap;
+    } else {
+      rangeInputMobileList[1].value = minVal + priceGap;
+    }
+  } else {
+    textInputMobileList[0].value = convertCurrency(minVal);
+    textInputMobileList[1].value = convertCurrency(maxVal);
+
+    let percentLeft = (minVal / rangeInputMobileList[0].max) * 100;
+    let percentRight = 100 - (maxVal / rangeInputMobileList[1].max) * 100;
+
+    progressMobile.css({
+      left: percentLeft + '%',
+    });
+
+    progressMobile.css({
       right: percentRight + '%',
     });
   }
@@ -117,13 +159,42 @@ textInputList.on('change', (e) => {
   }
 });
 
-$('.search-filter label').click(async function () {
+textInputMobileList.on('change', (e) => {
+  let minVal = Number(rangeInputMobileList[0].value);
+  let maxVal = Number(rangeInputMobileList[1].value);
+
+  if (maxVal - minVal >= priceGap && maxVal <= max && maxVal >= 0 && minVal >= 0) {
+    if (e.target.className === 'input-min') {
+      rangeInputMobileList[0].value = minVal;
+
+      let percentLeft = (minVal / rangeInputMobileList[0].max) * 100;
+
+      progressMobile.css({
+        left: percentLeft + '%',
+      });
+    } else {
+      rangeInputMobileList[1].value = maxVal;
+
+      let percentRight = 100 - (maxVal / rangeInputMobileList[1].max) * 100;
+
+      progressMobile.css({
+        right: percentRight + '%',
+      });
+    }
+  } else {
+    textInputMobileList[0].value = convertCurrency(0);
+
+    textInputMobileList[1].value = convertCurrency(max);
+  }
+});
+
+$('.search-filter.pc label').click(async function () {
   const value = $(this).attr('data-value');
   const url = new URL(window.location);
   url.searchParams.set('_page', 1);
 
-  if ($(`label[for='${value}']`).hasClass('active')) {
-    $('.search-filter .search-filter_item').removeClass('active');
+  if ($(`.search-filter.pc label[for='${value}']`).hasClass('active')) {
+    $('.search-filter.pc .search-filter_item').removeClass('active');
     url.searchParams.delete('sort');
     history.pushState({}, '', url);
 
@@ -133,8 +204,31 @@ $('.search-filter label').click(async function () {
     return;
   }
 
-  $('.search-filter .search-filter_item').removeClass('active');
-  $(`label[for='${value}']`).addClass('active');
+  $('.search-filter.pc .search-filter_item').removeClass('active');
+  $(`.search-filter.pc label[for='${value}']`).addClass('active');
+  history.pushState({}, '', url);
+
+  handleFilterChange('sort', value);
+});
+
+$('.search-filter.mobile label').click(async function () {
+  const value = $(this).attr('data-value');
+  const url = new URL(window.location);
+  url.searchParams.set('_page', 1);
+
+  if ($(`.search-filter.mobile label[for='${value}']`).hasClass('active')) {
+    $('.search-filter.mobile .search-filter_item').removeClass('active');
+    url.searchParams.delete('sort');
+    history.pushState({}, '', url);
+
+    const { data, pagination } = await productApi.getAllWithParams(url.searchParams);
+    renderProductSearch(data);
+    renderPagination(pagination);
+    return;
+  }
+
+  $('.search-filter.mobile .search-filter_item').removeClass('active');
+  $(`.search-filter.mobile label[for='${value}']`).addClass('active');
   history.pushState({}, '', url);
 
   handleFilterChange('sort', value);
@@ -182,7 +276,7 @@ export async function renderFilterList() {
   try {
     const { data } = await productApi.getAll();
 
-    const filterHTML = filterList
+    const filterHTML1 = filterList
       .map((filter) => {
         let filterData = data.map((product) => {
           return product[filter.ma];
@@ -217,7 +311,43 @@ export async function renderFilterList() {
       })
       .join('');
 
-    $('.search-dropdown_container').html(filterHTML);
+    const filterHTML2 = filterList
+      .map((filter) => {
+        let filterData = data.map((product) => {
+          return product[filter.ma];
+        });
+
+        filterData = [...new Set(filterData)];
+
+        const filterDataHTML = filterData
+          .map((item) => {
+            return `
+            <label for='mobile-${item}' class='search-dropdown_checkbox-item'>
+              <div class='checkbox-container'>
+                <input type='checkbox' class='checkbox-input' id='mobile-${item}' value="${item}" data-filter="${filter.ma}">
+                <div class='checkbox-inner'><i class='fa-solid fa-check'></i></div>
+              </div>
+              <span>${item}</span>
+            </label>`;
+          })
+          .join('');
+
+        return `
+          <div class='search-dropdown' data-id="${filter.ma}">
+            <div class='search-dropdown_header'>
+              <h5>${filter.ten.charAt(0).toUpperCase() + filter.ten.slice(1)}</h5>
+              <span><i class='fa-solid fa-chevron-down'></i></span>
+            </div>
+            <div class='search-dropdown_checkbox'>
+              ${filterDataHTML}
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    $('.search-dropdown_container.pc').html(filterHTML1);
+    $('.search-dropdown_container.mobile').html(filterHTML2);
 
     $('.checkbox-input').click(handleCheckboxFilter);
 

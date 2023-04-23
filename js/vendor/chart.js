@@ -1,5 +1,5 @@
 import orderApi from '../api/orderApi';
-import { handleChartBrand, handleChartReport } from '../overview';
+import { handleChartBrand, handleChartReport } from '../pages/overview';
 
 export function renderChartReport(data, year = new Date().getFullYear()) {
   const series = handleChartReport(data, year);
@@ -109,8 +109,14 @@ export async function renderChartBrand(data, from, to) {
   const chartArea_2 = new ApexCharts(document.querySelector('#chart-area-2'), optionsDonut);
   chartArea_2.render();
 
+  const date = new Date();
+  const now = new Date();
+  date.setMonth(date.getMonth() - 1);
+
   $('input[name="brand-daterange"]').daterangepicker(
     {
+      startDate: moment(date).format('L'),
+      endDate: moment(now).format('L'),
       opens: 'left',
     },
     async function (start, end, label) {

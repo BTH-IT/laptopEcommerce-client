@@ -16,15 +16,26 @@ function initImportOrder() {
   const from = Math.floor(date.getTime() / 1000);
   const to = Math.floor(now.getTime() / 1000);
 
-  renderImportOrder(from, to);
+  const url = new URL(window.location);
+  url.searchParams.set('from', from);
+  url.searchParams.set('to', to);
+  history.pushState({}, '', url);
 }
 
-export async function renderImportOrder(from, to) {
+export async function renderImportOrder(params) {
   try {
-    const importOrderList = await importOrderApi.getAll({
-      from,
-      to,
-    });
+    const importOrderList = await importOrderApi.getAll(params);
+
+    if (importOrderList.length <= 0) {
+      $('.import-order-content').html(`
+        <tr>
+          <td colspan="3">
+            <h1 class="text-center my-5 w-100">Không có phiếu nhập nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const importOrderHTML = importOrderList.map((order) => {
       return `
@@ -88,7 +99,7 @@ async function handleViewOrder(id) {
             <div class="product-info">
               <div class="product-img">
                 <img
-                  src="http://localhost:80/ecommerce-api/images/${product['hinh_anh']}"
+                  src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh']}"
                   alt="${product['ten_san_pham']}"
                 />
               </div>
@@ -114,6 +125,43 @@ async function handleViewOrder(id) {
   }
 }
 
+$('#deleteImportOrderModal .btn-yes').click(async () => {
+  if (!isAccessAction('import-orders', 'DELETE')) return;
+
+  const id = $('#deleteImportOrderModal').attr('data-id');
+
+  try {
+    await importOrderApi.remove(id);
+    toast({
+      title: 'Xóa phiếu nhập thành công',
+      type: 'success',
+      duration: 3000,
+    });
+
+    const url = new URL(window.location);
+    const searching = url.searchParams.get('searching') ?? '';
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+    renderImportOrder({
+      searching,
+      from,
+      to,
+      sortNameVal,
+      sortActionVal,
+    });
+  } catch (error) {
+    toast({
+      title: 'Xóa phiếu nhập không thành công',
+      type: 'success',
+      duration: 3000,
+    });
+  } finally {
+    $('#deleteImportOrderModal').modal('hide');
+  }
+});
+
 export function renderImportOrderPage() {
   const loadingHTML = renderLoadingManager(18, 3);
 
@@ -123,12 +171,30 @@ export function renderImportOrderPage() {
         <h1>Phiếu nhập</h1>
         <input type="text" name="import-order-daterange" value="" />
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã phiếu nhập" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="import-order-table-container">
         <table class="import-order-table">
           <thead>
             <tr align="center">
-              <th>Mã phiếu nhập</th>
-              <th>Thời gian</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã phiếu nhập
+                  <div class="icon-sort active before" data-value="ma_phieu_nhap" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Thời gian
+                  <div class="icon-sort" data-value="ngay_lap" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -141,7 +207,85 @@ export function renderImportOrderPage() {
   `);
 
   initImportOrder();
-  renderImportOrder();
+
+  const url = new URL(window.location);
+  const from = url.searchParams.get('from') ?? null;
+  const to = url.searchParams.get('to') ?? null;
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderImportOrder({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+    from,
+    to,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+
+    const url = new URL(window.location);
+    const value = e.target.value;
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    if (!value) {
+      url.searchParams.delete('searching');
+      renderImportOrder({
+        sortAction: sortActionVal,
+        sortName: sortNameVal,
+        from,
+        to,
+      });
+    } else {
+      $('.header-input').val('');
+      url.searchParams.set('searching', value);
+
+      renderImportOrder({
+        sortAction: sortActionVal,
+        sortName: sortNameVal,
+        searching: value,
+        from,
+        to,
+      });
+    }
+    history.pushState({}, '', url);
+  });
+
+  $('.btn-header').click(() => {
+    const value = $('.header-input').val();
+    const url = new URL(window.location);
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    if (!value) {
+      url.searchParams.delete('searching');
+      renderImportOrder({
+        sortAction: sortActionVal,
+        sortName: sortNameVal,
+        from,
+        to,
+      });
+    } else {
+      $('.header-input').val('');
+      url.searchParams.set('searching', value);
+      renderImportOrder({
+        sortAction: sortActionVal,
+        sortName: sortNameVal,
+        searching: value,
+        from,
+        to,
+      });
+    }
+
+    history.pushState({}, '', url);
+  });
 
   $('input[name="import-order-daterange"]').daterangepicker(
     {
@@ -154,7 +298,93 @@ export function renderImportOrderPage() {
       s = s.getTime() / 1000;
       e = e.getTime() / 1000;
 
-      renderImportOrder(s, e);
+      const url = new URL(window.location);
+      url.searchParams.set('from', s);
+      url.searchParams.set('to', e);
+      const searchingVal = url.searchParams.get('searching') ?? '';
+      const sortNameVal = url.searchParams.get('sort-name') ?? '';
+      const sortActionVal = url.searchParams.get('sort-action') ?? '';
+      history.pushState({}, '', url);
+
+      renderImportOrder({
+        sortAction: sortActionVal,
+        sortName: sortNameVal,
+        searching: searchingVal,
+        from: s,
+        to: e,
+      });
     }
   );
+
+  $('.icon-sort').click((e) => {
+    const sort = e.target;
+
+    const url = new URL(window.location);
+
+    const sortVal = sort.dataset.sort;
+    const name = sort.dataset.value;
+    const searching = url.searchParams.has('searching') ? url.searchParams.get('searching') : '';
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+
+    if (sort.classList.contains('active')) {
+      sort.classList.remove('before');
+      sort.classList.remove('after');
+
+      switch (sortVal) {
+        case 'asc':
+          sort.classList.add('before');
+          sort.dataset.sort = 'desc';
+
+          url.searchParams.set('sort-name', name);
+          url.searchParams.set('sort-action', 'ASC');
+          history.pushState({}, null, url);
+
+          renderImportOrder({
+            sortAction: 'ASC',
+            sortName: name,
+            searching,
+            from,
+            to,
+          });
+
+          break;
+        case 'desc':
+          sort.classList.add('after');
+          sort.dataset.sort = 'asc';
+
+          url.searchParams.set('sort-name', name);
+          url.searchParams.set('sort-action', 'DESC');
+          history.pushState({}, null, url);
+
+          renderImportOrder({
+            sortAction: 'DESC',
+            sortName: name,
+            searching,
+            from,
+            to,
+          });
+          break;
+      }
+      return;
+    }
+
+    $('.icon-sort.active').removeClass('before');
+    $('.icon-sort.active').removeClass('after');
+    $('.icon-sort.active').removeClass('active');
+
+    sort.classList.add('active', 'before');
+
+    url.searchParams.set('sort-name', name);
+    url.searchParams.set('sort-action', 'ASC');
+    history.pushState({}, null, url);
+
+    renderImportOrder({
+      sortAction: 'ASC',
+      sortName: name,
+      searching,
+      from,
+      to,
+    });
+  });
 }

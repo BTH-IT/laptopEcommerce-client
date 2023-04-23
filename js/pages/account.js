@@ -5,10 +5,22 @@ import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 import employeeApi from '../api/employeeApi';
 import moment from 'moment';
+import { handleSearching, handleSorting } from './manager';
 
-async function renderAccount() {
+async function renderAccount(params) {
   try {
-    const data = await accountApi.getAll();
+    const data = await accountApi.getAll(params);
+
+    if (data.length <= 0) {
+      $('.account-content').html(`
+        <tr>
+          <td colspan="4">
+            <h1 class="text-center my-5 w-100">Không có tài khoản nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const dataHTML = data
       .map((acc) => {
@@ -282,13 +294,36 @@ export function renderAccountPage() {
           <i class="fa-solid fa-circle-plus"></i> cấp tài khoản
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo tên đăng nhập" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="account-table-container">
         <table class="account-table">
           <thead>
             <tr align="center">
-              <th>Tên đăng nhập</th>
-              <th>Quyền</th>
-              <th>Ngày cấp</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên đăng nhập
+                  <div class="icon-sort active before" data-value="ten_dang_nhap" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã nhóm quyền
+                  <div class="icon-sort" data-value="ma_nhom_quyen" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Ngày cấp
+                  <div class="icon-sort" data-value="ngap_cap" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -300,13 +335,36 @@ export function renderAccountPage() {
     </div>
   `);
 
-  renderAccount();
   renderRoleSelect();
   renderEmployeeSelect();
+
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderAccount({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+    handleSearching(e.target.value, renderAccount);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderAccount);
+  });
 
   $('.account-header div').click(() => {
     if (!isAccessAction('accounts', 'CREATE')) return;
     $('#createAccountModal').modal('show');
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderAccount);
   });
 }
 

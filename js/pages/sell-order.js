@@ -24,15 +24,26 @@ function initSellOrder() {
   const from = Math.floor(date.getTime() / 1000);
   const to = Math.floor(now.getTime() / 1000);
 
-  renderSellOrder(from, to);
+  const url = new URL(window.location);
+  url.searchParams.set('from', from);
+  url.searchParams.set('to', to);
+  history.pushState({}, '', url);
 }
 
-export async function renderSellOrder(from, to) {
+export async function renderSellOrder(params = '') {
   try {
-    const sellOrderList = await orderApi.getAll({
-      from,
-      to,
-    });
+    const sellOrderList = await orderApi.getAll(params);
+
+    if (sellOrderList.length <= 0) {
+      $('.sell-order-content').html(`
+        <tr>
+          <td colspan="4">
+            <h1 class="text-center my-5 w-100">Không có đơn hàng nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const sellOrderHTML = sellOrderList.map((order) => {
       let status;
@@ -114,7 +125,20 @@ $('.modal-status .sell-order-status').click(async (e) => {
       trang_thai: value,
     });
 
-    renderSellOrder();
+    const url = new URL(window.location);
+    const searching = url.searchParams.get('searching') ?? '';
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    renderSellOrder({
+      sortAction: sortActionVal,
+      sortName: sortNameVal,
+      searching,
+      from,
+      to,
+    });
 
     const data = await orderApi.getById(id);
 
@@ -207,7 +231,7 @@ async function handleUpdateOrder(id) {
             <div class="product-info">
               <div class="product-img">
                 <img
-                  src="http://localhost:80/ecommerce-api/images/${product['hinh_anh']}"
+                  src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh']}"
                   alt="${product['ten_san_pham']}"
                 />
               </div>
@@ -261,13 +285,36 @@ export function renderOrderPage() {
         <h1>Đơn hàng</h1>
         <input type="text" name="sell-order-daterange" value="" />
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã đơn hàng" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="sell-order-table-container">
         <table class="sell-order-table">
           <thead>
             <tr align="center">
-              <th>Mã đơn hàng</th>
-              <th>Trạng thái</th>
-              <th>Thời gian</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã đơn hàng
+                  <div class="icon-sort active before" data-value="ma_don_hang" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Trạng thái
+                  <div class="icon-sort" data-value="trang_thai" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Thời gian
+                  <div class="icon-sort" data-value="thoi_gian" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -280,7 +327,85 @@ export function renderOrderPage() {
   `);
 
   initSellOrder();
-  renderSellOrder();
+
+  const url = new URL(window.location);
+  const from = url.searchParams.get('from') ?? null;
+  const to = url.searchParams.get('to') ?? null;
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderSellOrder({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+    from,
+    to,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+
+    const url = new URL(window.location);
+    const value = e.target.value;
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    if (!value) {
+      url.searchParams.delete('searching');
+      renderSellOrder({
+        from,
+        to,
+        sortName: sortNameVal,
+        sortAction: sortActionVal,
+      });
+    } else {
+      $('.header-input').val('');
+      url.searchParams.set('searching', value);
+
+      renderSellOrder({
+        from,
+        to,
+        sortName: sortNameVal,
+        sortAction: sortActionVal,
+        searching: value,
+      });
+    }
+    history.pushState({}, '', url);
+  });
+
+  $('.btn-header').click(() => {
+    const value = $('.header-input').val();
+    const url = new URL(window.location);
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    if (!value) {
+      url.searchParams.delete('searching');
+      renderSellOrder({
+        from,
+        to,
+        sortNameVal,
+        sortActionVal,
+      });
+    } else {
+      $('.header-input').val('');
+      url.searchParams.set('searching', value);
+
+      renderSellOrder({
+        from,
+        to,
+        sortName: sortNameVal,
+        sortAction: sortActionVal,
+        searching: value,
+      });
+    }
+    history.pushState({}, '', url);
+  });
 
   $('input[name="sell-order-daterange"]').daterangepicker(
     {
@@ -293,7 +418,93 @@ export function renderOrderPage() {
       s = s.getTime() / 1000;
       e = e.getTime() / 1000;
 
-      renderSellOrder(s, e);
+      const url = new URL(window.location);
+      url.searchParams.set('from', s);
+      url.searchParams.set('to', e);
+      const sortNameVal = url.searchParams.get('sort-name') ?? '';
+      const sortActionVal = url.searchParams.get('sort-action') ?? '';
+      const searching = url.searchParams.get('searching') ?? '';
+      history.pushState({}, '', url);
+
+      renderSellOrder({
+        from: s,
+        to: e,
+        sortName: sortNameVal,
+        sortAction: sortActionVal,
+        searching,
+      });
     }
   );
+
+  $('.icon-sort').click((e) => {
+    const sort = e.target;
+
+    const url = new URL(window.location);
+
+    const sortVal = sort.dataset.sort;
+    const name = sort.dataset.value;
+    const searching = url.searchParams.get('searching') ?? '';
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+
+    if (sort.classList.contains('active')) {
+      sort.classList.remove('before');
+      sort.classList.remove('after');
+
+      switch (sortVal) {
+        case 'asc':
+          sort.classList.add('before');
+          sort.dataset.sort = 'desc';
+
+          url.searchParams.set('sort-name', name);
+          url.searchParams.set('sort-action', 'ASC');
+          history.pushState({}, null, url);
+
+          renderSellOrder({
+            sortAction: 'ASC',
+            sortName: name,
+            from,
+            to,
+            searching,
+          });
+
+          break;
+        case 'desc':
+          sort.classList.add('after');
+          sort.dataset.sort = 'asc';
+
+          url.searchParams.set('sort-name', name);
+          url.searchParams.set('sort-action', 'DESC');
+          history.pushState({}, null, url);
+
+          renderSellOrder({
+            sortAction: 'DESC',
+            sortName: name,
+            from,
+            to,
+            searching,
+          });
+          break;
+      }
+      return;
+    }
+
+    $('.icon-sort.active').removeClass('before');
+    $('.icon-sort.active').removeClass('after');
+    $('.icon-sort.active').removeClass('active');
+
+    sort.classList.add('active', 'before');
+
+    url.searchParams.set('sort-name', name);
+    url.searchParams.set('sort-action', 'ASC');
+    history.pushState({}, null, url);
+
+    renderSellOrder({
+      sortAction: 'ASC',
+      sortName: name,
+      searching,
+      from,
+      to,
+    });
+  });
 }

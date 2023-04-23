@@ -1,5 +1,4 @@
 import sign from 'jwt-encode';
-import authApi from '../api/authApi';
 import authGroupApi from '../api/authGroupApi';
 import detailPermissionApi from '../api/detailPermissionApi';
 import {
@@ -10,10 +9,22 @@ import {
   setLocalStorage,
 } from './utils/constains';
 import { toast } from './utils/toast';
+import { handleSearching, handleSorting } from './manager';
 
-async function renderDecentralization() {
+async function renderDecentralization(params = '') {
   try {
-    const { data } = await authGroupApi.getAll();
+    const { data } = await authGroupApi.getAll(params);
+
+    if (data.length <= 0) {
+      $('.decentralization-content').html(`
+        <tr>
+          <td colspan="3">
+            <h1 class="text-center my-5 w-100">Không có nhóm quyền nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const dataFilter = data.filter(
       (group) => group['trang_thai'] === true && group['mac_dinh'] === false
@@ -239,12 +250,30 @@ export function renderDecentralizationPage() {
       <div class="decentralization-header">
         <h1>Phân quyền</h1>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên nhóm quyền" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="decentralization-table-container">
         <table class="decentralization-table">
           <thead>
             <tr align="center">
-              <th>Mã nhóm quyền</th>
-              <th>Tên nhóm quyền</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã nhóm quyền
+                  <div class="icon-sort active before" data-value="ma_nhom_quyen" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên nhóm quyền
+                  <div class="icon-sort" data-value="ten_nhom_quyen" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -256,12 +285,130 @@ export function renderDecentralizationPage() {
     </div>
   `);
 
-  renderDecentralization();
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderDecentralization({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+
+    handleSearching(e.target.value, renderDecentralization);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderDecentralization);
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderDecentralization);
+  });
 }
 
 $('#viewAndUpdateDecentralizationModal input[type="checkbox"]').change(async (e) => {
+  const ma_nhom_quyen = $('#viewAndUpdateDecentralizationModal').attr('data-id');
+
+  if (e.target.id.includes('all')) {
+    const parent = e.target.parentElement.parentElement.parentElement;
+    const perList = Array.from(
+      parent.querySelectorAll('#viewAndUpdateDecentralizationModal input[type="checkbox"]')
+    );
+    perList.shift();
+
+    if (e.target.checked) {
+      perList.forEach(async (per) => {
+        const ma_quyen_hang = per.dataset.perId;
+        const ma_chuc_nang = per.dataset.actionId;
+        const trang_thai = true;
+        per.checked = true;
+
+        await detailPermissionApi.update({
+          ma_nhom_quyen,
+          ma_quyen_hang,
+          ma_chuc_nang,
+          trang_thai,
+        });
+
+        const accessToken = getLocalStorage('access_token');
+        const oldData = parseJwt(accessToken);
+
+        const user = oldData.data;
+
+        const permission = user.permission.map((per) => {
+          if (per['ma_quyen_hang'] === ma_quyen_hang && per['ma_chuc_nang'] === ma_chuc_nang) {
+            per['trang_thai_quyen_hang'] = trang_thai;
+          }
+
+          return per;
+        });
+
+        user.permission = permission;
+
+        const secret = 'laptop ecommerce';
+
+        const data = {
+          ...oldData,
+          data: user,
+        };
+
+        const jwt = sign(data, secret);
+
+        setLocalStorage('access_token', jwt);
+        setLocalStorage('user', user);
+      });
+    } else {
+      perList.forEach(async (per) => {
+        const ma_quyen_hang = per.dataset.perId;
+        const ma_chuc_nang = per.dataset.actionId;
+        const trang_thai = false;
+        per.checked = false;
+
+        await detailPermissionApi.update({
+          ma_nhom_quyen,
+          ma_quyen_hang,
+          ma_chuc_nang,
+          trang_thai,
+        });
+
+        const accessToken = getLocalStorage('access_token');
+        const oldData = parseJwt(accessToken);
+
+        const user = oldData.data;
+
+        const permission = user.permission.map((per) => {
+          if (per['ma_quyen_hang'] === ma_quyen_hang && per['ma_chuc_nang'] === ma_chuc_nang) {
+            per['trang_thai_quyen_hang'] = trang_thai;
+          }
+
+          return per;
+        });
+
+        user.permission = permission;
+
+        const secret = 'laptop ecommerce';
+
+        const data = {
+          ...oldData,
+          data: user,
+        };
+
+        const jwt = sign(data, secret);
+
+        setLocalStorage('access_token', jwt);
+        setLocalStorage('user', user);
+      });
+    }
+
+    return;
+  }
+
   try {
-    const ma_nhom_quyen = $('#viewAndUpdateDecentralizationModal').attr('data-id');
     const ma_quyen_hang = e.target.dataset.perId;
     const ma_chuc_nang = e.target.dataset.actionId;
     const trang_thai = e.target.checked;

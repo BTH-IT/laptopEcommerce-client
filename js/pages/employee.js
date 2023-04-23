@@ -1,13 +1,24 @@
 import moment from 'moment';
-import authGroupApi from '../api/authGroupApi';
 import employeeApi from '../api/employeeApi';
 import { isAccessAction, renderLoadingManager } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
+import { handleSearching, handleSorting } from './manager';
 
-async function renderEmployee() {
+async function renderEmployee(params = '') {
   try {
-    const { data } = await employeeApi.getAll();
+    const { data } = await employeeApi.getAll(params);
+
+    if (data.length <= 0) {
+      $('.employee-content').html(`
+        <tr>
+          <td colspan="3">
+            <h1 class="text-center my-5 w-100">Không có nhân viên nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+      return;
+    }
 
     const dataHTML = data
       .map((employee) => {
@@ -132,12 +143,30 @@ export function renderEmployeePage() {
           <i class="fa-solid fa-circle-plus"></i> thêm nhân viên
         </div>
       </div>
+      <div class="search-container">
+        <div class="search-box">
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên nhân viên" />
+          <button type="button" class="btn primary btn-header">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
       <div class="employee-table-container">
         <table class="employee-table">
           <thead>
             <tr align="center">
-              <th>Mã nhân viên</th>
-              <th>Tên nhân viên</th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã nhân viên
+                  <div class="icon-sort active before" data-value="ma_nhan_vien" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên nhân viên
+                  <div class="icon-sort" data-value="ten_nhan_vien" data-sort="desc"></div>
+                </div>
+              </th>
               <th>Hành động</th>
             </tr>
           </thead>
@@ -149,11 +178,33 @@ export function renderEmployeePage() {
     </div>
   `);
 
-  renderEmployee();
+  const url = new URL(window.location);
+  const searchingVal = url.searchParams.get('searching') ?? '';
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  renderEmployee({
+    sortAction: sortActionVal,
+    sortName: sortNameVal,
+    searching: searchingVal,
+  });
+
+  $('.header-input').keypress(async (e) => {
+    if (e.keyCode !== 13) return;
+    handleSearching(e.target.value, renderEmployee);
+  });
+
+  $('.btn-header').click(() => {
+    handleSearching($('.header-input').val(), renderEmployee);
+  });
 
   $('.employee-header div').click(() => {
     if (!isAccessAction('employees', 'CREATE')) return;
     $('#createEmployeeModal').modal('show');
+  });
+
+  $('.icon-sort').click((e) => {
+    handleSorting(e, renderEmployee);
   });
 }
 

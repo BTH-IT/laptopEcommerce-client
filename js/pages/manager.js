@@ -1,19 +1,173 @@
-import { renderAccountPage } from './account';
-import { renderAuthGroupPage } from './auth-group';
-import { renderBrandPage } from './brand';
-import { renderCustomerPage } from './customer';
-import { renderDecentralizationPage } from './decentralization';
-import { renderEmployeePage } from './employee';
-import { renderGuaranteePage } from './guarantee';
-import { renderImportOrderPage } from './import-order';
-import { renderImportProductPage } from './import-product';
-import { renderOverviewPage } from './overview';
-import { renderProductPage } from './product';
-import { renderOrderPage } from './sell-order';
-import { renderSupplierPage } from './supplier';
+import { renderAccountPage } from '../account';
+import { renderAuthGroupPage } from '../auth-group';
+import { renderBrandPage } from '../brand';
+import { renderCustomerPage } from '../customer';
+import { renderDecentralizationPage } from '../decentralization';
+import { renderEmployeePage } from '../employee';
+import { renderGuaranteePage } from '../guarantee';
+import { renderImportOrderPage } from '../import-order';
+import { renderImportProductPage } from '../import-product';
+import { renderOverviewPage } from '../overview';
+import { renderProductPage } from '../product';
+import { renderOrderPage } from '../sell-order';
+import { renderSupplierPage } from '../supplier';
 import { parseJwt, getLocalStorage, setLocalStorage } from '../utils/constains';
 
 let chart_1, chart_2;
+
+function renderSidebar(permissionList) {
+  const perList = [];
+  permissionList.forEach((per) => {
+    if (per['ten_chuc_nang'] === 'READ' && per['trang_thai_quyen_hang'] === true) {
+      switch (per['ten_quyen_hang']) {
+        case 'statistics':
+          perList.push({
+            label: 'Thống kê',
+            slug: 'overview',
+            icon: '<i class="fa-sharp fa-solid fa-chart-pie"></i>',
+          });
+          break;
+        case 'decentralization':
+          perList.push({
+            label: 'Phân quyền',
+            slug: 'decentralization',
+            icon: '<i class="fa-solid fa-users-gear"></i>',
+          });
+          break;
+        case 'brands':
+          perList.push({
+            label: 'Thương hiệu',
+            slug: 'brand',
+            icon: '<i class="fa-solid fa-list-ul"></i>',
+          });
+          break;
+        case 'auth-groups':
+          perList.push({
+            label: 'Nhóm quyền',
+            slug: 'auth-group',
+            icon: '<i class="fa-solid fa-users"></i>',
+          });
+          break;
+        case 'products':
+          perList.push({
+            label: 'Sản phẩm',
+            slug: 'product',
+            icon: '<i class="fa-solid fa-box-open"></i>',
+          });
+          break;
+        case 'orders':
+          perList.push({
+            label: 'Đơn hàng',
+            slug: 'sell-order',
+            icon: '<i class="fa-solid fa-receipt"></i>',
+          });
+          break;
+        case 'customers':
+          perList.push({
+            label: 'Khách hàng',
+            slug: 'customer',
+            icon: '<i class="fa-solid fa-user"></i>',
+          });
+          break;
+        case 'employees':
+          perList.push({
+            label: 'Nhân viên',
+            slug: 'employee',
+            icon: '<i class="fa-solid fa-user-tie"></i>',
+          });
+          break;
+        case 'accounts':
+          perList.push({
+            label: 'Tài khoản',
+            slug: 'account',
+            icon: '<i class="fa-regular fa-circle-user"></i>',
+          });
+          break;
+        case 'guarantee':
+          perList.push({
+            label: 'Bảo hành',
+            slug: 'guarantee',
+            icon: '<i class="fa-solid fa-user-shield"></i>',
+          });
+          break;
+        case 'suppliers':
+          perList.push({
+            label: 'Nhà cung cấp',
+            slug: 'supplier',
+            icon: '<i class="fa-solid fa-parachute-box"></i>',
+          });
+          break;
+      }
+    }
+  });
+
+  const importOrder = permissionList.findIndex(
+    (per) =>
+      per['ten_quyen_hang'] === 'import-orders' &&
+      per['ten_chuc_nang'] === 'READ' &&
+      per['trang_thai_quyen_hang'] === true
+  );
+
+  if (importOrder !== -1) {
+    perList.push({
+      label: 'Phiếu nhập',
+      slug: 'import-order',
+      icon: '<i class="fa-sharp fa-solid fa-receipt"></i>',
+    });
+
+    perList.push({
+      label: 'Nhập hàng',
+      slug: 'import-product',
+      icon: '<i class="fa-solid fa-cart-arrow-down"></i>',
+    });
+  }
+
+  const perHTML = perList
+    .map(
+      (per, idx) => `
+        <div class="sidebar-item ${idx === 0 ? 'active' : ''}" data-value="${per.slug}">
+          ${per.icon}
+          <span>${per.label}</span>
+        </div>
+    `
+    )
+    .join('');
+
+  $('.sidebar').html(perHTML);
+
+  const url = new URL(window.location);
+
+  if (!url.searchParams.get('content')) {
+    const pageContent = $('.sidebar-item.active').attr('data-value');
+    url.searchParams.set('content', pageContent);
+  } else {
+    $(`.sidebar-item[data-value=${url.searchParams.get('content')}]`).addClass('active');
+  }
+
+  $('.sidebar-item').click(async (e) => {
+    let value;
+    let target;
+    const url = new URL(window.location);
+
+    if (e.target.tagName === 'DIV') {
+      target = e.target;
+    } else {
+      target = e.target.parentElement;
+    }
+
+    if (target.classList.contains('active')) return;
+
+    $('.sidebar-item.active').removeClass('active');
+
+    value = target.dataset.value;
+    target.classList.add('active');
+
+    url.searchParams.set('content', value);
+    history.pushState({}, null, url);
+
+    await handleSideBar(value);
+  });
+}
 
 function initManager() {
   const accessToken = getLocalStorage('access_token');
@@ -35,6 +189,9 @@ function initManager() {
       window.location.href = '/';
       return;
     }
+
+    renderSidebar(token.data.permission);
+
     return;
   }
 
@@ -67,8 +224,6 @@ $('.admin-category').click(() => {
   $('.sidebar').css({
     transform: 'translateX(0)',
   });
-
-  // $('.admin-content_container').css('margin-left', '250px');
 });
 
 async function initDashboard() {
@@ -125,6 +280,14 @@ function isAccess(perName, actionName) {
 
   if (!user) return false;
 
+  const url = new URL(window.location);
+  url.searchParams.delete('searching');
+  url.searchParams.delete('sort-name');
+  url.searchParams.delete('sort-action');
+  url.searchParams.delete('from');
+  url.searchParams.delete('to');
+  history.pushState({}, '', url);
+
   const permissionList = user.permission;
 
   if (!permissionList || permissionList?.length <= 0) return false;
@@ -144,31 +307,6 @@ function isAccess(perName, actionName) {
 
   return false;
 }
-
-$('.sidebar-item').click(async (e) => {
-  initManager();
-  let value;
-  let target;
-  const url = new URL(window.location);
-
-  if (e.target.tagName === 'DIV') {
-    target = e.target;
-  } else {
-    target = e.target.parentElement;
-  }
-
-  if (target.classList.contains('active')) return;
-
-  $('.sidebar-item.active').removeClass('active');
-
-  value = target.dataset.value;
-  target.classList.add('active');
-
-  url.searchParams.set('content', value);
-  history.pushState({}, null, url);
-
-  await handleSideBar(value);
-});
 
 async function handleSideBar(value) {
   $('.admin-category').removeClass('active');
@@ -288,3 +426,93 @@ async function handleSideBar(value) {
 }
 
 initDashboard();
+
+export function handleSearching(value, callback) {
+  const url = new URL(window.location);
+  const sortNameVal = url.searchParams.get('sort-name') ?? '';
+  const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+  if (!value) {
+    url.searchParams.delete('searching');
+
+    history.pushState({}, '', url);
+    callback({
+      sortName: sortNameVal,
+      sortAction: sortActionVal,
+    });
+  } else {
+    $('.header-input').val('');
+    const url = new URL(window.location);
+    url.searchParams.set('searching', value);
+    history.pushState({}, '', url);
+    callback({
+      searching: value,
+      sortName: sortNameVal,
+      sortAction: sortActionVal,
+    });
+  }
+}
+
+export function handleSorting(e, callback) {
+  const sort = e.target;
+
+  const url = new URL(window.location);
+
+  const sortVal = sort.dataset.sort;
+  const name = sort.dataset.value;
+  const searching = url.searchParams.has('searching') ? url.searchParams.get('searching') : '';
+
+  sort.classList.remove('before');
+  sort.classList.remove('after');
+
+  if (sort.classList.contains('active')) {
+    switch (sortVal) {
+      case 'asc':
+        sort.classList.add('before');
+        sort.dataset.sort = 'desc';
+
+        url.searchParams.set('sort-name', name);
+        url.searchParams.set('sort-action', 'ASC');
+        history.pushState({}, null, url);
+
+        callback({
+          sortAction: 'ASC',
+          sortName: name,
+          searching,
+        });
+
+        break;
+      case 'desc':
+        sort.classList.add('after');
+        sort.dataset.sort = 'asc';
+
+        url.searchParams.set('sort-name', name);
+        url.searchParams.set('sort-action', 'DESC');
+        history.pushState({}, null, url);
+
+        callback({
+          sortAction: 'DESC',
+          sortName: name,
+          searching,
+        });
+        break;
+    }
+    return;
+  }
+
+  $('.icon-sort.active').removeClass('before');
+  $('.icon-sort.active').removeClass('after');
+  $('.icon-sort.active').removeClass('active');
+
+  sort.classList.add('active', 'before');
+
+  url.searchParams.set('sort-name', name);
+  url.searchParams.set('sort-action', 'ASC');
+  history.pushState({}, null, url);
+
+  callback({
+    sortAction: 'ASC',
+    sortName: name,
+    searching,
+  });
+}

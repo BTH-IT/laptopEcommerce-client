@@ -7,18 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Brand | Search Product</title>
     <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" type="text/css" href="/css/vendor/bootstrap.min.css" />
 
     <!-- Slider -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.css"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" type="text/css" href="/css/vendor/slick.min.css" />
 
     <!-- font awesome -->
     <script src="https://kit.fontawesome.com/10c30652a2.js" crossorigin="anonymous"></script>
@@ -27,10 +19,13 @@
   </head>
 
   <body>
+    <div class="w-100 h-100 position-relative">
+      <div class="overlay"></div>
+    </div>
     <header class="header-container">
       <div class="header">
         <a class="logo" href="/">
-          <span>
+          <span class="logo-img">
             <svg
               width="44"
               height="44"
@@ -70,7 +65,7 @@
               </g>
             </svg>
           </span>
-          <span>
+          <span class="logo-text">
             <svg
               width="78"
               height="22"
@@ -125,7 +120,7 @@
           <div class="action-container logged">
             <div class="action-logged">
               <span class="action-img">
-                <img src="http://localhost:80/ecommerce-api/images/avatar.jpg" alt="" />
+                <img src="http://localhost:80/laptopEcommerce-server/images/avatar.jpg" alt="" />
               </span>
               <span class="action-title">
                 Xin chào, <br />
@@ -196,14 +191,57 @@
               </div>
             </div>
           </div>
+
+          <div class="action-bars">
+            <i class="fa-solid fa-bars"></i>
+          </div>
         </div>
       </div>
     </header>
 
+    <div class="sidebar">
+      <a class="sidebar-item auth" href="./login.html">
+        <span class="action-icon">
+          <i class="fa-regular fa-circle-user"></i>
+        </span>
+        <span class="action-title">
+          Đăng nhập
+          <br />
+          Đăng kí
+        </span>
+      </a>
+      <a class="sidebar-item logged" href="./profile.html">
+        <span class="action-icon">
+          <i class="fa-regular fa-circle-user"></i>
+        </span>
+        <span class="action-title">Thông tin tài khoản</span>
+      </a>
+      <a class="sidebar-item logged" href="./history.html">
+        <span class="action-icon">
+          <i class="fa-sharp fa-solid fa-clipboard-check"></i>
+        </span>
+        <span class="action-title">Quản lý đơn hàng</span>
+      </a>
+
+      <a class="sidebar-item" href="./cart.html">
+        <span class="action-icon">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </span>
+        <span class="action-title cart"></span>
+      </a>
+
+      <a class="sidebar-item logout" href="./login.html">
+        <span class="action-icon">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </span>
+        <span class="action-title"> Đăng xuất </span>
+      </a>
+    </div>
+
     <section class="container">
       <div class="search">
         <div class="row">
-          <div class="col-2">
+          <div class="d-none d-md-block col-md-2">
             <div class="search-left">
               <div class="price-range_container">
                 <h4>Khoảng giá</h4>
@@ -224,7 +262,7 @@
                   <input type="range" class="range-max" min="0" step="1000" />
                 </div>
               </div>
-              <div class="search-dropdown_container">
+              <div class="search-dropdown_container pc">
                 <label class="search-dropdown_checkbox-item mt-3">
                   <div class="skeleton skeleton-text"></div>
                 </label>
@@ -252,9 +290,9 @@
               </div>
             </div>
           </div>
-          <div class="col-10">
+          <div class="col-12 col-md-10">
             <div class="search-right">
-              <div class="search-filter">
+              <div class="search-filter pc">
                 <h5>Sắp xếp theo</h5>
                 <label for="sale" class="search-filter_item" data-value="sale">
                   <div></div>
@@ -281,6 +319,55 @@
                   <span><i class="fa-solid fa-check"></i></span>
                   Giá tăng dần
                 </label>
+              </div>
+              <div class="search-filter d-md-none d-block mobile">
+                <div class="search-left d-block d-md-none">
+                  <div class="price-range_container-mobile">
+                    <h4>Khoảng giá</h4>
+                    <div class="price-input-mobile">
+                      <div class="field">
+                        <input type="text" class="input-min-mobile" value="0 VND" disabled />
+                      </div>
+                      <div class="separator">-</div>
+                      <div class="field">
+                        <input type="text" class="input-max-mobile" value="0 VND" disabled />
+                      </div>
+                    </div>
+                    <div class="price-slider-mobile">
+                      <div class="price-progress-mobile"></div>
+                    </div>
+                    <div class="price-range-input-mobile">
+                      <input type="range" class="range-min-mobile" min="0" step="1000" />
+                      <input type="range" class="range-max-mobile" min="0" step="1000" />
+                    </div>
+                  </div>
+                  <div class="search-dropdown_container mobile">
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                    <label class="search-dropdown_checkbox-item mt-3">
+                      <div class="skeleton skeleton-text"></div>
+                    </label>
+                  </div>
+                </div>
               </div>
               <div class="search-product_container">
                 <div class="search-product">
@@ -433,8 +520,11 @@
     </footer>
 
     <!-- JQUERY -->
-    <script type="text/javascript" src="/js/vendor/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/vendor/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"
+    ></script>
 
     <script type="module" src="/js/search.js"></script>
     <script type="module" src="/js/utils/header-search.js"></script>

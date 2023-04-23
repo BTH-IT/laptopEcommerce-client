@@ -27,7 +27,7 @@ export function renderProductCard(product, className = '') {
 
   return `<a class='product-card ${className}' href='/product-detail.html?id=${product['ma_san_pham']}'>
     <div class='product-card_image'>
-      <img src='http://localhost:80/ecommerce-api/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
+      <img src='http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
     </div>
     <div class='product-card_info'>
       <h6 class='product-card_title'>${product['ten_san_pham']}</h6>

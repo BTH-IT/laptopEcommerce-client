@@ -101,12 +101,20 @@ body {
 }
 
 .table>:not(caption)>*>* {
-    padding: 0.8rem 0.5rem !important;
+    padding: 1.1rem 0.5rem !important;
+}
+
+.table {
+    margin-bottom: 0 !important;
 }
 
 .history__table-header {
     width: 100%;
     border-bottom: 1px solid var(--gray-300);
+}
+
+.history__table-body-item.empty {
+    font-size: 1.2rem;
 }
 
 .history__table-header-item {

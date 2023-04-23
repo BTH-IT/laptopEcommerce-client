@@ -3,9 +3,24 @@ import productApi from '../api/productApi';
 import { convertCurrency } from '../utils/constains';
 import { toast } from '../utils/toast';
 
-let urlParams = new URLSearchParams(window.location.search);
-let url = window.location.href;
+function setDateFilter() {
+  const currentDate = moment().set({ hour: 23, minute: 59, second: 59 }).utc(); // current date in UTC with milliseconds format
+  const oneMonthBefore = moment()
+    .set({ hour: 7, minute: 0, second: 0 })
+    .subtract(1, 'months')
+    .utc(); // 1 month before in UTC with milliseconds format
+  $('.history__header-date').val(
+    `${oneMonthBefore.format('DD/MM/YYYY')} - ${currentDate.format('DD/MM/YYYY')}`
+  );
+  const url = new URL(window.location);
 
+  if (url.searchParams.get('from') === null && url.searchParams.get('from') === null) {
+    url.searchParams.set('from', parseInt(oneMonthBefore.valueOf() / 1000));
+    url.searchParams.set('to', parseInt(currentDate.valueOf() / 1000));
+    window.history.pushState({}, '', url);
+  }
+}
+console.log(moment().format('DD/MM/YYYY'));
 async function getAllOrderWithQuery(query) {
   try {
     return await orderApi.getAllWithQuery(query);
@@ -32,15 +47,33 @@ $(function () {
       },
     },
     function (start, end, label) {
-      urlParams.set('from', start._d.getTime());
-      urlParams.set('to', end._d.getTime());
+      let s = new Date(start.format());
+      let e = new Date(end.format());
 
-      let newUrl = url.split('?')[0] + '?' + urlParams.toString();
-      window.history.replaceState({}, '', newUrl);
+      const url = new URL(window.location);
+      url.searchParams.set('from', parseInt(s.getTime() / 1000));
+      url.searchParams.set('to', parseInt(e.getTime() / 1000));
+      window.history.pushState({}, '', url);
 
       renderHistory();
     }
   );
+});
+
+$('input[name="dates"]').on('cancel.daterangepicker', function (ev, picker) {
+  let url = new URL(window.location.href);
+
+  let params = url.searchParams;
+
+  params.delete('from');
+
+  params.delete('to');
+
+  url.search = params.toString();
+
+  window.history.pushState({}, '', url.href);
+
+  renderHistory();
 });
 
 $('.btn-method').on('click', (e) => {
@@ -93,12 +126,26 @@ async function ChangeMethodHandler() {
 async function CancelOrderHandler() {
   let orderID = parseInt($(this).data('ma_don_hang'));
 
+  let data = await orderApi.getById(orderID);
+
+  let orderedProducts = [];
+
+  data.danh_sach_san_pham_da_mua.forEach((item) => {
+    let product = {
+      ma_san_pham: item.ma_san_pham,
+      so_luong_da_mua: item.so_luong_da_mua,
+    };
+
+    orderedProducts.push(product);
+  });
+
   let order = {
     ma_don_hang: orderID,
-    trang_thai: 'Đã huỷ',
+    trang_thai: 'đã huỷ',
+    danh_sach_san_pham_da_mua: orderedProducts,
   };
 
-  await updateOrder(order);
+  await orderApi.update(order);
 
   $('#cancel-order').modal('hide');
 
@@ -113,102 +160,60 @@ async function CancelOrderHandler() {
 }
 
 $('.history__menu-item').on('click', (e) => {
-  let newUrl = '';
-  let order_type = e.currentTarget.id;
-
-  urlParams.set('order_type', order_type);
-  newUrl = url.split('?')[0] + '?' + urlParams.toString();
-  window.history.replaceState({}, '', newUrl);
-
-  // switch (e.currentTarget.id) {
-  //   case 'all':
-  //     urlParams.set('order_type', 'all');
-  //     newUrl = url.split('?')[0] + '?' + urlParams.toString();
-  //     window.history.replaceState({}, '', newUrl);
-  //     break;
-
-  //   case 'waiting':
-  //     urlParams.set('order_type', 'waiting');
-  //     newUrl = url.split('?')[0] + '?' + urlParams.toString();
-  //     window.history.replaceState({}, '', newUrl);
-  //     break;
-
-  //   case '3':
-  //     urlParams.set('order_type', 'shipping');
-  //     newUrl = url.split('?')[0] + '?' + urlParams.toString();
-  //     window.history.replaceState({}, '', newUrl);
-  //     break;
-
-  //   case '4':
-  //     urlParams.set('order_type', 'completed');
-  //     newUrl = url.split('?')[0] + '?' + urlParams.toString();
-  //     window.history.replaceState({}, '', newUrl);
-  //     break;
-
-  //   case '5':
-  //     urlParams.set('order_type', 'canceled');
-  //     newUrl = url.split('?')[0] + '?' + urlParams.toString();
-  //     window.history.replaceState({}, '', newUrl);
-  //     break;
-
-  //   default:
-  //     urlParams.set('order_type', 'all');
-  //     newUrl = url.split('?')[0] + '?' + urlParams.toString();
-  //     window.history.replaceState({}, '', newUrl);
-  //     break;
-  // }
+  const url = new URL(window.location);
+  url.searchParams.set('order_type', e.currentTarget.id);
+  window.history.pushState({}, '', url);
 
   renderHistory();
 });
 
 function convertSatus(status) {
-  if (status === 'Chờ xử lý') {
+  if (status === 'chờ xử lý') {
     return 'waiting';
-  } else if (status === 'Đang giao') {
+  } else if (status === 'đang giao hàng') {
     return 'shipping';
-  } else if (status === 'Hoàn thành') {
+  } else if (status === 'hoàn thành') {
     return 'completed';
-  } else if (status === 'Đã huỷ') {
+  } else if (status === 'đã huỷ') {
     return 'canceled';
   }
 }
 
 async function renderHistory() {
   let htmlString = ``;
-  let order_type = urlParams.get('order_type') || 'all';
-  let start = parseInt(urlParams.get('from'));
-  let end = parseInt(urlParams.get('to'));
+  const url = new URL(window.location);
+  let order_type = url.searchParams.get('order_type') || 'all';
+  let start = parseInt(url.searchParams.get('from'));
+  let end = parseInt(url.searchParams.get('to'));
   let query = {};
+  let totalMoney = 0;
 
   if (!isNaN(start) && !isNaN(end) && start <= end) {
     query = {
       order_type: order_type,
-      start: start,
-      end: end,
+      from: start,
+      to: end,
     };
   } else {
     query = { order_type: order_type };
   }
 
-  console.log(JSON.stringify(query))
-
-  let data = await getAllOrderWithQuery(query);
-  console.log(data);
+  let data = await orderApi.getAll(query);
 
   $('.history__menu-item.active').removeClass('active');
   $(`.history__menu-item#${order_type}`).addClass('active');
 
   if (data.length == 0) {
     $('.history__table-body').html(``);
+    $('.history__table-body').html(
+      `<tr>
+      <td class="history__table-body-item empty" colspan="6">Không có đơn hàng</td>
+      </tr>`
+    );
   } else {
+    $('.history__table-body').html(``);
     data.forEach((item, idx) => {
-      let totalMoney = 0;
-
-      item.danh_sach_san_pham_da_mua.forEach((data) => {
-        totalMoney +=
-          ((data.don_gia * (100 - data.giam_gia_san_pham)) / 100) * data.so_luong_da_mua;
-      });
-
+      totalMoney = item.tong_tien;
       htmlString += `
           <tr>
           <td class="history__table-body-item">${item.ma_don_hang}</td>
@@ -240,11 +245,11 @@ async function renderHistory() {
 
   $('.info-item').on('click', (e) => {
     let id = e.currentTarget.id;
-    detailHandler(data, id);
+    detailHandler(data, id, totalMoney);
   });
 }
 
-function detailHandler(data, id) {
+function detailHandler(data, id, totalMoney) {
   $('#detail').modal('show');
 
   let filteredData = data.filter((item) => {
@@ -258,7 +263,7 @@ function detailHandler(data, id) {
 
   $('#Paid').val(method);
 
-  if (status === 'Chờ xử lý') {
+  if (status === 'chờ xử lý') {
     $('#Paid').attr('disabled', false);
     $('.btn-cancel').attr('id', id);
     $('.btn-cancel').attr('disabled', false);
@@ -278,16 +283,13 @@ function detailHandler(data, id) {
   $(`.detail-info_status`).text('');
   $(`.detail-info_status.${convertSatus(status)}`).text(status);
 
-  renderHistoryProducts(purchasedProduct);
+  renderHistoryProducts(purchasedProduct, totalMoney);
 }
 
-function renderHistoryProducts(data) {
+function renderHistoryProducts(data, totalMoney) {
   let htmlString = '';
-  let totalMoney = 0;
 
   data.forEach((item) => {
-    totalMoney += ((item.don_gia * (100 - item.giam_gia_san_pham)) / 100) * item.so_luong_da_mua;
-
     htmlString += `
     <li class="detail-info_paid-item">
       <div class="paid-item_container container">
@@ -295,7 +297,7 @@ function renderHistoryProducts(data) {
           <div class="col-4">
             <div class="paid-item_img-container">
               <img class="paid-item_img" src="http://localhost:80/laptopEcommerce-server/images/${
-                item.hinh_anh[0]
+                item.hinh_anh
               }" alt="" width="70px" height="70px">
             </div>
           </div>
@@ -319,4 +321,5 @@ function renderHistoryProducts(data) {
   $('.detail-info_total-money').text(convertCurrency(totalMoney));
 }
 
+setDateFilter();
 renderHistory();

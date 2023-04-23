@@ -1,4 +1,5 @@
 import orderApi from '../api/orderApi';
+import productApi from '../api/productApi';
 import { convertCurrency } from '../utils/constains';
 import { validation } from '../utils/validation';
 import { toast } from '../utils/toast';
@@ -31,12 +32,15 @@ $('.purchase-btn').on('click', () => {
   $('#purchase').modal('show');
 });
 
-function renderCartList() {
+async function renderCartList() {
   CartList = JSON.parse(localStorage.getItem('CartList'));
-  console.log(CartList.length);
+  const { data: productList } = await productApi.getAll();
+  
   if (CartList.length > 0) {
+    let htmlString = "";
     CartList.forEach((item, idx) => {
-      let htmlString = `
+      const data = productList.find((product) => product.ma_san_pham === item.ma_san_pham);
+      htmlString += `
         <tr class="table-body_row" id=${idx + 1}>
             <td class="table-body_item">${idx + 1}</td>
             <td class="table-body_item">
@@ -63,33 +67,32 @@ function renderCartList() {
               </div>
             </td>
             <td class="table-body_item">
-              <div class="product-amount_container">
+              <div class="product-amount_container" data-id="${item.ma_san_pham}" data-max="${data.so_luong}" data-idx="${idx}">
                   <button class="product-amount_minus" id="${idx + 1}" ${
         item.so_luong == 1 ? 'disabled' : ''
       }>-</button>
                   <input class = "amount-${
                     idx + 1
-                  }" type="number" name="amount" id="amount" data-amount="${
-        item.so_luong_kho
-      }" min="1" value="${item.so_luong}">
-                  <button class="product-amount_plus" data-amount="${item.so_luong_kho}" id="${
+                  }" type="number" name="amount" id="amount" data-id="${item.ma_san_pham}" data-amount="1" min="1" value="${item.so_luong}">
+                  <button class="product-amount_plus" id="${
         idx + 1
-      }" ${item.so_luong == item.so_luong_kho ? 'disabled' : ''}>+</button>
+      }" ${item.so_luong == data.so_luong ? 'disabled' : ''}>+</button>
               </div>
               <div class="delete-product" id=${item.ma_san_pham}>Xoá</div>
             </td>
         </tr>`;
 
-      $('.table-body').append(htmlString);
+      $('.table-body').html(htmlString);
+      $('.product-amount_minus').on('click', minusBtnHandler);
+      $('.product-amount_plus').on('click', plusBtnHandler);
+      $('input[name="amount"]').on('change', valueValidation);
+      $('.delete-product').on('click', (e) => {
+        $('#delete-product').modal('show');
+        let ID = e.target.id;
+        $('.btn-delete').attr('id', ID);
+      });
     });
-    $('.product-amount_minus').on('click', minusBtnHandler);
-    $('.product-amount_plus').on('click', plusBtnHandler);
-    $('#amount').on('change', valueValidation);
-    $('.delete-product').on('click', (e) => {
-      $('#delete-product').modal('show');
-      let ID = e.target.id;
-      $('.btn-delete').attr('id', ID);
-    });
+    
   } else {
     let htmlString = `
     <div class="cart-link">
@@ -103,6 +106,7 @@ function renderCartList() {
 
     $('.cart').html(htmlString);
   }
+  
 }
 
 function renderTotal() {
@@ -122,6 +126,22 @@ function minusBtnHandler() {
   $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', false);
 
   let val = parseInt($(`.amount-${this.id}`).val());
+
+  if (val > parseInt(this.parentElement.dataset.max)) {
+    toast({
+      title: 'Xin lỗi',
+      message: `Hàng chỉ còn ${this.parentElement.dataset.max} sản phẩm`,
+      type: 'info',
+      duration: 2000,
+    });
+    $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', true);
+    $(`.amount-${this.id}`).val(this.parentElement.dataset.max);
+    $(`.amount-${this.id}`).attr("data-amount", this.parentElement.dataset.max);
+    CartList[this.id - 1].so_luong = parseInt(this.parentElement.dataset.max);
+    localStorage.setItem('CartList', JSON.stringify(CartList));
+    return;
+  }
+
   if (val > 2) {
     $(`.amount-${this.id}`).val(val - 1);
   } else {
@@ -135,14 +155,30 @@ function minusBtnHandler() {
   renderTotal();
 }
 
-function plusBtnHandler() {
+async function plusBtnHandler() {
   $(`button[id=${this.id}][class="product-amount_minus"]`).attr('disabled', false);
 
   let val = parseInt($(`.amount-${this.id}`).val());
 
-  if (val >= parseInt(this.dataset.amount) - 1) {
+  if (val > parseInt(this.parentElement.dataset.max)) {
+    toast({
+      title: 'Xin lỗi',
+      message: 'Không đủ hàng trong kho',
+      type: 'error',
+      duration: 2000,
+    });
+    $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', true);
+    $(`.amount-${this.id}`).val(this.parentElement.dataset.max);
+    $(`.amount-${this.id}`).attr("data-amount", this.parentElement.dataset.max);
+    CartList[this.id - 1].so_luong = parseInt(this.parentElement.dataset.max);
+    localStorage.setItem('CartList', JSON.stringify(CartList));
+    return;
+  }
+
+  if (val === parseInt(this.parentElement.dataset.max) - 1) {
     $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', true);
   }
+
   $(`.amount-${this.id}`).val(val + 1);
 
   CartList[this.id - 1].so_luong = val + 1;
@@ -151,16 +187,46 @@ function plusBtnHandler() {
   renderTotal();
 }
 
-function valueValidation() {
-  if ($(this).val() > parseInt(this.dataset.amount)) {
+async function valueValidation() {
+  if ($(this).val() <= 0) {
+    toast({
+      title: 'Cảnh báo',
+      message: 'Số lượng phải lớn hơn 0',
+      type: 'warning',
+      duration: 2000,
+    });
+    $(this).val($(this).attr("data-amount"));
+    return;
+  }
+
+  if ($(this).val() > parseInt(this.parentElement.dataset.max)) {
     toast({
       title: 'Xin lỗi',
       message: 'Không đủ hàng trong kho',
       type: 'error',
       duration: 2000,
     });
-    $(this).val(this.dataset.amount);
+    $(this).val($(this).attr("data-amount"));
+    return;
   }
+
+  if ($(this).val() == 1) {
+    this.parentElement.querySelector(".product-amount_minus").disabled = true;
+  } else {
+    this.parentElement.querySelector(".product-amount_minus").disabled = false;
+  }
+
+  if ($(this).val() == this.parentElement.dataset.max) {
+    this.parentElement.querySelector(".product-amount_plus").disabled = true;
+  } else {
+    this.parentElement.querySelector(".product-amount_plus").disabled = false;
+  }
+
+  this.dataset.amount = $(this).val();
+  renderTotal();
+
+  CartList[parseInt(this.parentElement.dataset.idx)].so_luong = $(this).val();
+  localStorage.setItem('CartList', JSON.stringify(CartList));
 }
 
 function deteleBtnHandler() {
@@ -186,12 +252,27 @@ function deteleAllBtnHandler() {
 
 async function purchaseBtnHandler() {
   let mes = validation($('#Paid')[0]);
+  let outOfStock = false;
   if (!mes) {
     let method = $('#Paid').val();
     let List = JSON.parse(localStorage.getItem('CartList'));
     let PurchaseList = [];
 
     List.forEach((item) => {
+      const stock = $(`.product-amount_container[data-id="${item.ma_san_pham}"]`).attr("data-max")
+      if (item.so_luong > stock) {
+        toast({
+          title: 'Xin lỗi',
+          message: `${item.ten_san_pham} không đủ hàng trong kho`,
+          type: 'error',
+          duration: 5000,
+        });
+
+        let filteredList = List.filter(obj => obj.ma_san_pham !== item.ma_san_pham);
+        List = filteredList;
+        outOfStock = true;
+        localStorage.setItem('CartList', JSON.stringify(filteredList));
+      }
       let PurchaseItem = {
         ma_san_pham: item.ma_san_pham,
         ten_san_pham: item.ten_san_pham,
@@ -203,6 +284,14 @@ async function purchaseBtnHandler() {
       PurchaseList.push(PurchaseItem);
     });
 
+    renderCartList();
+
+    console.log(outOfStock);
+    if (outOfStock) {
+      $('#purchase').modal('hide');
+      return;
+    }
+
     let Order = {
       ma_khach_hang: 'bttan',
       ma_nhan_vien: '',
@@ -213,8 +302,7 @@ async function purchaseBtnHandler() {
     };
 
     // console.log(JSON.stringify(Order));
-
-    createOrder(Order);
+    await createOrder(Order);
 
     $('.table-body').children().remove();
     $('#purchase').modal('hide');

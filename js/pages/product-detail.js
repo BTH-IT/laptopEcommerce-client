@@ -255,13 +255,6 @@ function BuyBtnHandler() {
           item.so_luong++;
           localStorage.setItem('CartList', JSON.stringify(CartList));
           found = true;
-
-          toast({
-            title: 'Thành công',
-            message: 'Đã thêm vào giỏ hàng',
-            type: 'success',
-            duration: 2000,
-          });
         }
       }
     });
@@ -277,13 +270,6 @@ function BuyBtnHandler() {
       };
       CartList.push(CartItem);
       localStorage.setItem('CartList', JSON.stringify(CartList));
-
-      toast({
-        title: 'Thành công',
-        message: 'Đã thêm vào giỏ hàng',
-        type: 'success',
-        duration: 2000,
-      });
     }
   }
 
@@ -311,7 +297,6 @@ function AddToCartBtnHandler() {
         gia_goc: gia_goc,
         giam_gia: giam_gia,
         so_luong: 1,
-        so_luong_kho: so_luong,
       },
     ];
     localStorage.setItem('CartList', JSON.stringify(CartItem));
@@ -359,7 +344,6 @@ function AddToCartBtnHandler() {
         gia_goc: gia_goc,
         giam_gia: giam_gia,
         so_luong: 1,
-        so_luong_kho: so_luong,
       };
       CartList.push(CartItem);
       localStorage.setItem('CartList', JSON.stringify(CartList));

@@ -196,7 +196,7 @@ async function renderProductDetail() {
 
 async function renderSimilarProduct() {
   let data = await getAllData();
-  
+
   let jsonLength = Object.keys(data['data']).length - 1;
   let productIdx = data['data'].findIndex((item) => item.ma_san_pham === productID);
   let similarProductCard = ``;
@@ -222,7 +222,7 @@ function BuyBtnHandler() {
   let so_luong = parseInt(this.dataset.amount);
   let outOfStock = false;
 
-  let CartList = JSON.parse(localStorage.getItem('CartList'));
+  let CartList = JSON.parse(localStorage.getItem('cartList'));
 
   if (!CartList) {
     let CartItem = [
@@ -235,7 +235,7 @@ function BuyBtnHandler() {
         so_luong: 1,
       },
     ];
-    localStorage.setItem('CartList', JSON.stringify(CartItem));
+    localStorage.setItem('cartList', JSON.stringify(CartItem));
   } else {
     let found = false;
 
@@ -253,7 +253,7 @@ function BuyBtnHandler() {
           outOfStock = true;
         } else {
           item.so_luong++;
-          localStorage.setItem('CartList', JSON.stringify(CartList));
+          localStorage.setItem('cartList', JSON.stringify(CartList));
           found = true;
         }
       }
@@ -269,7 +269,7 @@ function BuyBtnHandler() {
         so_luong: 1,
       };
       CartList.push(CartItem);
-      localStorage.setItem('CartList', JSON.stringify(CartList));
+      localStorage.setItem('cartList', JSON.stringify(CartList));
     }
   }
 
@@ -286,7 +286,7 @@ function AddToCartBtnHandler() {
   let giam_gia = parseInt(this.dataset.discount);
   let so_luong = parseInt(this.dataset.amount);
 
-  let CartList = JSON.parse(localStorage.getItem('CartList'));
+  let CartList = JSON.parse(localStorage.getItem('cartList'));
 
   if (!CartList) {
     let CartItem = [
@@ -299,7 +299,7 @@ function AddToCartBtnHandler() {
         so_luong: 1,
       },
     ];
-    localStorage.setItem('CartList', JSON.stringify(CartItem));
+    localStorage.setItem('cartList', JSON.stringify(CartItem));
 
     toast({
       title: 'Thành công',
@@ -323,7 +323,7 @@ function AddToCartBtnHandler() {
           found = true;
         } else {
           item.so_luong++;
-          localStorage.setItem('CartList', JSON.stringify(CartList));
+          localStorage.setItem('cartList', JSON.stringify(CartList));
           found = true;
 
           toast({
@@ -346,7 +346,7 @@ function AddToCartBtnHandler() {
         so_luong: 1,
       };
       CartList.push(CartItem);
-      localStorage.setItem('CartList', JSON.stringify(CartList));
+      localStorage.setItem('cartList', JSON.stringify(CartList));
 
       toast({
         title: 'Thành công',

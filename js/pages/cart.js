@@ -33,11 +33,11 @@ $('.purchase-btn').on('click', () => {
 });
 
 async function renderCartList() {
-  CartList = JSON.parse(localStorage.getItem('CartList'));
+  CartList = JSON.parse(localStorage.getItem('cartList'));
   const { data: productList } = await productApi.getAll();
-  
+
   if (CartList.length > 0) {
-    let htmlString = "";
+    let htmlString = '';
     CartList.forEach((item, idx) => {
       const data = productList.find((product) => product.ma_san_pham === item.ma_san_pham);
       htmlString += `
@@ -49,7 +49,9 @@ async function renderCartList() {
           }">
               <div class="product-container">
                   <div class="product-img_container">
-                      <img class="product-img" src="http://localhost:80/laptopEcommerce-server/images/${item.hinh_anh}" alt="" width="80px"
+                      <img class="product-img" src="http://localhost:80/laptopEcommerce-server/images/${
+                        item.hinh_anh
+                      }" alt="" width="80px"
                           height="80px">
                   </div>
                   <div class="product-name_container">
@@ -67,16 +69,20 @@ async function renderCartList() {
               </div>
             </td>
             <td class="table-body_item">
-              <div class="product-amount_container" data-id="${item.ma_san_pham}" data-max="${data.so_luong}" data-idx="${idx}">
+              <div class="product-amount_container" data-id="${item.ma_san_pham}" data-max="${
+        data.so_luong
+      }" data-idx="${idx}">
                   <button class="product-amount_minus" id="${idx + 1}" ${
         item.so_luong == 1 ? 'disabled' : ''
       }>-</button>
                   <input class = "amount-${
                     idx + 1
-                  }" type="number" name="amount" id="amount" data-id="${item.ma_san_pham}" data-amount="1" min="1" value="${item.so_luong}">
-                  <button class="product-amount_plus" id="${
-        idx + 1
-      }" ${item.so_luong == data.so_luong ? 'disabled' : ''}>+</button>
+                  }" type="number" name="amount" id="amount" data-id="${
+        item.ma_san_pham
+      }" data-amount="1" min="1" value="${item.so_luong}">
+                  <button class="product-amount_plus" id="${idx + 1}" ${
+        item.so_luong == data.so_luong ? 'disabled' : ''
+      }>+</button>
               </div>
               <div class="delete-product" id=${item.ma_san_pham}>Xoá</div>
             </td>
@@ -92,7 +98,6 @@ async function renderCartList() {
         $('.btn-delete').attr('id', ID);
       });
     });
-    
   } else {
     let htmlString = `
     <div class="cart-link">
@@ -106,11 +111,10 @@ async function renderCartList() {
 
     $('.cart').html(htmlString);
   }
-  
 }
 
 function renderTotal() {
-  CartList = JSON.parse(localStorage.getItem('CartList'));
+  CartList = JSON.parse(localStorage.getItem('cartList'));
   let total = 0;
 
   if (CartList.length > 0) {
@@ -136,9 +140,9 @@ function minusBtnHandler() {
     });
     $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', true);
     $(`.amount-${this.id}`).val(this.parentElement.dataset.max);
-    $(`.amount-${this.id}`).attr("data-amount", this.parentElement.dataset.max);
+    $(`.amount-${this.id}`).attr('data-amount', this.parentElement.dataset.max);
     CartList[this.id - 1].so_luong = parseInt(this.parentElement.dataset.max);
-    localStorage.setItem('CartList', JSON.stringify(CartList));
+    localStorage.setItem('cartList', JSON.stringify(CartList));
     return;
   }
 
@@ -150,7 +154,7 @@ function minusBtnHandler() {
   }
 
   CartList[this.id - 1].so_luong = val - 1;
-  localStorage.setItem('CartList', JSON.stringify(CartList));
+  localStorage.setItem('cartList', JSON.stringify(CartList));
 
   renderTotal();
 }
@@ -169,9 +173,9 @@ async function plusBtnHandler() {
     });
     $(`button[id=${this.id}][class="product-amount_plus"]`).attr('disabled', true);
     $(`.amount-${this.id}`).val(this.parentElement.dataset.max);
-    $(`.amount-${this.id}`).attr("data-amount", this.parentElement.dataset.max);
+    $(`.amount-${this.id}`).attr('data-amount', this.parentElement.dataset.max);
     CartList[this.id - 1].so_luong = parseInt(this.parentElement.dataset.max);
-    localStorage.setItem('CartList', JSON.stringify(CartList));
+    localStorage.setItem('cartList', JSON.stringify(CartList));
     return;
   }
 
@@ -182,7 +186,7 @@ async function plusBtnHandler() {
   $(`.amount-${this.id}`).val(val + 1);
 
   CartList[this.id - 1].so_luong = val + 1;
-  localStorage.setItem('CartList', JSON.stringify(CartList));
+  localStorage.setItem('cartList', JSON.stringify(CartList));
 
   renderTotal();
 }
@@ -195,7 +199,7 @@ async function valueValidation() {
       type: 'warning',
       duration: 2000,
     });
-    $(this).val($(this).attr("data-amount"));
+    $(this).val($(this).attr('data-amount'));
     return;
   }
 
@@ -206,34 +210,34 @@ async function valueValidation() {
       type: 'error',
       duration: 2000,
     });
-    $(this).val($(this).attr("data-amount"));
+    $(this).val($(this).attr('data-amount'));
     return;
   }
 
   if ($(this).val() == 1) {
-    this.parentElement.querySelector(".product-amount_minus").disabled = true;
+    this.parentElement.querySelector('.product-amount_minus').disabled = true;
   } else {
-    this.parentElement.querySelector(".product-amount_minus").disabled = false;
+    this.parentElement.querySelector('.product-amount_minus').disabled = false;
   }
 
   if ($(this).val() == this.parentElement.dataset.max) {
-    this.parentElement.querySelector(".product-amount_plus").disabled = true;
+    this.parentElement.querySelector('.product-amount_plus').disabled = true;
   } else {
-    this.parentElement.querySelector(".product-amount_plus").disabled = false;
+    this.parentElement.querySelector('.product-amount_plus').disabled = false;
   }
 
   this.dataset.amount = $(this).val();
   renderTotal();
 
   CartList[parseInt(this.parentElement.dataset.idx)].so_luong = $(this).val();
-  localStorage.setItem('CartList', JSON.stringify(CartList));
+  localStorage.setItem('cartList', JSON.stringify(CartList));
 }
 
 function deteleBtnHandler() {
   let deleteID = parseInt(this.id);
   let tmp = CartList.filter((item) => item.ma_san_pham !== deleteID);
   CartList = tmp;
-  localStorage.setItem('CartList', JSON.stringify(CartList));
+  localStorage.setItem('cartList', JSON.stringify(CartList));
   $('.table-body').children().remove();
   $('#delete-product').modal('hide');
   renderCartList();
@@ -242,7 +246,7 @@ function deteleBtnHandler() {
 }
 
 function deteleAllBtnHandler() {
-  localStorage.setItem('CartList', JSON.stringify([]));
+  localStorage.setItem('cartList', JSON.stringify([]));
   $('.table-body').children().remove();
   $('#delete-all').modal('hide');
 
@@ -255,11 +259,11 @@ async function purchaseBtnHandler() {
   let outOfStock = false;
   if (!mes) {
     let method = $('#Paid').val();
-    let List = JSON.parse(localStorage.getItem('CartList'));
+    let List = JSON.parse(localStorage.getItem('cartList'));
     let PurchaseList = [];
 
     List.forEach((item) => {
-      const stock = $(`.product-amount_container[data-id="${item.ma_san_pham}"]`).attr("data-max")
+      const stock = $(`.product-amount_container[data-id="${item.ma_san_pham}"]`).attr('data-max');
       if (item.so_luong > stock) {
         toast({
           title: 'Xin lỗi',
@@ -268,10 +272,10 @@ async function purchaseBtnHandler() {
           duration: 5000,
         });
 
-        let filteredList = List.filter(obj => obj.ma_san_pham !== item.ma_san_pham);
+        let filteredList = List.filter((obj) => obj.ma_san_pham !== item.ma_san_pham);
         List = filteredList;
         outOfStock = true;
-        localStorage.setItem('CartList', JSON.stringify(filteredList));
+        localStorage.setItem('cartList', JSON.stringify(filteredList));
       }
       let PurchaseItem = {
         ma_san_pham: item.ma_san_pham,
@@ -306,7 +310,7 @@ async function purchaseBtnHandler() {
 
     $('.table-body').children().remove();
     $('#purchase').modal('hide');
-    localStorage.setItem('CartList', JSON.stringify([]));
+    localStorage.setItem('cartList', JSON.stringify([]));
     renderTotal();
 
     toast({

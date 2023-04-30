@@ -1,6 +1,5 @@
-@import '../utils/variables.css';
+@import '../layouts/main-layout.css';
 @import '../layouts/toast.css';
-@import '../utils/reset.css';
 @import '../components/product-card.css';
 
 input::-webkit-outer-spin-button,

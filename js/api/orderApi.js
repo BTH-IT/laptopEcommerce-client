@@ -5,10 +5,6 @@ const orderApi = {
     const url = '/orders';
     return axiosClient.get(url, { params });
   },
-  getAllWithQuery(query) {
-    const url = '/orders';
-    return axiosClient.get(url, { params: query });
-  },
   getById(id) {
     const url = `/orders/${id}`;
     return axiosClient.get(url);
@@ -23,7 +19,7 @@ const orderApi = {
   },
   remove(id) {
     const url = `/orders/${id}`;
-    return axiosClient.patch(url, data);
+    return axiosClient.delete(url);
   },
 };
 

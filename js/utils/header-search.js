@@ -1,5 +1,5 @@
 import productApi from '../api/productApi';
-import { handleFilterChange } from '../search';
+import { handleFilterChange } from '../pages/search';
 import { debounce, renderProductSearch } from './constains';
 import { renderPagination } from './pagination';
 

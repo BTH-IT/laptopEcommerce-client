@@ -265,6 +265,8 @@ async function handleCheckboxFilter() {
       queryParams.delete(this.dataset.filter);
     }
   }
+
+  queryParams.set('_page', 1);
   history.pushState({}, '', url);
 
   const { data, pagination } = await productApi.getAllWithParams(url.searchParams);

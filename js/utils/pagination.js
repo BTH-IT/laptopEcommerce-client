@@ -1,4 +1,4 @@
-import { handleFilterChange } from '../search';
+import { handleFilterChange } from '../pages/search';
 
 function handlePrevClick(e) {
   const ulPagination = $('.pagination');

@@ -41,7 +41,7 @@ async function renderBanner() {
       .map((product) => {
         return `<a href="/product-detail.html?id=${product['ma_san_pham']}" class='slider-background'>
           <img
-            src='http://localhost:80/ecommerce-api/images/${product['hinh_anh'][0]}'
+            src='http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}'
             alt='${product['hinh_anh'][0]}'>
         </a>`;
       })
@@ -146,7 +146,7 @@ async function renderHotBrand(data) {
     .map((brand) => {
       return `<a class='top-brands_card' href='/search.html?thuong_hieu=${brand['ten_thuong_hieu']}'>
         <div class='top-brands_image'>
-          <img src='http://localhost:80/ecommerce-api/images/${brand['hinh_anh']}' alt='${brand['ten_thuong_hieu']}'>
+          <img src='http://localhost:80/laptopEcommerce-server/images/${brand['hinh_anh']}' alt='${brand['ten_thuong_hieu']}'>
         </div>
         <h3 class='top-brands_title'>${brand['ten_thuong_hieu']}</h3>
       </a>`;

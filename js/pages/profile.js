@@ -48,9 +48,15 @@ async function initProfile() {
       $('#address').val(data['dia_chi']);
 
       if (data['avatar'] !== 'avatar.jpg') {
-        $('.avatar img').attr('src', `http://localhost:80/ecommerce-api/images/${data['avatar']}`);
+        $('.avatar img').attr(
+          'src',
+          `http://localhost:80/laptopEcommerce-server/images/${data['avatar']}`
+        );
       } else {
-        $('.avatar img').attr('src', 'http://localhost:80/ecommerce-api/images/avatar.jpg');
+        $('.avatar img').attr(
+          'src',
+          'http://localhost:80/laptopEcommerce-server/images/avatar.jpg'
+        );
       }
     } catch (error) {
       console.log(error.message);
@@ -148,7 +154,10 @@ $('.btn-update').click(async (e) => {
 
       setLocalStorage('access_token', jwt);
       setLocalStorage('user', token.data);
-      $('.action-logged img').attr('src', `http://localhost:80/ecommerce-api/images/${avatar}`);
+      $('.action-logged img').attr(
+        'src',
+        `http://localhost:80/laptopEcommerce-server/images/${avatar}`
+      );
       $('.action-logged p').html(fullname);
     } catch (error) {
       toast({
@@ -216,5 +225,5 @@ $('.form .avatar').mouseleave(() => {
 
 $('.avatar .fa-trash').click(() => {
   $('#avatar').val('');
-  $(`.avatar img`).attr('src', 'http://localhost:80/ecommerce-api/images/avatar.jpg');
+  $(`.avatar img`).attr('src', 'http://localhost:80/laptopEcommerce-server/images/avatar.jpg');
 });

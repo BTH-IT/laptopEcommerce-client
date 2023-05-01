@@ -1,7 +1,9 @@
 import orderApi from '../api/orderApi';
-import productApi from '../api/productApi';
-import { convertCurrency } from '../utils/constains';
+import { convertCurrency, initCartList, initHeader } from '../utils/constains';
 import { toast } from '../utils/toast';
+
+initCartList();
+initHeader();
 
 function setDateFilter() {
   const currentDate = moment().set({ hour: 23, minute: 59, second: 59 }).utc(); // current date in UTC with milliseconds format
@@ -18,14 +20,6 @@ function setDateFilter() {
     url.searchParams.set('from', parseInt(oneMonthBefore.valueOf() / 1000));
     url.searchParams.set('to', parseInt(currentDate.valueOf() / 1000));
     window.history.pushState({}, '', url);
-  }
-}
-console.log(moment().format('DD/MM/YYYY'));
-async function getAllOrderWithQuery(query) {
-  try {
-    return await orderApi.getAllWithQuery(query);
-  } catch (error) {
-    console.error(error);
   }
 }
 

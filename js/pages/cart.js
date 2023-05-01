@@ -1,10 +1,13 @@
 import orderApi from '../api/orderApi';
 import productApi from '../api/productApi';
-import { convertCurrency } from '../utils/constains';
+import { convertCurrency, initCartList, initHeader } from '../utils/constains';
 import { validation } from '../utils/validation';
 import { toast } from '../utils/toast';
 
 let CartList;
+
+initCartList();
+initHeader();
 
 async function createOrder(data) {
   try {
@@ -321,6 +324,6 @@ async function purchaseBtnHandler() {
     });
   }
 }
-renderCartList();
 
+renderCartList();
 renderTotal();

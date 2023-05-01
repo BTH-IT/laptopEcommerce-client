@@ -52,9 +52,12 @@
 .product-card_title {
   font-size: 1.4rem;
   display: block;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+          line-clamp: 1; 
+  -webkit-box-orient: vertical;
 }
 
 .product-card_sale-price {

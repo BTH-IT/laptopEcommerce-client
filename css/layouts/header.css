@@ -227,6 +227,7 @@
   width: 75px;
   height: 75px;
   border: 1px solid var(--gray-300);
+  flex-shrink: 0;
 }
 
 .action-cart_item-image img {
@@ -245,9 +246,12 @@
   font-size: 1.1rem;
   text-decoration: none;
   display: block;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+          line-clamp: 1; 
+  -webkit-box-orient: vertical;
 }
 
 .action-cart_item-info a:hover {

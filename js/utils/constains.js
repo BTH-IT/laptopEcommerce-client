@@ -33,7 +33,8 @@ export const filterList = [
   },
 ];
 
-export const priceGap = 100000000;
+export const priceGap = 10000000;
+export const priceGapMobile = 2000000;
 
 export let max;
 
@@ -62,6 +63,7 @@ export function renderLoadingManager(row = 1, col = 1) {
 
 export async function initFilter() {
   const rangeInputList = $('.price-range-input input');
+  const rangeInputMobileList = $('.price-range-input-mobile input');
   try {
     const { data } = await productApi.getAll();
     data.forEach((product) => {
@@ -77,6 +79,12 @@ export async function initFilter() {
 
     rangeInputList[1].setAttribute('min', 0);
     rangeInputList[1].setAttribute('max', max);
+
+    rangeInputMobileList[0].setAttribute('min', 0);
+    rangeInputMobileList[0].setAttribute('max', max);
+
+    rangeInputMobileList[1].setAttribute('min', 0);
+    rangeInputMobileList[1].setAttribute('max', max);
   } catch (error) {
     console.log(error.message);
   }
@@ -95,6 +103,7 @@ export async function initFilter() {
 
       queryArr.forEach((item) => {
         $(`input#${item}`).prop('checked', true);
+        $(`input#mobile-${item}`).prop('checked', true);
       });
     }
   });
@@ -109,25 +118,33 @@ export async function initFilter() {
 
   if (queryParams.has('min_price')) {
     const minVal = Number(queryParams.get('min_price'));
-    const min = minVal.toLocaleString('it-IT', {
-      style: 'currency',
-      currency: 'VND',
-    });
+    const min = convertCurrency(minVal);
 
     $('.input-min').val(min);
     $('.range-min').val(minVal);
 
+    $('.input-min-mobile').val(min);
+    $('.range-min-mobile').val(minVal);
+
     rangeInputList[0].value = minVal;
+    rangeInputMobileList[0].value = minVal;
 
     let percentLeft = (minVal / rangeInputList[0].max) * 100;
+    let percentMobileLeft = (minVal / rangeInputMobileList[0].max) * 100;
 
     $('.price-progress').css({
       left: percentLeft + '%',
     });
+
+    $('.price-progress-mobile').css({
+      left: percentMobileLeft + '%',
+    });
   } else {
     rangeInputList[0].value = 0;
+    rangeInputMobileList[0].value = 0;
 
     $('.price-input input')[0].value = convertCurrency(0);
+    $('.price-input-mobile input')[0].value = convertCurrency(0);
   }
 
   if (queryParams.has('max_price')) {
@@ -137,15 +154,25 @@ export async function initFilter() {
     $('.input-max').val(max);
     $('.range-max').val(maxVal);
 
+    $('.input-max-mobile').val(max);
+    $('.range-max-mobile').val(maxVal);
+
     let percentRight = 100 - (maxVal / rangeInputList[1].max) * 100;
+    let percentMobileRight = 100 - (maxVal / rangeInputMobileList[1].max) * 100;
 
     $('.price-progress').css({
       right: percentRight + '%',
     });
+
+    $('.price-progress-mobile').css({
+      right: percentMobileRight + '%',
+    });
   } else {
     rangeInputList[1].value = max;
+    rangeInputMobileList[1].value = max;
 
     $('.price-input input')[1].value = convertCurrency(max);
+    $('.price-input-mobile input')[1].value = convertCurrency(max);
   }
 }
 
@@ -156,7 +183,7 @@ export function renderProductSearch(data) {
       const productCardHTML = renderProductCard(product);
 
       return `
-        <div class="col-3">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
           ${productCardHTML}
         </div>`;
     })
@@ -198,7 +225,7 @@ export function renderCartList(cartList) {
         <li class="action-cart_item">
           <div class="action-cart_item-image">
             <img
-              src="http://localhost:80/laptopEcommerce-server/images/${cart['hinh_anh']}"
+              src="http://localhost:80/ecommerce-api/images/${cart['hinh_anh']}"
               alt="${cart['ten_san_pham']}">
           </div>
           <div class="action-cart_item-info">
@@ -247,23 +274,34 @@ export function initHeader() {
   initCartList();
 
   if (!accessToken) {
-    $('.action-link.auth').removeClass('hidden');
+    $('.auth').removeClass('hidden');
     $('.logged').addClass('hidden');
+    $('.logout').addClass('hidden');
     $('.action-link.manager').addClass('hidden');
     return;
   }
 
-  $('.action-link.auth').addClass('hidden');
-  $('.logged').removeClass('hidden');
+  $('.auth').addClass('hidden');
+  $('.logout').removeClass('hidden');
 
   const token = parseJwt(accessToken);
   const now = parseInt(Date.now() / 1000);
+
+  $('.logged img').attr(
+    'src',
+    'http://localhost:80/ecommerce-api/images/' + token.data.infor.avatar
+  );
+  $('.logged').removeClass('hidden');
 
   if (now > token.exp) {
     setLocalStorage('access_token', null);
     setLocalStorage('user', null);
     window.location.href = '/';
     return;
+  }
+
+  if (token.data.role['ma_nhom_quyen'] !== 0) {
+    window.location.href = '/manager.html';
   }
 
   setLocalStorage('user', token.data);

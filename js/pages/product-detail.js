@@ -1,4 +1,5 @@
 import productApi from '../api/productApi';
+import { initHeader } from '../utils/constains';
 import { renderProductCard } from '../utils/product-card';
 import { toast } from '../utils/toast';
 
@@ -32,6 +33,7 @@ async function getAllData() {
 
 async function renderProductDetail() {
   let data = await getDatabyID(productID);
+  $('#product__nav-name').html(data['ten_san_pham']);
   amount = data.so_luong;
   let productSection = `
       <div class="product__info-row row" id="${data.ma_san_pham}">
@@ -358,6 +360,6 @@ function AddToCartBtnHandler() {
   }
 }
 
-await renderProductDetail();
-
-await renderSimilarProduct();
+initHeader();
+renderProductDetail();
+renderSimilarProduct();

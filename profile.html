@@ -4,11 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/icon.png" />
+    <title>Brand | Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- font awesome -->
     <script src="https://kit.fontawesome.com/10c30652a2.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/vendor/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/vendor/slick.min.css" />
-    <link rel="stylesheet" href="css/pages/product-detail.css" />
-    <title>Brand | Product Detail</title>
+
+    <link rel="stylesheet" href="./css/pages/profile.css" />
   </head>
 
   <body>
@@ -113,7 +117,7 @@
           <div class="action-container logged">
             <div class="action-logged">
               <span class="action-img">
-                <img src="http://localhost:80/laptopEcommerce-server/images/avatar.jpg" alt="" />
+                <img src="http://localhost:80/ecommerce-api/images/avatar.jpg" alt="" />
               </span>
               <span class="action-title">
                 Xin chào, <br />
@@ -242,81 +246,77 @@
         <span class="action-title"> Đăng xuất </span>
       </a>
     </div>
-    <section class="product container-sm">
-      <div class="product__link">
-        <a href="/">Trang chủ </a><span id="seperate">/</span><span id="product__nav-name"></span>
-      </div>
-      <div class="product__info"></div>
-      <div class="product__detail">
-        <div class="product__detail-container container">
-          <div class="product__detail-row row">
-            <div class="col-8">
-              <h4>Mô tả sản phẩm</h4>
-              <div class="product__detail-description"></div>
-            </div>
-            <div class="col">
-              <h4>Thông tin chi tiết</h4>
-              <table class="product__detail-table"></table>
+
+    <section class="container">
+      <section class="profile-form">
+        <h1>Thông tin tài khoản</h1>
+        <form action="" class="form">
+          <div class="avatar_container">
+            <div class="d-flex justify-content-center align-items-center mt-2">
+              <div class="avatar">
+                <input id="avatar" type="file" accept="image/*" hidden />
+                <label for="avatar">
+                  <img src="http://localhost:80/ecommerce-api/images/avatar.jpg" alt="" />
+                </label>
+                <i class="fa-solid fa-trash"></i>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="similar-product">
-        <div class="similar-product-title">
-          <h4>Các sản phẩm liên quan có thể bạn sẽ thích</h4>
-        </div>
-        <div class="product-slider"></div>
-      </div>
+          <div class="input_container">
+            <label for="fullname" class="label">Họ tên</label>
+            <div class="input">
+              <input id="fullname" type="text" placeholder="Họ tên..." rules="required" />
+            </div>
+            <span class="text-danger mb-1 error"></span>
+          </div>
+          <div class="input_container">
+            <label for="birth-date" class="label">Ngày sinh</label>
+            <div class="input">
+              <input id="birth-date" type="date" placeholder="Ngày sinh..." rules="required" />
+            </div>
+            <span class="text-danger mb-1 error"></span>
+          </div>
+          <div class="input_container">
+            <label for="phone" class="label">Số điện thoại</label>
+            <div class="input">
+              <input id="phone" type="text" placeholder="Số điện thoại..." rules="required|phone" />
+            </div>
+            <span class="text-danger mb-1 error"></span>
+          </div>
+          <div class="input_container">
+            <label for="address" class="label">Địa chỉ</label>
+            <div class="input">
+              <input id="address" type="text" placeholder="Địa chỉ..." rules="required" />
+            </div>
+            <span class="text-danger mb-1 error"></span>
+          </div>
+          <div class="select_container">
+            <label for="gender" class="label">Giới tính</label>
+            <div class="select">
+              <select name="" id="gender" rules="required">
+                <option value="" hidden selected>Chọn giới tính</option>
+                <option value="1">Nam</option>
+                <option value="0">Nữ</option>
+              </select>
+            </div>
+            <span class="text-danger mb-1 error"></span>
+          </div>
+          <button type="submit" class="btn primary btn-update">Cập nhật</button>
+        </form>
+      </section>
     </section>
-    <div class="" id="toast"></div>
+    <footer class="footer">
+      <div class="footer-container">© 2023 Ecommerce.</div>
+    </footer>
+
+    <div id="toast"></div>
+
+    <!-- JQUERY -->
     <script type="text/javascript" src="js/vendor/jquery.min.js"></script>
-    <script type="text/javascript" src="js/vendor/slick.min.js"></script>
-    <script type="module" src="js/pages/product-detail.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery-migrate-1.2.1.min.js"></script>
 
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('.product-slider').slick({
-          dots: false,
-          infinite: false,
-          speed: 250,
-          slidesToShow: 5,
-          slidesToScroll: 5,
-          //variableWidth: true,
-          prevArrow:
-            '<button type="button" class="slick-custom-arrow slick-prev"> <i class="fa-solid fa-chevron-left fa-xl"></i> </button>',
-          nextArrow:
-            '<button type="button" class="slick-custom-arrow slick-next"> <i class="fa-solid fa-chevron-right fa-xl"></i> </button>',
-
-          responsive: [
-            {
-              breakpoint: 1300,
-              settings: {
-                slidesToShow: 3,
-                slidesToScroll: 3,
-                infinite: false,
-                dots: false,
-              },
-            },
-            {
-              breakpoint: 800,
-              settings: {
-                slidesToShow: 2,
-                slidesToScroll: 2,
-              },
-            },
-            {
-              breakpoint: 400,
-              settings: {
-                slidesToShow: 1,
-                slidesToScroll: 1,
-              },
-            },
-            // You can unslick at a given breakpoint now by adding:
-            // settings: "unslick"
-            // instead of a settings object
-          ],
-        });
-      });
-    </script>
+    <script type="module" src="/js/pages/profile.js"></script>
+    <script type="module" src="js/utils/header.js"></script>
+    <script type="module" src="/js/utils/logout.js"></script>
   </body>
 </html>

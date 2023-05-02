@@ -1,5 +1,11 @@
 import orderApi from '../api/orderApi';
-import { convertCurrency, initCartList, initHeader } from '../utils/constains';
+import {
+  convertCurrency,
+  getLocalStorage,
+  initCartList,
+  initHeader,
+  parseJwt,
+} from '../utils/constains';
 import { toast } from '../utils/toast';
 
 initCartList();
@@ -179,6 +185,7 @@ async function renderHistory() {
   let order_type = url.searchParams.get('order_type') || 'all';
   let start = parseInt(url.searchParams.get('from'));
   let end = parseInt(url.searchParams.get('to'));
+  const { userId } = getLocalStorage('user');
   let query = {};
   let totalMoney = 0;
 
@@ -187,9 +194,10 @@ async function renderHistory() {
       order_type: order_type,
       from: start,
       to: end,
+      userId,
     };
   } else {
-    query = { order_type: order_type };
+    query = { order_type: order_type, userId };
   }
 
   let data = await orderApi.getAll(query);
@@ -315,5 +323,25 @@ function renderHistoryProducts(data, totalMoney) {
   $('.detail-info_total-money').text(convertCurrency(totalMoney));
 }
 
-setDateFilter();
-renderHistory();
+async function initHistory() {
+  const accessToken = getLocalStorage('access_token');
+
+  if (!accessToken) {
+    window.location.href = '/';
+    return;
+  }
+
+  const token = parseJwt(accessToken);
+
+  const now = parseInt(Date.now() / 1000);
+
+  if (now > token.exp) {
+    window.location.href = '/login.html';
+    return;
+  }
+
+  setDateFilter();
+  renderHistory();
+}
+
+initHistory();

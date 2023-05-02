@@ -51,7 +51,7 @@ export async function renderGuarantee(params = '') {
           </td>
           <td>
             <div class="d-flex justify-content-center align-items-center gap-2">
-              <i class="fa-solid fa-pen-to-square admin-action edit" data-id="${guarantee['ma_bao_hanh']}"></i>
+              <i class="fa-solid fa-circle-info admin-action viewmore text-primary" data-id="${guarantee['ma_bao_hanh']}"></i>
               <i class="fa-solid fa-trash admin-action remove text-danger" data-id="${guarantee['ma_bao_hanh']}"></i>
             </div>
           </td>
@@ -61,7 +61,7 @@ export async function renderGuarantee(params = '') {
 
     $('.guarantee-content').html(guaranteeHTML);
 
-    $('.guarantee .admin-action.edit').click(async (e) => {
+    $('.guarantee .admin-action.viewmore').click(async (e) => {
       $('#viewmoreGuaranteeModal').modal('show');
       $('#viewmoreGuaranteeModal').attr('data-id', e.target.dataset.id);
       await handleUpdateGuarantee(e.target.dataset.id);

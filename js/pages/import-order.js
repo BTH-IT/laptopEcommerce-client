@@ -29,7 +29,7 @@ export async function renderImportOrder(params) {
     if (importOrderList.length <= 0) {
       $('.import-order-content').html(`
         <tr>
-          <td colspan="3">
+          <td colspan="5">
             <h1 class="text-center my-5 w-100">Không có phiếu nhập nào cả!!!</h1>  
           </td>
         </tr>
@@ -44,13 +44,17 @@ export async function renderImportOrder(params) {
             ${order['ma_phieu_nhap']}
           </td>
           <td>
-            <span class="import-order-time">
-              ${moment(order['ngay_lap']).format('L')}
-            </span>
+            ${order['ma_nhan_vien']}
+          </td>
+          <td>
+            ${order['ma_nha_cung_cap']}
+          </td>
+          <td>
+            ${moment(order['ngay_lap']).format('L')}
           </td>
           <td>
             <div class="d-flex justify-content-center align-items-center gap-2">
-              <i class="fa-solid fa-pen-to-square admin-action view" data-id="${
+              <i class="fa-solid fa-circle-info text-primary admin-action view" data-id="${
                 order['ma_phieu_nhap']
               }"></i>
               <i class="fa-solid fa-trash admin-action remove text-danger" data-id="${
@@ -163,7 +167,7 @@ $('#deleteImportOrderModal .btn-yes').click(async () => {
 });
 
 export function renderImportOrderPage() {
-  const loadingHTML = renderLoadingManager(18, 3);
+  const loadingHTML = renderLoadingManager(18, 5);
 
   $('.admin-content').html(`
     <div class="import-order">
@@ -173,7 +177,7 @@ export function renderImportOrderPage() {
       </div>
       <div class="search-container">
         <div class="search-box">
-          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã phiếu nhập" />
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã phiếu nhập, mã nhân viên, mã nhà cung cấp" />
           <button type="button" class="btn primary btn-header">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -191,7 +195,19 @@ export function renderImportOrderPage() {
               </th>
               <th>
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
-                  Thời gian
+                  Mã nhân viên
+                  <div class="icon-sort" data-value="ma_nhan_vien" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mã nhà cung cấp
+                  <div class="icon-sort" data-value="ma_nha_cung_cap" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Ngày lập
                   <div class="icon-sort" data-value="ngay_lap" data-sort="desc"></div>
                 </div>
               </th>

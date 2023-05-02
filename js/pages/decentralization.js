@@ -7,8 +7,8 @@ import {
   parseJwt,
   renderLoadingManager,
   setLocalStorage,
-} from './utils/constains';
-import { toast } from './utils/toast';
+} from '../utils/constains';
+import { toast } from '../utils/toast';
 import { handleSearching, handleSorting } from './manager';
 
 async function renderDecentralization(params = '') {
@@ -74,10 +74,11 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-product`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-product`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
+
               break;
             case 'auth-groups':
               $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-auth-group`).attr(
@@ -90,7 +91,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-auth-group`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-auth-group`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -106,7 +107,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-order`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-order`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -122,7 +123,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-decentralization`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-decentralization`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -138,7 +139,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-user`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-user`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -146,7 +147,7 @@ async function renderDecentralization(params = '') {
             case 'statistics':
               $('#toggle-view-statistics').attr('data-per-id', per['ma_quyen_hang']);
               $('#toggle-view-statistics').attr('data-action-id', per['ma_chuc_nang']);
-              $('#toggle-view-statistics').attr('checked', per['trang_thai_quyen_hang']);
+              $('#toggle-view-statistics').prop('checked', per['trang_thai_quyen_hang']);
               break;
             case 'brands':
               $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-brand`).attr(
@@ -159,7 +160,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-brand`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-brand`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -175,7 +176,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-customer`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-customer`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -191,7 +192,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-employee`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-employee`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -207,7 +208,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-import-order`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-import-order`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -223,7 +224,7 @@ async function renderDecentralization(params = '') {
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-guarantee`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-guarantee`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );

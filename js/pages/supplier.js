@@ -6,7 +6,7 @@ import { validation } from '../utils/validation';
 
 async function renderSupplier(params = '') {
   try {
-    const { data: supplierList } = await supplierApi.getAll(params);
+    const supplierList = await supplierApi.getAll(params);
 
     if (supplierList.length <= 0) {
       $('.supplier-content').html(`
@@ -27,6 +27,12 @@ async function renderSupplier(params = '') {
           </td>
           <td>
             ${supplier['ten_nha_cung_cap']}
+          </td>
+          <td>
+            ${supplier['so_dien_thoai']}
+          </td>
+          <td>
+            ${supplier['dia_chi']}
           </td>
           <td>
             <div class="d-flex align-items-center justify-content-center gap-2">
@@ -213,7 +219,7 @@ $('#deleteSupplierModal .btn-yes').click(async () => {
 });
 
 export function renderSupplierPage() {
-  const loadingHTML = renderLoadingManager(18, 3);
+  const loadingHTML = renderLoadingManager(18, 5);
 
   $('.admin-content').html(`
     <div class="supplier">
@@ -225,7 +231,7 @@ export function renderSupplierPage() {
       </div>
       <div class="search-container">
         <div class="search-box">
-          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên nhà cung cấp" />
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên, số điện thoại, địa chỉ nhà cung cấp" />
           <button type="button" class="btn primary btn-header">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -245,6 +251,18 @@ export function renderSupplierPage() {
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
                   Tên nhà cung cấp
                   <div class="icon-sort" data-value="ten_nha_cung_cap" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Số điện thoại
+                  <div class="icon-sort" data-value="so_dien_thoai" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Địa chỉ
+                  <div class="icon-sort" data-value="dia_chi" data-sort="desc"></div>
                 </div>
               </th>
               <th>Hành động</th>

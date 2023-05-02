@@ -192,13 +192,13 @@ async function renderBrandSelect() {
         }
 
         return `
-            <option value="${brand['ten_thuong_hieu']}">${brand['ten_thuong_hieu']}</option>
-          `;
+          <option value="${brand['ten_thuong_hieu']}">${brand['ten_thuong_hieu']}</option>
+        `;
       })
       .join('');
 
-    $('#createProductModal #product-brand').html(dataHTML);
-    $('#viewAndUpdateProductModal #product-brand').html(dataHTML);
+    $('#createProductModal #product-brand-create').html(dataHTML);
+    $('#viewAndUpdateProductModal #product-brand-update').html(dataHTML);
   } catch (error) {
     console.log(error.message);
   }

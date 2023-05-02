@@ -1,6 +1,6 @@
 import moment from 'moment';
 import employeeApi from '../api/employeeApi';
-import { isAccessAction, renderLoadingManager } from '../utils/constains';
+import { convertCurrency, isAccessAction, renderLoadingManager } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 import { handleSearching, handleSorting } from './manager';
@@ -12,7 +12,7 @@ async function renderEmployee(params = '') {
     if (data.length <= 0) {
       $('.employee-content').html(`
         <tr>
-          <td colspan="3">
+          <td colspan="7">
             <h1 class="text-center my-5 w-100">Không có nhân viên nào cả!!!</h1>  
           </td>
         </tr>
@@ -31,9 +31,25 @@ async function renderEmployee(params = '') {
                 ${employee['ten_nhan_vien']}
               </td>
               <td>
+                ${moment(employee['ngay_sinh'] * 1000).format('L')}
+              </td>
+              <td>
+                ${employee['so_dien_thoai']}
+              </td>
+              <td>
+                ${employee['muc_luong']}
+              </td>
+              <td>
+                ${employee['gioi_tinh'] ? 'Nam' : 'Nữ'}
+              </td>
+              <td>
                 <div class="d-flex justify-content-center align-items-center gap-2">
-                  <i class="fa-solid fa-pen-to-square admin-action edit" data-id="${employee['ma_nhan_vien']}"></i>
-                  <i class="fa-solid fa-trash admin-action remove text-danger" data-id="${employee['ma_nhan_vien']}"></i>
+                  <i class="fa-solid fa-pen-to-square admin-action edit" data-id="${
+                    employee['ma_nhan_vien']
+                  }"></i>
+                  <i class="fa-solid fa-trash admin-action remove text-danger" data-id="${
+                    employee['ma_nhan_vien']
+                  }"></i>
                 </div>
               </td>
             </tr>
@@ -133,7 +149,7 @@ $('#createEmployeeModal .btn-add').click(async () => {
 });
 
 export function renderEmployeePage() {
-  const loadingHTML = renderLoadingManager(18, 3);
+  const loadingHTML = renderLoadingManager(18, 7);
 
   $('.admin-content').html(`
     <div class="employee">
@@ -145,7 +161,7 @@ export function renderEmployeePage() {
       </div>
       <div class="search-container">
         <div class="search-box">
-          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên nhân viên" />
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên, ngày sinh, số điện thoại, mức lương, giới tính nhân viên" />
           <button type="button" class="btn primary btn-header">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -165,6 +181,30 @@ export function renderEmployeePage() {
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
                   Tên nhân viên
                   <div class="icon-sort" data-value="ten_nhan_vien" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Ngày sinh
+                  <div class="icon-sort" data-value="ngay_sinh" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Số điện thoại
+                  <div class="icon-sort" data-value="so_dien_thoai" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Mức lương
+                  <div class="icon-sort" data-value="muc_luong" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Giới tính
+                  <div class="icon-sort" data-value="gioi_tinh" data-sort="desc"></div>
                 </div>
               </th>
               <th>Hành động</th>

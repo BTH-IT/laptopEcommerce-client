@@ -1,3 +1,4 @@
+import moment from 'moment';
 import brandApi from '../api/brandApi';
 import orderApi from '../api/orderApi';
 import { convertCurrency } from '../utils/constains';
@@ -5,6 +6,7 @@ import { renderChartBrand, renderChartReport } from '../vendor/chart';
 
 let now = new Date();
 let date = new Date();
+let limit = 10;
 
 async function initOverview() {
   now = new Date();
@@ -21,12 +23,14 @@ async function initOverview() {
     `${moment(date).format('L')} - ${moment(now).format('L')}`
   );
 
+  $('input[name="list-daterange"]').val(`${moment(date).format('L')} - ${moment(now).format('L')}`);
+
   $('input[name="brand-daterange"]').val(
     `${moment(date).format('L')} - ${moment(now).format('L')}`
   );
 
-  const from = Math.floor(date.getTime() / 1000);
-  const to = Math.floor(now.getTime() / 1000);
+  const from = Math.floor(date.getTime());
+  const to = Math.floor(now.getTime());
 
   const chart = await handleOverview(from, to);
   return chart;
@@ -40,6 +44,7 @@ async function handleOverview(from, to) {
     const chart1 = await renderChartReport(orderList);
     renderBestsellerReport(orderList, from, to);
     const chart2 = await renderChartBrand(orderList, from, to);
+    renderGeneralReportList(orderList, from, to);
 
     return {
       chart1: chart1,
@@ -50,7 +55,7 @@ async function handleOverview(from, to) {
   }
 }
 
-export function renderBestsellerReport(data, from, to) {
+export function renderBestsellerReport(data, from, to, limit = 10) {
   const orderList = data.filter(
     (order) => order['thoi_gian_dat_mua'] >= from && order['thoi_gian_dat_mua'] <= to
   );
@@ -78,7 +83,7 @@ export function renderBestsellerReport(data, from, to) {
   productList.sort((a, b) => b['so_luong_da_mua'] - a['so_luong_da_mua']);
 
   if (productList.length > 0) {
-    const bestsellerHTML = productList.map((product) => {
+    const bestsellerHTML = productList.slice(0, limit).map((product) => {
       return `
       <li class="bestseller-product_item">
         <div class="bestseller-product_container">
@@ -203,6 +208,50 @@ export async function handleChartBrand(orderList, from, to) {
   }
 }
 
+export function renderGeneralReportList(data, from, to) {
+  const orderList = data.filter(
+    (order) =>
+      order['thoi_gian_dat_mua'] >= from &&
+      order['thoi_gian_dat_mua'] <= to &&
+      order['trang_thai'] === 'hoàn thành'
+  );
+
+  if (orderList.length <= 0) {
+    $('.chart-table-content').html(`
+        <tr>
+          <td colspan="5">
+            <h1 class="text-center my-5 w-100">Không có đơn hàng nào cả!!!</h1>  
+          </td>
+        </tr>
+      `);
+    return;
+  }
+
+  const sellOrderHTML = orderList.map(
+    (order) => `
+      <tr align="center">
+        <td>
+          ${order['ma_don_hang']}
+        </td>
+        <td>
+          ${order['ma_khach_hang']}
+        </td>
+        <td>
+          ${order['ma_nhan_vien']}
+        </td>
+        <td>
+          ${moment(order['ngay_lap']).format('L')}
+        </td>
+        <td>
+          ${convertCurrency(order['tong_tien'])}
+        </td>
+      </tr>
+    `
+  );
+
+  $('.chart-table-content').html(sellOrderHTML);
+}
+
 export function renderGeneralReport(data, from, to) {
   const orderList = data.filter(
     (order) => order['thoi_gian_dat_mua'] >= from && order['thoi_gian_dat_mua'] <= to
@@ -235,7 +284,7 @@ export function renderGeneralReport(data, from, to) {
   $('.order').html(totalOrder || 0);
 }
 
-export function renderOverviewPage() {
+export async function renderOverviewPage() {
   $('.admin-content').html(`
     <div class="overview">
       <div class="general-report">
@@ -275,16 +324,63 @@ export function renderOverviewPage() {
       </div>
 
       <div class="statistics">
-        <div class="statistics-header">
-          <h1>Biểu đồ doanh thu</h1>
-          <input type="number" name="chart-daterange" value="2018" class="text-center" />
+        <div class="statistics-container">
+          <div class="statistics-action">
+            <span class="active" data-value="statistics-chart">Biểu đồ</span>
+            <span data-value="statistics-list">Danh sách</span>
+          </div>
+          <div class="statistics-chart">
+            <div class="statistics-header">
+              <h1>Biểu đồ doanh thu</h1>
+              <input type="number" name="chart-daterange" value="2018" class="text-center" />
+            </div>
+            <div id="chart-area-1"></div>
+          </div>
+          <div class="statistics-list hidden">
+            <div class="statistics-header">
+              <h1>Danh sách sản phẩm doanh thu</h1>
+              <input
+                type="text"
+                name="list-daterange"
+                value="01/01/2018 - 01/15/2018"
+              />
+            </div>
+            <div id="chart-table">
+              <table class="sell-order-table">
+                <thead>
+                  <tr align="center">
+                    <th>
+                        Mã đơn hàng
+                    </th>
+                    <th>
+                        Mã khách hàng
+                    </th>
+                    <th>
+                        Mã nhân viên
+                    </th>
+                    <th>
+                        Thời gian
+                    </th>
+                    <th>
+                        Tổng tiền
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="chart-table-content">
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <div id="chart-area-1"></div>
-
+        
         <div class="row gap-3 gap-lg-0">
           <div class="col-12 col-lg-6">
             <div class="statistics-header">
-              <h1>Top 10 các sản phẩm bán chạy nhất</h1>
+              <h1>
+                Top
+                <input type="number" class="statistics-bestseller_input" value="10" min="1"/>
+                sản phẩm bán chạy nhất
+              </h1>
               <input
                 type="text"
                 name="bestseller-daterange"
@@ -298,7 +394,9 @@ export function renderOverviewPage() {
               <h1>Biểu đồ doanh thu các loại sản phẩm</h1>
               <input type="text" name="brand-daterange" value="01/01/2018 - 01/15/2018" />
             </div>
-            <div id="chart-area-2"></div>
+            <div id="chart-area-2">
+              
+            </div>
           </div>
         </div>
       </div>
@@ -313,7 +411,6 @@ export function renderOverviewPage() {
         opens: 'left',
       },
       async function (start, end, label) {
-        console.log(moment(date).format('L'));
         const startDate = new Date(start.format('YYYY-MM-DD'));
         const endDate = new Date(end.format('YYYY-MM-DD'));
 
@@ -324,6 +421,31 @@ export function renderOverviewPage() {
           const orderList = await orderApi.getAll();
 
           renderGeneralReport(orderList, from, to);
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    );
+  });
+
+  $(document).ready(() => {
+    $('input[name="list-daterange"]').daterangepicker(
+      {
+        startDate: moment(date).format('L'),
+        endDate: moment(now).format('L'),
+        opens: 'left',
+      },
+      async function (start, end, label) {
+        const startDate = new Date(start.format('YYYY-MM-DD'));
+        const endDate = new Date(end.format('YYYY-MM-DD'));
+
+        const from = startDate.getTime() / 1000;
+        const to = endDate.getTime() / 1000;
+
+        try {
+          const orderList = await orderApi.getAll();
+
+          renderGeneralReportList(orderList, from, to);
         } catch (error) {
           console.log(error.message);
         }
@@ -345,15 +467,57 @@ export function renderOverviewPage() {
         const from = startDate.getTime() / 1000;
         const to = endDate.getTime() / 1000;
 
+        date = startDate;
+        now = endDate;
+
         try {
           const orderList = await orderApi.getAll();
 
-          renderBestsellerReport(orderList, from, to);
+          renderBestsellerReport(orderList, from, to, limit);
         } catch (error) {
           console.log(error.message);
         }
       }
     );
+  });
+
+  $('.statistics-action span').click((e) => {
+    if (e.target.classList.contains('active')) return;
+
+    $('.statistics-action span.active').removeClass('active');
+    e.target.classList.add('active');
+
+    switch (e.target.dataset.value) {
+      case 'statistics-list':
+        $('.statistics-list').removeClass('hidden');
+        $('.statistics-chart').addClass('hidden');
+        break;
+
+      case 'statistics-chart':
+        $('.statistics-chart').removeClass('hidden');
+        $('.statistics-list').addClass('hidden');
+        break;
+    }
+  });
+
+  $('.statistics-bestseller_input').change(async (e) => {
+    const value = e.target.value;
+
+    if (value <= 0 || value === '') {
+      e.target.value = 10;
+    }
+
+    const from = date.getTime() / 1000;
+    const to = now.getTime() / 1000;
+    limit = value;
+
+    try {
+      const orderList = await orderApi.getAll();
+
+      renderBestsellerReport(orderList, from, to, value);
+    } catch (error) {
+      console.log(error.message);
+    }
   });
 
   return initOverview();

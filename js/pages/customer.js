@@ -9,7 +9,7 @@ async function renderCustomer(params = '') {
     if (data.length <= 0) {
       $('.customer-content').html(`
         <tr>
-          <td colspan="3">
+          <td colspan="7">
             <h1 class="text-center my-5 w-100">Không có khách hàng nào cả!!!</h1>  
           </td>
         </tr>
@@ -28,9 +28,25 @@ async function renderCustomer(params = '') {
                 ${customer['ten_khach_hang']}
               </td>
               <td>
+                ${moment(customer['ngay_sinh']).format('L')}
+              </td>
+              <td>
+                ${customer['so_dien_thoai']}
+              </td>
+              <td>
+                ${customer['dia_chi']}
+              </td>
+              <td>
+                ${customer['gioi_tinh'] ? 'Nam' : 'Nữ'}
+              </td>
+              <td>
                 <div class="d-flex justify-content-center align-items-center gap-3">
-                  <i class="fa-solid fa-circle-info admin-action viewmore text-primary" data-id="${customer['ma_khach_hang']}"></i>
-                  <i class="fa-solid fa-trash admin-action remove text-danger" data-id="${customer['ma_khach_hang']}"></i>
+                  <i class="fa-solid fa-circle-info admin-action viewmore text-primary" data-id="${
+                    customer['ma_khach_hang']
+                  }"></i>
+                  <i class="fa-solid fa-trash admin-action remove text-danger" data-id="${
+                    customer['ma_khach_hang']
+                  }"></i>
                 </div>
               </td>
             </tr>
@@ -68,7 +84,7 @@ async function renderCustomer(params = '') {
 }
 
 export function renderCustomerPage() {
-  const loadingHTML = renderLoadingManager(18, 3);
+  const loadingHTML = renderLoadingManager(18, 7);
 
   $('.admin-content').html(`
     <div class="customer">
@@ -80,7 +96,7 @@ export function renderCustomerPage() {
       </div>
       <div class="search-container">
         <div class="search-box">
-          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên khách hàng" />
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo mã, tên, ngày sinh, số điện thoại, địa chỉ, giới tính khách hàng" />
           <button type="button" class="btn primary btn-header">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -100,6 +116,30 @@ export function renderCustomerPage() {
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
                   Tên khách hàng
                   <div class="icon-sort" data-value="ten_khach_hang" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Ngày sinh
+                  <div class="icon-sort" data-value="ngay_sinh" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Số điện thoại
+                  <div class="icon-sort" data-value="so_dien_thoai" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Địa chỉ
+                  <div class="icon-sort" data-value="dia_chi" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Giới tính
+                  <div class="icon-sort" data-value="gioi_tinh" data-sort="desc"></div>
                 </div>
               </th>
               <th>Hành động</th>

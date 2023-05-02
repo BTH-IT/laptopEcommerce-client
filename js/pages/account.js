@@ -38,7 +38,14 @@ async function renderAccount(params) {
               ${moment(acc['created_at']).format('L')}
             </td>
             <td>
-              <div class="d-flex justify-content-center align-items-center">
+              <div class="d-flex justify-content-center align-items-center gap-3">
+                ${
+                  acc['ma_nhom_quyen'] === 0
+                    ? ''
+                    : `
+                      <i class="fa-solid fa-pen-to-square admin-action edit" data-id="${acc['ten_dang_nhap']}"></i>
+                    `
+                }
                 <i class="fa-solid fa-trash admin-action remove text-danger" data-id="${
                   acc['ten_dang_nhap']
                 }"></i>
@@ -64,6 +71,12 @@ async function renderAccount(params) {
       const id = e.target.dataset.id;
       $('#deleteAccountModal').attr('data-id', id);
       $('#deleteAccountModal').modal('show');
+    });
+    $('.admin-action.edit').click((e) => {
+      if (!isAccessAction('accounts', 'UPDATE')) return;
+      const id = e.target.dataset.id;
+      $('#updateAccountModal').attr('data-id', id);
+      $('#updateAccountModal').modal('show');
     });
   } catch (error) {
     console.log(error.message);
@@ -122,7 +135,7 @@ async function renderRoleSelect() {
         });
 
         toast({
-          title: 'account Authorization Successfully',
+          title: 'Thay đổi nhóm quyền thành công',
           type: 'success',
           duration: 2000,
         });
@@ -130,7 +143,7 @@ async function renderRoleSelect() {
         renderAccount();
       } catch (error) {
         toast({
-          title: 'account Authorization failure',
+          title: 'Thay đổi nhóm quyền thất bại',
           type: 'error',
           duration: 2000,
         });
@@ -163,8 +176,8 @@ $('#createAccountModal .btn-add').click(async () => {
     try {
       await accountApi.add({
         ten_dang_nhap: $('#employee-account-create').val(),
-        mat_khau: $('#password').val(),
-        ma_nhom_quyen: $('#role-account-create').val(),
+        mat_khau: $('#createAccountModal #password').val(),
+        ma_nhom_quyen: $('#createAccountModal #role-account-create').val(),
         created_at: Date.now(),
       });
 
@@ -175,8 +188,8 @@ $('#createAccountModal .btn-add').click(async () => {
       });
 
       $('#employee-account-create').val('');
-      $('#password').val('');
-      $('#cofirm-password').val('');
+      $('#createAccountModal #password').val('');
+      $('#createAccountModal #cofirm-password').val('');
       $('#role-account-create').val('');
 
       renderAccount();
@@ -193,7 +206,65 @@ $('#createAccountModal .btn-add').click(async () => {
   }
 });
 
+$('#updateAccountModal .btn-add').click(async () => {
+  if (!isAccessAction('accounts', 'UPDATE')) return;
+
+  const inputList = Array.from($('#updateAccountModal input'));
+  const validateList = [...inputList];
+
+  let isValid = true;
+
+  const id = $('#updateAccountModal').attr('data-id');
+
+  validateList.forEach((input) => {
+    if (validation(input)) {
+      isValid = false;
+      return;
+    }
+  });
+
+  if (isValid) {
+    try {
+      await accountApi.update({
+        ten_dang_nhap: id,
+        mat_khau_moi: $('#updateAccountModal #password').val(),
+        mat_khau_cu: $('#updateAccountModal #old-password').val(),
+      });
+
+      toast({
+        title: 'Chỉnh sửa mật khẩu thành công',
+        type: 'success',
+        duration: 2000,
+      });
+
+      $('#updateAccountModal #password').val('');
+      $('#updateAccountModal #old-password').val('');
+      $('#updateAccountModal #comfirm-password').val('');
+
+      renderAccount();
+    } catch (error) {
+      toast({
+        title: 'Chỉnh sửa mật khẩu không thành công',
+        type: 'error',
+        message: error.message,
+        duration: 2000,
+      });
+    } finally {
+      $('#updateAccountModal').modal('hide');
+    }
+  }
+});
+
 $('#createAccountModal input').keyup((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('input-error');
+  } else {
+    e.target.parentElement.classList.remove('input-error');
+  }
+});
+
+$('#updateAccountModal input').keyup((e) => {
   let message = validation(e.target);
   if (message) {
     e.target.parentElement.classList.add('input-error');
@@ -212,6 +283,15 @@ $('#createAccountModal select').change((e) => {
 });
 
 $('#createAccountModal input').blur((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('input-error');
+  } else {
+    e.target.parentElement.classList.remove('input-error');
+  }
+});
+
+$('#updateAccountModal input').blur((e) => {
   let message = validation(e.target);
   if (message) {
     e.target.parentElement.classList.add('input-error');
@@ -296,7 +376,7 @@ export function renderAccountPage() {
       </div>
       <div class="search-container">
         <div class="search-box">
-          <input type="text" class="header-input" placeholder="Tìm kiếm theo tên đăng nhập" />
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo tên đăng nhập, mã nhóm quyền, ngày cấp tài khoản" />
           <button type="button" class="btn primary btn-header">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -368,30 +448,72 @@ export function renderAccountPage() {
   });
 }
 
-$('.icon-password').click(() => {
-  const icon = $('.icon-password .hidden').attr('data-value');
+$('#createAccountModal .icon-password').click(() => {
+  const icon = $('#createAccountModal .icon-password .hidden').attr('data-value');
 
   if (icon === 'eye') {
-    $(`.icon-password i[data-value='eye-slash']`).addClass('hidden');
-    $(`.icon-password i[data-value='eye']`).removeClass('hidden');
-    $('#password').attr('type', 'text');
+    $(`#createAccountModal .icon-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`#createAccountModal .icon-password i[data-value='eye']`).removeClass('hidden');
+    $('#createAccountModal #password').attr('type', 'text');
   } else {
-    $(`.icon-password i[data-value='eye-slash']`).removeClass('hidden');
-    $(`.icon-password i[data-value='eye']`).addClass('hidden');
-    $('#password').attr('type', 'password');
+    $(`#createAccountModal .icon-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`#createAccountModal .icon-password i[data-value='eye']`).addClass('hidden');
+    $('#createAccountModal #password').attr('type', 'password');
   }
 });
 
-$('.icon-confirm-password').click(() => {
-  const icon = $('.icon-confirm-password .hidden').attr('data-value');
+$('#updateAccountModal .icon-password').click(() => {
+  const icon = $('#updateAccountModal .icon-password .hidden').attr('data-value');
 
   if (icon === 'eye') {
-    $(`.icon-confirm-password i[data-value='eye-slash']`).addClass('hidden');
-    $(`.icon-confirm-password i[data-value='eye']`).removeClass('hidden');
-    $('#comfirm-password').attr('type', 'text');
+    $(`#updateAccountModal .icon-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`#updateAccountModal .icon-password i[data-value='eye']`).removeClass('hidden');
+    $('#updateAccountModal #password').attr('type', 'text');
   } else {
-    $(`.icon-confirm-password i[data-value='eye-slash']`).removeClass('hidden');
-    $(`.icon-confirm-password i[data-value='eye']`).addClass('hidden');
-    $('#comfirm-password').attr('type', 'password');
+    $(`#updateAccountModal .icon-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`#updateAccountModal .icon-password i[data-value='eye']`).addClass('hidden');
+    $('#updateAccountModal #password').attr('type', 'password');
+  }
+});
+
+$('#createAccountModal .icon-confirm-password').click(() => {
+  const icon = $('#createAccountModal .icon-confirm-password .hidden').attr('data-value');
+
+  if (icon === 'eye') {
+    $(`#createAccountModal .icon-confirm-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`#createAccountModal .icon-confirm-password i[data-value='eye']`).removeClass('hidden');
+    $('#createAccountModal #comfirm-password').attr('type', 'text');
+  } else {
+    $(`#createAccountModal .icon-confirm-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`#createAccountModal .icon-confirm-password i[data-value='eye']`).addClass('hidden');
+    $('#createAccountModal #comfirm-password').attr('type', 'password');
+  }
+});
+
+$('#updateAccountModal .icon-confirm-password').click(() => {
+  const icon = $('#updateAccountModal .icon-confirm-password .hidden').attr('data-value');
+
+  if (icon === 'eye') {
+    $(`#updateAccountModal .icon-confirm-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`#updateAccountModal .icon-confirm-password i[data-value='eye']`).removeClass('hidden');
+    $('#updateAccountModal #comfirm-password').attr('type', 'text');
+  } else {
+    $(`#updateAccountModal .icon-confirm-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`#updateAccountModal .icon-confirm-password i[data-value='eye']`).addClass('hidden');
+    $('#updateAccountModal #comfirm-password').attr('type', 'password');
+  }
+});
+
+$('#updateAccountModal .icon-old-password').click(() => {
+  const icon = $('#updateAccountModal .icon-old-password .hidden').attr('data-value');
+
+  if (icon === 'eye') {
+    $(`#updateAccountModal .icon-old-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`#updateAccountModal .icon-old-password i[data-value='eye']`).removeClass('hidden');
+    $('#updateAccountModal #old-password').attr('type', 'text');
+  } else {
+    $(`#updateAccountModal .icon-old-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`#updateAccountModal .icon-old-password i[data-value='eye']`).addClass('hidden');
+    $('#updateAccountModal #old-password').attr('type', 'password');
   }
 });

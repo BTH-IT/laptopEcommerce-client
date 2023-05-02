@@ -10,6 +10,7 @@ import {
 import customerApi from '../api/customerApi';
 import guaranteeApi from '../api/guaranteeApi';
 import productApi from '../api/productApi';
+import detailOrderApi from '../api/detailOrderApi';
 
 function initSellOrder() {
   const now = new Date();
@@ -79,14 +80,13 @@ export async function renderSellOrder(params = '') {
           </td>
           <td>
             <span class="sell-order-time">
-              ${moment(order['thoi_gian_dat_mua'] * 1000).format('L')}
+              ${moment(order['thoi_gian_dat_mua']).format('L')}
             </span>
           </td>
           <td>
-            <i class="fa-solid fa-pen-to-square admin-action edit"
-              data-id="${order['ma_don_hang']}"
-            >
-            </i>
+            <i class="fa-solid fa-circle-info admin-action viewmore text-primary" data-id="${
+              order['ma_don_hang']
+            }"></i>
           </td>
         </tr>
       `;
@@ -103,7 +103,7 @@ export async function renderSellOrder(params = '') {
       $('#statusModal').attr('data-id', e.target.dataset.id);
     });
 
-    $('.sell-order .admin-action.edit').click(async (e) => {
+    $('.sell-order .admin-action.viewmore').click(async (e) => {
       $('#viewmoreSellOrderModal').modal('show');
       $('#viewmoreSellOrderModal').attr('data-id', e.target.dataset.id);
       await handleUpdateOrder(e.target.dataset.id);
@@ -156,15 +156,19 @@ $('.modal-status .sell-order-status').click(async (e) => {
       });
 
       productList.forEach(async (product) => {
+        const [productDetailList] = await detailOrderApi.getById(id, product['ma_san_pham']);
+
         const expire = new Date();
 
         expire.setMonth(expire.getMonth() + product['thoi_gian_bao_hanh']);
 
-        await guaranteeApi.add({
-          ma_chi_tiet_san_pham: product['ma_chi_tiet_san_pham'],
-          ma_khach_hang: userId,
-          ngay_lap: now.getTime(),
-          ngay_het_han: expire.getTime(),
+        productDetailList.forEach(async (productDetail) => {
+          await guaranteeApi.add({
+            ma_chi_tiet_san_pham: productDetail['ma_chi_tiet_san_pham'],
+            ma_khach_hang: userId,
+            ngay_lap: now.getTime(),
+            ngay_het_han: expire.getTime(),
+          });
         });
 
         const data = await productApi.getById(product['ma_san_pham']);
@@ -246,7 +250,7 @@ async function handleUpdateOrder(id) {
 
     $('#viewmoreSellOrderModal .product-list').html(productListHMTL);
     $('#viewmoreSellOrderModal .order-time span').html(
-      moment(order['thoi_gian_dat_mua'] * 1000).format('L')
+      moment(order['thoi_gian_dat_mua']).format('L')
     );
 
     let status;
@@ -312,7 +316,7 @@ export function renderOrderPage() {
               <th>
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
                   Thời gian
-                  <div class="icon-sort" data-value="thoi_gian" data-sort="desc"></div>
+                  <div class="icon-sort" data-value="thoi_gian_dat_mua" data-sort="desc"></div>
                 </div>
               </th>
               <th>Hành động</th>

@@ -152,6 +152,11 @@ $('#updateBrandModal .btn-update').click(async () => {
     const id = $('#updateBrandModal').attr('data-id');
     const brandName = $('#update_brandName').val();
     const icon = $('#update_icon').val();
+
+    if ($('#update_brandImage')[0].files.length <= 0) {
+      $('#updateBrandModal').modal('hide');
+      return;
+    }
     const [file] = $('#update_brandImage')[0].files;
 
     const formData = new FormData();

@@ -76,7 +76,7 @@
 .sell-order-table-container,
 .import-order-table-container {
   overflow: auto;
-  max-height: 505px;
+  max-height: 560px;
 }
 
 .sell-order-table,
@@ -244,7 +244,7 @@
   .sell-order-table-container,
   .import-order-table-container {
     overflow: auto;
-    max-height: 438px;
+    max-height: 495px;
   }
 
   .product-new-price,

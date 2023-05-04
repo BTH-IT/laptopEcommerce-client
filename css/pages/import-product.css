@@ -55,7 +55,7 @@
 
 .import-product-table-container {
   overflow: auto;
-  max-height: 505px;
+  max-height: 560px;
 }
 
 .import-product-table {
@@ -97,6 +97,6 @@
 
   .import-product-table-container {
     overflow: auto;
-    max-height: 438px;
+    max-height: 495px;
   }
 }

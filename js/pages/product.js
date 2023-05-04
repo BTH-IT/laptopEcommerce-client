@@ -13,7 +13,7 @@ async function renderProduct(params = '') {
     if (data.length <= 0) {
       $('.product .product-content').html(`
         <tr>
-          <td colspan="4">
+          <td colspan="6">
             <h1 class="text-center my-5 w-100">Không có sản phẩm nào cả!!!</h1>  
           </td>
         </tr>
@@ -26,6 +26,14 @@ async function renderProduct(params = '') {
         return `
           <tr align="center">
             <td>${product['ma_san_pham']}</td>
+            <td>${product['ten_san_pham']}</td>
+            <td>
+              <div class="product-img">
+                <img src="http://localhost/laptopEcommerce-server/images/${
+                  product['hinh_anh'][0]
+                }" alt="${product['hinh_anh'][0]}" />
+              </div>
+            </td>
             <td>
               <div class="toggle">
                 <input
@@ -565,6 +573,15 @@ export function renderProductPage() {
                   Mã sản phẩm
                   <div class="icon-sort active before" data-value="ma_san_pham" data-sort="desc"></div>
                 </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tên sản phẩm
+                  <div class="icon-sort active before" data-value="ten_san_pham" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                Hình ảnh
               </th>
               <th>Nổi bật</th>
               <th>Hàng trong kho</th>

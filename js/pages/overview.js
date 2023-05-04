@@ -240,7 +240,7 @@ export function renderGeneralReportList(data, from, to) {
           ${order['ma_nhan_vien']}
         </td>
         <td>
-          ${moment(order['ngay_lap']).format('L')}
+          ${moment(order['thoi_gian_dat_mua']).format('L')}
         </td>
         <td>
           ${convertCurrency(order['tong_tien'])}
@@ -359,7 +359,7 @@ export async function renderOverviewPage() {
                         Mã nhân viên
                     </th>
                     <th>
-                        Thời gian
+                        Ngày lập
                     </th>
                     <th>
                         Tổng tiền

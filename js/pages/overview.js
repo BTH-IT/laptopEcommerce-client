@@ -111,7 +111,7 @@ export function handleChartReport(data, year) {
 
   const revenue = month.map((item) => {
     const dataFilter = data.filter((order) => {
-      const orderDate = new Date(order['thoi_gian_dat_mua'] * 1000);
+      const orderDate = new Date(order['thoi_gian_dat_mua']);
       return orderDate.getMonth() + 1 === item && year === orderDate.getFullYear();
     });
 
@@ -128,7 +128,7 @@ export function handleChartReport(data, year) {
 
   const sold = month.map((item) => {
     const dataFilter = data.filter((order) => {
-      const orderDate = new Date(order['thoi_gian_dat_mua'] * 1000);
+      const orderDate = new Date(order['thoi_gian_dat_mua']);
       return orderDate.getMonth() + 1 === item && year === orderDate.getFullYear();
     });
 
@@ -414,8 +414,8 @@ export async function renderOverviewPage() {
         const startDate = new Date(start.format('YYYY-MM-DD'));
         const endDate = new Date(end.format('YYYY-MM-DD'));
 
-        const from = startDate.getTime() / 1000;
-        const to = endDate.getTime() / 1000;
+        const from = startDate.getTime();
+        const to = endDate.getTime();
 
         try {
           const orderList = await orderApi.getAll();
@@ -439,8 +439,8 @@ export async function renderOverviewPage() {
         const startDate = new Date(start.format('YYYY-MM-DD'));
         const endDate = new Date(end.format('YYYY-MM-DD'));
 
-        const from = startDate.getTime() / 1000;
-        const to = endDate.getTime() / 1000;
+        const from = startDate.getTime();
+        const to = endDate.getTime();
 
         try {
           const orderList = await orderApi.getAll();
@@ -464,8 +464,8 @@ export async function renderOverviewPage() {
         const startDate = new Date(start.format('YYYY-MM-DD'));
         const endDate = new Date(end.format('YYYY-MM-DD'));
 
-        const from = startDate.getTime() / 1000;
-        const to = endDate.getTime() / 1000;
+        const from = startDate.getTime();
+        const to = endDate.getTime();
 
         date = startDate;
         now = endDate;
@@ -507,8 +507,8 @@ export async function renderOverviewPage() {
       e.target.value = 10;
     }
 
-    const from = date.getTime() / 1000;
-    const to = now.getTime() / 1000;
+    const from = date.getTime();
+    const to = now.getTime();
     limit = value;
 
     try {

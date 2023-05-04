@@ -123,8 +123,8 @@ export async function renderChartBrand(data, from, to) {
       const startDate = new Date(start.format('YYYY-MM-DD'));
       const endDate = new Date(end.format('YYYY-MM-DD'));
 
-      const from = startDate.getTime() / 1000;
-      const to = endDate.getTime() / 1000;
+      const from = startDate.getTime();
+      const to = endDate.getTime();
 
       try {
         const orderList = await orderApi.getAll();

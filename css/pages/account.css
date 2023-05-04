@@ -45,7 +45,7 @@
 
 .account-table-container {
   overflow: auto;
-  max-height: 560px;
+  max-height: 505px;
 }
 
 .account-table {
@@ -73,6 +73,6 @@
   }
 
   .account-table-container {
-    max-height: 495px;
+    max-height: 438px;
   }
 }

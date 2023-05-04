@@ -326,6 +326,8 @@ async function handleSideBar(value) {
 
       chart_1 = chart1;
       chart_2 = chart2;
+
+      $('.admin-content').addClass('statistics');
       break;
 
     case 'brand':
@@ -334,6 +336,7 @@ async function handleSideBar(value) {
       }
 
       renderBrandPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'sell-order':
@@ -342,6 +345,7 @@ async function handleSideBar(value) {
       }
 
       renderOrderPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'import-order':
@@ -350,6 +354,7 @@ async function handleSideBar(value) {
       }
 
       renderImportOrderPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'product':
@@ -358,6 +363,7 @@ async function handleSideBar(value) {
       }
 
       renderProductPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'customer':
@@ -366,6 +372,7 @@ async function handleSideBar(value) {
       }
 
       renderCustomerPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'employee':
@@ -374,6 +381,7 @@ async function handleSideBar(value) {
       }
 
       renderEmployeePage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'auth-group':
@@ -382,6 +390,7 @@ async function handleSideBar(value) {
       }
 
       renderAuthGroupPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'decentralization':
@@ -390,6 +399,7 @@ async function handleSideBar(value) {
       }
 
       renderDecentralizationPage();
+      $('.admin-content').removeClass('statistics');
       break;
     case 'account':
       if (!isAccess('accounts', 'READ')) {
@@ -397,6 +407,7 @@ async function handleSideBar(value) {
       }
 
       renderAccountPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'guarantee':
@@ -405,6 +416,7 @@ async function handleSideBar(value) {
       }
 
       renderGuaranteePage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'import-product':
@@ -413,6 +425,7 @@ async function handleSideBar(value) {
       }
 
       renderImportProductPage();
+      $('.admin-content').removeClass('statistics');
       break;
 
     case 'supplier':
@@ -421,6 +434,7 @@ async function handleSideBar(value) {
       }
 
       renderSupplierPage();
+      $('.admin-content').removeClass('statistics');
       break;
   }
 }

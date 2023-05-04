@@ -80,7 +80,7 @@
 
 .product-table-container {
   overflow: auto;
-  max-height: 560px;
+  max-height: 505px;
 }
 
 .product-table {
@@ -109,6 +109,6 @@
 
   .product-table-container {
     overflow: auto;
-    max-height: 495px;
+    max-height: 438px;
   }
 }

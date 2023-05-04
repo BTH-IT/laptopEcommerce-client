@@ -52,7 +52,7 @@
 
 .decentralization-table-container {
   overflow: auto;
-  max-height: 560px;
+  max-height: 505px;
 }
 
 .decentralization-table {
@@ -71,6 +71,6 @@
 
 @media only screen and (max-width: 526px) {
   .decentralization-table-container {
-    max-height: 495px;
+    max-height: 438px;
   }
 }

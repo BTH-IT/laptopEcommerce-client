@@ -546,7 +546,7 @@ $('#deleteProductModal .btn-yes').click(async () => {
 });
 
 export function renderProductPage() {
-  const loadingHTML = renderLoadingManager(18, 4);
+  const loadingHTML = renderLoadingManager(18, 6);
 
   $('.admin-content').html(`
     <div class="product">

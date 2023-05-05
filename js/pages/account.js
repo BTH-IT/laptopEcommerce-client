@@ -517,3 +517,21 @@ $('#updateAccountModal .icon-old-password').click(() => {
     $('#updateAccountModal #old-password').attr('type', 'password');
   }
 });
+
+$('.form input').keyup((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('input-error');
+  } else {
+    e.target.parentElement.classList.remove('input-error');
+  }
+});
+
+$('.form input').blur((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('input-error');
+  } else {
+    e.target.parentElement.classList.remove('input-error');
+  }
+});

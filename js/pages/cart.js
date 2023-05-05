@@ -339,7 +339,6 @@ async function purchaseBtnHandler() {
       danh_sach_san_pham_da_mua: PurchaseList,
     };
 
-    // console.log(JSON.stringify(Order));
     await createOrder(Order);
 
     $('.table-body').children().remove();
@@ -347,6 +346,7 @@ async function purchaseBtnHandler() {
     localStorage.setItem('cartList', JSON.stringify([]));
     initCartList();
     renderTotal();
+    renderCartList();
 
     toast({
       title: 'Thành công',

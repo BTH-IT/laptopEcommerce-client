@@ -12,6 +12,7 @@ import { renderProductPage } from './product';
 import { renderOrderPage } from './sell-order';
 import { renderSupplierPage } from './supplier';
 import { parseJwt, getLocalStorage, setLocalStorage } from '../utils/constains';
+import { validation } from '../utils/validation';
 
 let chart_1, chart_2;
 
@@ -530,3 +531,39 @@ export function handleSorting(e, callback) {
     searching,
   });
 }
+
+$('.modal-form input').keyup((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('input-error');
+  } else {
+    e.target.parentElement.classList.remove('input-error');
+  }
+});
+
+$('.modal-form input').blur((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('input-error');
+  } else {
+    e.target.parentElement.classList.remove('input-error');
+  }
+});
+
+$('.modal-form select').change((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('select-error');
+  } else {
+    e.target.parentElement.classList.remove('select-error');
+  }
+});
+
+$('.modal-form select').blur((e) => {
+  let message = validation(e.target);
+  if (message) {
+    e.target.parentElement.classList.add('select-error');
+  } else {
+    e.target.parentElement.classList.remove('select-error');
+  }
+});

@@ -153,10 +153,6 @@ $('#updateBrandModal .btn-update').click(async () => {
     const brandName = $('#update_brandName').val();
     const icon = $('#update_icon').val();
 
-    if ($('#update_brandImage')[0].files.length <= 0) {
-      $('#updateBrandModal').modal('hide');
-      return;
-    }
     const [file] = $('#update_brandImage')[0].files;
 
     const formData = new FormData();
@@ -164,12 +160,14 @@ $('#updateBrandModal .btn-update').click(async () => {
       ma_thuong_hieu: id,
       ten_thuong_hieu: brandName,
       icon,
-      hinh_anh: file.name,
     };
-    formData.append('uploadfile', file);
 
     await brandApi.update(data);
-    await uploadApi.add(formData);
+    if ($('#update_brandImage')[0].files.length > 0) {
+      formData.append('uploadfile', file);
+      data['hinh_anh'] = file.name;
+      await uploadApi.add(formData);
+    }
 
     toast({
       title: 'Thay đổi thương hiệu thành công',
@@ -239,21 +237,6 @@ $('#createBrandModal .btn-create').click(async () => {
     });
   }
 });
-
-function handleValidate(e) {
-  let message = validation(e.target);
-  if (message) {
-    e.target.parentElement.classList.add('input-error');
-  } else {
-    e.target.parentElement.classList.remove('input-error');
-  }
-}
-
-$('#createBrandModal input').keyup(handleValidate);
-$('#createBrandModal input').blur(handleValidate);
-
-$('#updateBrandModal input').keyup(handleValidate);
-$('#updateBrandModal input').blur(handleValidate);
 
 $('#deleteBrandModal .btn-yes').click(async () => {
   if (!isAccessAction('brands', 'DELETE')) return;

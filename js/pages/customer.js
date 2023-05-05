@@ -1,6 +1,9 @@
 import customerApi from '../api/customerApi';
 import { handleSearching, handleSorting } from './manager';
 import { isAccessAction, renderLoadingManager } from '../utils/constains';
+import { validation } from '../utils/validation';
+import authApi from '../api/authApi';
+import { toast } from '../utils/toast';
 
 async function renderCustomer(params = '') {
   try {
@@ -241,7 +244,7 @@ $('#createCustomerModal .btn-add').click(async () => {
         type: 'error',
       });
     } finally {
-      $('#createCustomerModal').show('hide');
+      $('#createCustomerModal').modal('hide');
     }
   }
 });
@@ -268,6 +271,6 @@ $('#deleteCustomerModal .btn-yes').click(async () => {
       type: 'error',
     });
   } finally {
-    $('#deleteCustomerModal').show('hide');
+    $('#deleteCustomerModal').modal('hide');
   }
 });

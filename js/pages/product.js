@@ -232,7 +232,7 @@ $('#createProductModal .btn-create').click(async () => {
   const bao_hanh = $('#createProductModal #product-guarantee-create').val();
   const so_cong_luu_tru_toi_da = $('#createProductModal #product-port-create').val();
   const gia_goc = $('#createProductModal #product-price-create').val();
-  const giam_gia = $('#createProductModal #product-sale-create').val();
+  const giam_gia = $('#createProductModal #product-sale-create').val() ?? 0;
   const the_he_cpu = $('#createProductModal #product-cpu-gen-create').val();
   const cpu = $('#createProductModal #product-cpu-create').val();
   const series_cpu = $('#createProductModal #product-cpu-series-create').val();
@@ -259,7 +259,7 @@ $('#createProductModal .btn-create').click(async () => {
     : false;
   const phu_kien_di_kem = $('#createProductModal #product-gear-create').val();
   const thuong_hieu = $('#createProductModal #product-brand-create').val();
-  const mo_ta_san_pham = $('#createProductModal #product-desc-create').val();
+  const mo_ta_san_pham = $('#createProductModal #product-desc-create').val() ?? 'Đang cập nhật...';
   const hinh_anh = fileAddList;
 
   const hinh_anh_name = hinh_anh.map((file) => file.name);
@@ -454,7 +454,7 @@ $('#viewAndUpdateProductModal .btn-update').click(async () => {
 let fileAddList = [];
 let fileUpdateList = [];
 
-$('#createProductModal #product-image').change((e) => {
+$('#createProductModal #product-image-create').change((e) => {
   const fileList = [...e.target.files];
 
   fileList.forEach((file) => {
@@ -467,7 +467,7 @@ $('#createProductModal #product-image').change((e) => {
   previewProductImage(fileAddList, '#createProductModal');
 });
 
-$('#viewAndUpdateProductModal #product-image').change((e) => {
+$('#viewAndUpdateProductModal #product-image-update').change((e) => {
   const fileList = [...e.target.files];
 
   fileList.forEach((file) => {

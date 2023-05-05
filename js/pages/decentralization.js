@@ -128,18 +128,18 @@ async function renderDecentralization(params = '') {
                 per['trang_thai_quyen_hang']
               );
               break;
-            case 'users':
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-user`).attr(
+            case 'accounts':
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-account`).attr(
                 'data-per-id',
                 per['ma_quyen_hang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-user`).attr(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-account`).attr(
                 'data-action-id',
                 per['ma_chuc_nang']
               );
 
-              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-user`).prop(
+              $(`#toggle-${per['ten_chuc_nang'].toLowerCase()}-account`).prop(
                 'checked',
                 per['trang_thai_quyen_hang']
               );
@@ -231,6 +231,18 @@ async function renderDecentralization(params = '') {
               break;
           }
         });
+
+        $('#toggle-all-statistics').prop('checked', false);
+        $('#toggle-all-product').prop('checked', false);
+        $('#toggle-all-auth-group').prop('checked', false);
+        $('#toggle-all-order').prop('checked', false);
+        $('#toggle-all-decentralization').prop('checked', false);
+        $('#toggle-all-customer').prop('checked', false);
+        $('#toggle-all-employee').prop('checked', false);
+        $('#toggle-all-import-order').prop('checked', false);
+        $('#toggle-all-guarantee').prop('checked', false);
+        $('#toggle-all-account').prop('checked', false);
+        $('#toggle-all-brand').prop('checked', false);
 
         $('#viewAndUpdateDecentralizationModal').attr('data-id', e.target.dataset.id);
         $('#viewAndUpdateDecentralizationModal').modal('show');

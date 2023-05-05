@@ -1,12 +1,16 @@
+import moment from 'moment';
 import accountApi from '../api/accountApi';
+import customerApi from '../api/customerApi';
 import {
   getLocalStorage,
   initCartList,
   initHeader,
+  parseJwt,
   setLocalStorage,
   urlServer,
 } from '../utils/constains';
 import { validation } from '../utils/validation';
+import { toast } from '../utils/toast';
 
 initCartList();
 initChangePassword();
@@ -25,37 +29,8 @@ async function initChangePassword() {
       return;
     }
 
-    try {
-      const { userId } = getLocalStorage('user');
-
-      if (!userId) {
-        window.location.href = '/';
-        return;
-      }
-
-      const data = await customerApi.getById(userId);
-
-      const date = moment(data['ngay_sinh']).format('L').split('/');
-
-      $('#fullname').val(data['ten_khach_hang']);
-      $('#birth-date').val(date[2] + '-' + date[0] + '-' + date[1]);
-      $('#gender').val(data['gioi_tinh'] ? '1' : '0');
-      $('#phone').val(data['so_dien_thoai']);
-      $('#address').val(data['dia_chi']);
-
-      if (data['avatar'] !== 'avatar.jpg') {
-        $('.avatar img').attr('src', `${urlServer}/images/${data['avatar']}`);
-      } else {
-        $('.avatar img').attr('src', `${urlServer}/images/avatar.jpg`);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-
     return;
   }
-
-  window.location.href = '/';
 }
 
 $('.btn-update').click(async (e) => {
@@ -125,5 +100,47 @@ $('.form input').blur((e) => {
     e.target.parentElement.classList.add('input-error');
   } else {
     e.target.parentElement.classList.remove('input-error');
+  }
+});
+
+$('.icon-password').click(() => {
+  const icon = $('.icon-password .hidden').attr('data-value');
+
+  if (icon === 'eye') {
+    $(`.icon-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`.icon-password i[data-value='eye']`).removeClass('hidden');
+    $('#old-password').attr('type', 'text');
+  } else {
+    $(`.icon-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`.icon-password i[data-value='eye']`).addClass('hidden');
+    $('#old-password').attr('type', 'password');
+  }
+});
+
+$('.icon-new-password').click(() => {
+  const icon = $('.icon-new-password .hidden').attr('data-value');
+
+  if (icon === 'eye') {
+    $(`.icon-new-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`.icon-new-password i[data-value='eye']`).removeClass('hidden');
+    $('#password').attr('type', 'text');
+  } else {
+    $(`.icon-new-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`.icon-new-password i[data-value='eye']`).addClass('hidden');
+    $('#password').attr('type', 'password');
+  }
+});
+
+$('.icon-confirm-password').click(() => {
+  const icon = $('.icon-confirm-password .hidden').attr('data-value');
+
+  if (icon === 'eye') {
+    $(`.icon-confirm-password i[data-value='eye-slash']`).addClass('hidden');
+    $(`.icon-confirm-password i[data-value='eye']`).removeClass('hidden');
+    $('#comfirm-password').attr('type', 'text');
+  } else {
+    $(`.icon-confirm-password i[data-value='eye-slash']`).removeClass('hidden');
+    $(`.icon-confirm-password i[data-value='eye']`).addClass('hidden');
+    $('#comfirm-password').attr('type', 'password');
   }
 });

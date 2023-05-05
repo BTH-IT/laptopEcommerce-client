@@ -139,7 +139,11 @@ async function renderImportProductModalContent(ckbList) {
 
     const inputList = Array.from($('.product-list input#price-import-product'));
 
-    let totalPay = inputList.reduce((p, c) => p + Number(c.value), 0);
+    let totalPay = inputList.reduce((p, c) => {
+      const amount = $(`.import-product_amount[data-id="${c.dataset.id}"] input`).val();
+
+      return p + Number(c.value) * amount;
+    }, 0);
 
     totalPay = convertCurrency(totalPay);
 
@@ -243,7 +247,7 @@ async function renderImportProductModalContent(ckbList) {
 
 async function renderSupplierSelect() {
   try {
-    const { data } = await supplierApi.getAll();
+    const data = await supplierApi.getAll();
 
     const dataSelect = [
       {
@@ -458,6 +462,7 @@ $('#createImportProductModal .btn-add').click(async () => {
   try {
     await importOrderApi.add({
       ma_nha_cung_cap: supplier,
+      ti_le_loi_nhuan: profitPercent,
       ma_nhan_vien: userId,
       ngay_lap: created_at,
       danh_sach_san_pham_nhap_hang: importProductList,

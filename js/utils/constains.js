@@ -2,7 +2,7 @@ import productApi from '../api/productApi';
 import { renderProductCard } from './product-card';
 import { toast } from './toast';
 
-export const urlServer = 'http://localhost:80/laptopEcommerce-server';
+export const urlServer = 'http://localhost/laptopEcommerce-server';
 
 export const filterList = [
   {

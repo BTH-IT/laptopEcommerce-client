@@ -38,7 +38,10 @@ async function renderProductDetail() {
   let productSection = `
       <div class="product__info-row row" id="${data.ma_san_pham}">
         <div class="product__info-img_container col-lg-3">
-          <div class="product__info-img_main-img"><img class="main-img" src="${urlServer}/images/${data.hinh_anh[0]}" alt=""></div>
+          <div class="product__info-img_main-img zoom">
+            <img class="main-img" src="${urlServer}/images/${data.hinh_anh[0]}" alt="">
+            <img src="${urlServer}/images/${data.hinh_anh[0]}" alt="${data['hinh_anh'][0]}" id="imgZoom">
+          </div>
           <div class="product__info-img_sub-img">`;
 
   data.hinh_anh.forEach((img, idx) => {
@@ -190,6 +193,26 @@ async function renderProductDetail() {
 
   $('.sub-img').on('mouseover', (e) => {
     $('.main-img').attr('src', `${urlServer}/images/${data.hinh_anh[e.target.id]}`);
+    $('#imgZoom').attr('src', `${urlServer}/images/${data.hinh_anh[e.target.id]}`);
+  });
+
+  const zoom = document.querySelector('.zoom');
+  const imgZoom = document.querySelector('#imgZoom');
+
+  zoom.addEventListener('mousemove', (e) => {
+    imgZoom.style.opacity = 1;
+    let positionPx = e.x - zoom.getBoundingClientRect().left;
+    let positionX = (positionPx / zoom.offsetWidth) * 100;
+
+    let positionPy = e.y - zoom.getBoundingClientRect().top;
+    let positionY = (positionPy / zoom.offsetHeight) * 100;
+
+    imgZoom.style.setProperty('--zoom-x', positionX + '%');
+    imgZoom.style.setProperty('--zoom-y', positionY + '%');
+  });
+
+  zoom.addEventListener('mouseout', (e) => {
+    imgZoom.style.opacity = 0;
   });
 }
 

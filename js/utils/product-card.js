@@ -2,7 +2,7 @@ import { convertCurrency, urlServer } from './constains';
 
 export function renderProductCard(product, className = '') {
   let oldPrice = convertCurrency(product['gia_goc']);
-  if (product['giam_gia']) {
+  if (product['giam_gia'] && product['giam_gia'] !== 0) {
     let newPrice = product['gia_goc'] - (product['gia_goc'] * product['giam_gia']) / 100;
     let savePrice = product['gia_goc'] - newPrice;
 

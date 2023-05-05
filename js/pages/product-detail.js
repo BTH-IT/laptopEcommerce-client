@@ -64,10 +64,17 @@ async function renderProductDetail() {
               (data.gia_goc * (100 - data.giam_gia)) /
               100
             ).toLocaleString('vi-VN')} VND</div>
-            <div class="product__info-cost_container">
-              <span class="product__info-cost">${data.gia_goc.toLocaleString('vi-VN')} VND</span>
-              <span class="product__info-discount">-${data.giam_gia}%</span>
-            </div>
+            ${
+              data.giam_gia && data.giam_gia !== 0
+                ? `
+              <div class="product__info-cost_container">
+                <span class="product__info-cost">${data.gia_goc.toLocaleString('vi-VN')} VND</span>
+                <span class="product__info-discount">-${data.giam_gia}%</span>
+              </div>
+            `
+                : ''
+            }
+            
           </div>
           <div class="p-0">
             <div class="product__info-btn_container row">
@@ -173,11 +180,11 @@ async function renderProductDetail() {
       </tr>
       <tr>
         <td>Đèn LED trên máy</td>
-        <td>${data.den_led === null ? 'Không' : data.den_led}</td>
+        <td>${data.den_led ? 'Có' : 'Không'}</td>
       </tr>
       <tr>
         <td>Màn hình cảm ứng</td>
-        <td>${data.man_hinh_cam_ung ? data.man_hinh_cam_ung : 'Không'}</td>
+        <td>${data.man_hinh_cam_ung ? 'Có' : 'Không'}</td>
       </tr>`;
 
   $('.product__info').html(productSection);

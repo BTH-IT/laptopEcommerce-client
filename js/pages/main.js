@@ -38,6 +38,7 @@ async function renderBanner() {
     });
 
     const productHTML = data
+      .slice(0, 6)
       .map((product) => {
         return `<a href="/product-detail.html?id=${product['ma_san_pham']}" class='slider-background'>
           <img
@@ -68,11 +69,19 @@ async function renderBanner() {
 
 async function renderProduct() {
   try {
+    const { data: bestsellerList } = await productApi.getAll({
+      sort: 'bestseller',
+    });
+    const { data: hotList } = await productApi.getAll({
+      sort: 'sale',
+    });
+
     const { data } = await productApi.getAll();
 
-    renderHotProduct(data);
+    renderHotProduct(hotList);
 
-    renderProductList(data);
+    renderProductList(bestsellerList);
+    renderForUserProductList(data);
   } catch (error) {
     console.log(error.message);
   }
@@ -124,9 +133,24 @@ function renderHotProduct(data) {
   });
 }
 
+function renderForUserProductList(data) {
+  const productHTML = data
+    .slice(0, 10)
+    .map((product) => {
+      const productCardHTML = renderProductCard(product, '');
+
+      return `<div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          ${productCardHTML}
+        </div>`;
+    })
+    .join('');
+
+  $('.for-user_body .row').html(productHTML);
+}
+
 function renderProductList(data) {
   const productHTML = data
-    .slice(0, 20)
+    .slice(0, 10)
     .map((product) => {
       const productCardHTML = renderProductCard(product, '');
 
@@ -137,7 +161,6 @@ function renderProductList(data) {
     .join('');
 
   $('.bestseller_body .row').html(productHTML);
-  $('.for-user_body .row').html(productHTML);
 }
 
 async function renderHotBrand(data) {

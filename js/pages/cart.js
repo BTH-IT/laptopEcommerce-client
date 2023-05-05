@@ -1,6 +1,12 @@
 import orderApi from '../api/orderApi';
 import productApi from '../api/productApi';
-import { convertCurrency, initCartList, initHeader, urlServer } from '../utils/constains';
+import {
+  convertCurrency,
+  getLocalStorage,
+  initCartList,
+  initHeader,
+  urlServer,
+} from '../utils/constains';
 import { validation } from '../utils/validation';
 import { toast } from '../utils/toast';
 
@@ -27,10 +33,31 @@ $('.delete').on('click', () => {
   $('#delete-all').modal('show');
 });
 
-$('.purchase-btn').on('click', () => {
-  $('#Name').val('Huy');
-  $('#Tel').val('0905123456');
-  $('#Address').val('2, Do Quang H, Q.1, TP.K');
+$('.purchase-btn').on('click', async () => {
+  const cartList = getLocalStorage('cartList');
+
+  if (!cartList || cartList?.length <= 0) {
+    $('#purchase').modal('hide');
+    return;
+  }
+
+  const user = getLocalStorage('user');
+
+  if (!user || !user?.infor) {
+    toast({
+      title: 'Bạn phải đăng nhập rồi mới được mua hàng',
+      message: 'Chuyển trang sau 5 giây',
+      type: 'warning',
+    });
+    setTimeout(() => (window.location.href = '/login.html'), 5000);
+    return;
+  }
+
+  const infor = user.infor;
+
+  $('#purchase #Name').val(infor['ten_khach_hang']);
+  $('#purchase #Tel').val(infor['so_dien_thoai']);
+  $('#purchase #Address').val(infor['dia_chi']);
 
   $('#purchase').modal('show');
 });
@@ -63,10 +90,16 @@ async function renderCartList() {
             </td>
             <td class="table-body_item">
               <div class="product-price_container">
-                <div class="product-price">${convertCurrency(
-                  (item.gia_goc * (100 - item.giam_gia)) / 100
-                )}</div>
-                <div class="product-cost">${convertCurrency(item.gia_goc)}</div>
+                ${
+                  item.giam_gia !== 0 && item.giam_gia
+                    ? `
+                  <div class="product-price">${convertCurrency(
+                    (item.gia_goc * (100 - item.giam_gia)) / 100
+                  )}</div>
+                  <div class="product-cost">${convertCurrency(item.gia_goc)}</div>
+                `
+                    : `<div class="product-price">${convertCurrency(item.gia_goc)}</div>`
+                }
               </div>
             </td>
             <td class="table-body_item">
@@ -102,7 +135,7 @@ async function renderCartList() {
   } else {
     let htmlString = `
     <div class="cart-link">
-      <a href="">Trang chủ </a><span id="seperate">/</span><a href=""> Cart</a>
+      <a href="">Trang chủ </a><span id="seperate">/</span><a href="">Giỏ hàng</a>
     </div>
     <div class="no-product-container">
       <img src="https://shopfront-cdn.tekoapis.com/static/empty_cart.png" width="25%" height="25%">
@@ -110,12 +143,12 @@ async function renderCartList() {
       <a href="http://localhost:5173/index.html"><button class="no-product-btn">Mua sắm ngay</button></a>
     </div>`;
 
-    $('.cart').html(htmlString);
+    $('.cart-container').html(htmlString);
   }
 }
 
 function renderTotal() {
-  CartList = JSON.parse(localStorage.getItem('cartList'));
+  CartList = JSON.parse(localStorage.getItem('cartList')) || [];
   let total = 0;
 
   if (CartList.length > 0) {
@@ -291,16 +324,16 @@ async function purchaseBtnHandler() {
 
     renderCartList();
 
-    console.log(outOfStock);
     if (outOfStock) {
       $('#purchase').modal('hide');
       return;
     }
 
+    const user = getLocalStorage('user');
+
     let Order = {
-      ma_khach_hang: 'bttan',
-      ma_nhan_vien: '',
-      trang_thai: '',
+      ma_khach_hang: user.userId,
+      trang_thai: 'chờ xử lý',
       hinh_thuc_thanh_toan: method,
       thoi_gian_dat_mua: parseInt(new Date().getTime()),
       danh_sach_san_pham_da_mua: PurchaseList,
@@ -312,6 +345,7 @@ async function purchaseBtnHandler() {
     $('.table-body').children().remove();
     $('#purchase').modal('hide');
     localStorage.setItem('cartList', JSON.stringify([]));
+    initCartList();
     renderTotal();
 
     toast({

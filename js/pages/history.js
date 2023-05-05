@@ -175,9 +175,9 @@ function convertSatus(status) {
     return 'shipping';
   } else if (status === 'hoàn thành') {
     return 'completed';
-  } else if (status === 'đã huỷ') {
-    return 'canceled';
   }
+
+  return 'canceled';
 }
 
 async function renderHistory() {

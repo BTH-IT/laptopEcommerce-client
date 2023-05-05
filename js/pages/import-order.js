@@ -1,6 +1,11 @@
 import moment from 'moment';
 import { toast } from '../utils/toast';
-import { convertCurrency, isAccessAction, renderLoadingManager } from '../utils/constains';
+import {
+  convertCurrency,
+  isAccessAction,
+  renderLoadingManager,
+  urlServer,
+} from '../utils/constains';
 import importOrderApi from '../api/importOrderApi';
 
 function initImportOrder() {
@@ -103,7 +108,7 @@ async function handleViewOrder(id) {
             <div class="product-info">
               <div class="product-img">
                 <img
-                  src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh']}"
+                  src="${urlServer}/images/${product['hinh_anh']}"
                   alt="${product['ten_san_pham']}"
                 />
               </div>

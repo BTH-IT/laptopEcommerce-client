@@ -2,6 +2,8 @@ import productApi from '../api/productApi';
 import { renderProductCard } from './product-card';
 import { toast } from './toast';
 
+export const urlServer = 'http://localhost:80/laptopEcommerce-server';
+
 export const filterList = [
   {
     ma: 'thuong_hieu',
@@ -225,7 +227,7 @@ export function renderCartList(cartList) {
         <li class="action-cart_item">
           <div class="action-cart_item-image">
             <img
-              src="http://localhost:80/laptopEcommerce-server/images/${cart['hinh_anh']}"
+              src="${urlServer}/images/${cart['hinh_anh']}"
               alt="${cart['ten_san_pham']}">
           </div>
           <div class="action-cart_item-info">
@@ -287,10 +289,7 @@ export function initHeader() {
   const token = parseJwt(accessToken);
   const now = parseInt(Date.now() / 1000);
 
-  $('.logged img').attr(
-    'src',
-    'http://localhost:80/laptopEcommerce-server/images/' + token.data.infor.avatar
-  );
+  $('.logged img').attr('src', `${urlServer}/images/` + token.data.infor.avatar);
   $('.logged').removeClass('hidden');
 
   if (now > token.exp) {

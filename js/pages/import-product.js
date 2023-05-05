@@ -8,6 +8,7 @@ import {
   getLocalStorage,
   isAccessAction,
   renderLoadingManager,
+  urlServer,
 } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
@@ -34,7 +35,7 @@ async function renderImportProduct(params = '') {
             <td>${product['ma_san_pham']}</td>
             <td>
               <div class="import-product-img">
-                <img src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}" alt="${product['ten_san_pham']}" />
+                <img src="${urlServer}/images/${product['hinh_anh'][0]}" alt="${product['ten_san_pham']}" />
               </div>
             </td>
             <td>
@@ -99,7 +100,7 @@ async function renderImportProductModalContent(ckbList) {
     <div class="product-item">
       <div class="product-img">
         <img
-          src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}"
+          src="${urlServer}/images/${product['hinh_anh'][0]}"
           alt="${product['ten_san_pham']}"
         />
       </div>

@@ -2,7 +2,7 @@ import brandApi from '../api/brandApi';
 import productApi from '../api/productApi';
 import uploadApi from '../api/uploadApi';
 import { handleSearching, handleSorting } from './manager';
-import { isAccessAction, renderLoadingManager } from '../utils/constains';
+import { isAccessAction, renderLoadingManager, urlServer } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 
@@ -29,9 +29,9 @@ async function renderProduct(params = '') {
             <td>${product['ten_san_pham']}</td>
             <td>
               <div class="product-img">
-                <img src="http://localhost/laptopEcommerce-server/images/${
-                  product['hinh_anh'][0]
-                }" alt="${product['hinh_anh'][0]}" />
+                <img src="${urlServer}/images/${product['hinh_anh'][0]}" alt="${
+          product['hinh_anh'][0]
+        }" />
               </div>
             </td>
             <td>
@@ -142,7 +142,7 @@ async function renderProduct(params = '') {
         return `
           <div class="col-12 col-sm-6 product-preview-image_item mb-3">
             <img
-              src="http://localhost:80/laptopEcommerce-server/images/${image}"
+              src="${urlServer}/images/${image}"
               alt=""
             />
             <i class="fa-solid fa-trash product-preview-image_icon" data-name='${image}'></i>
@@ -486,7 +486,7 @@ function previewProductImage(data, id) {
       return `
       <div class="col-12 col-sm-6 product-preview-image_item mb-3">
         <img
-          src="http://localhost:80/laptopEcommerce-server/image/${file}"
+          src="${urlServer}/image/${file}"
           alt=""
         />
         <i class="fa-solid fa-trash product-preview-image_icon" data-name='${file}'></i>

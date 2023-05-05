@@ -1,5 +1,5 @@
 import productApi from '../api/productApi';
-import { initHeader } from '../utils/constains';
+import { initHeader, urlServer } from '../utils/constains';
 import { renderProductCard } from '../utils/product-card';
 import { toast } from '../utils/toast';
 
@@ -38,11 +38,11 @@ async function renderProductDetail() {
   let productSection = `
       <div class="product__info-row row" id="${data.ma_san_pham}">
         <div class="product__info-img_container col-lg-3">
-          <div class="product__info-img_main-img"><img class="main-img" src="http://localhost:80/laptopEcommerce-server/images/${data.hinh_anh[0]}" alt=""></div>
+          <div class="product__info-img_main-img"><img class="main-img" src="${urlServer}/images/${data.hinh_anh[0]}" alt=""></div>
           <div class="product__info-img_sub-img">`;
 
   data.hinh_anh.forEach((img, idx) => {
-    productSection += `<img class="sub-img" id="${idx}" src="http://localhost:80/laptopEcommerce-server/images/${img}" alt="" width="50px" height="50px">`;
+    productSection += `<img class="sub-img" id="${idx}" src="${urlServer}/images/${img}" alt="" width="50px" height="50px">`;
   });
   productSection += `</div>
         </div>
@@ -189,10 +189,7 @@ async function renderProductDetail() {
   }
 
   $('.sub-img').on('mouseover', (e) => {
-    $('.main-img').attr(
-      'src',
-      `http://localhost:80/laptopEcommerce-server/images/${data.hinh_anh[e.target.id]}`
-    );
+    $('.main-img').attr('src', `${urlServer}/images/${data.hinh_anh[e.target.id]}`);
   });
 }
 

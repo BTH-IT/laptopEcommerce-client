@@ -6,6 +6,7 @@ import {
   getLocalStorage,
   isAccessAction,
   renderLoadingManager,
+  urlServer,
 } from '../utils/constains';
 import customerApi from '../api/customerApi';
 import guaranteeApi from '../api/guaranteeApi';
@@ -235,7 +236,7 @@ async function handleUpdateOrder(id) {
             <div class="product-info">
               <div class="product-img">
                 <img
-                  src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh']}"
+                  src="${urlServer}/images/${product['hinh_anh']}"
                   alt="${product['ten_san_pham']}"
                 />
               </div>

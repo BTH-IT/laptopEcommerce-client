@@ -5,6 +5,7 @@ import {
   initCartList,
   initHeader,
   parseJwt,
+  urlServer,
 } from '../utils/constains';
 import { toast } from '../utils/toast';
 
@@ -298,9 +299,9 @@ function renderHistoryProducts(data, totalMoney) {
         <div class="paid-item_row row">
           <div class="col-4">
             <div class="paid-item_img-container">
-              <img class="paid-item_img" src="http://localhost:80/laptopEcommerce-server/images/${
-                item.hinh_anh
-              }" alt="" width="70px" height="70px">
+              <img class="paid-item_img" src="${urlServer}/images/${
+      item.hinh_anh
+    }" alt="" width="70px" height="70px">
             </div>
           </div>
           <div class="col-8">

@@ -1,6 +1,6 @@
 import orderApi from '../api/orderApi';
 import productApi from '../api/productApi';
-import { convertCurrency, initCartList, initHeader } from '../utils/constains';
+import { convertCurrency, initCartList, initHeader, urlServer } from '../utils/constains';
 import { validation } from '../utils/validation';
 import { toast } from '../utils/toast';
 
@@ -47,14 +47,12 @@ async function renderCartList() {
         <tr class="table-body_row" id=${idx + 1}>
             <td class="table-body_item">${idx + 1}</td>
             <td class="table-body_item">
-          <a class="product-link" href="http://localhost:5173/product-detail.html?id=${
-            item.ma_san_pham
-          }">
+          <a class="product-link" href="/product-detail.html?id=${item.ma_san_pham}">
               <div class="product-container">
                   <div class="product-img_container">
-                      <img class="product-img" src="http://localhost:80/laptopEcommerce-server/images/${
-                        item.hinh_anh
-                      }" alt="" width="80px"
+                      <img class="product-img" src="${urlServer}/images/${
+        item.hinh_anh
+      }" alt="" width="80px"
                           height="80px">
                   </div>
                   <div class="product-name_container">

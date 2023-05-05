@@ -1,7 +1,7 @@
 import brandApi from '../api/brandApi';
 import uploadApi from '../api/uploadApi';
 import { handleSearching, handleSorting } from './manager';
-import { isAccessAction, renderLoadingManager } from '../utils/constains';
+import { isAccessAction, renderLoadingManager, urlServer } from '../utils/constains';
 import { toast } from '../utils/toast';
 import { validation } from '../utils/validation';
 
@@ -30,7 +30,7 @@ async function renderBrand(params = '') {
           </td>
           <td>
             <div class="brand-img">
-              <img src="http://localhost:80/laptopEcommerce-server/images/${brand['hinh_anh']}" alt="${brand['ten_thuong_hieu']}" />
+              <img src="${urlServer}/images/${brand['hinh_anh']}" alt="${brand['ten_thuong_hieu']}" />
             </div>
           </td>
           <td>
@@ -64,7 +64,7 @@ async function renderBrand(params = '') {
         $('#update_icon').val(data['icon']);
         $('label[for="update_brandImage"] img').attr(
           'src',
-          'http://localhost:80/laptopEcommerce-server/images/' + data['hinh_anh']
+          urlServer + '/images/' + data['hinh_anh']
         );
 
         $('#updateBrandModal').modal('show');

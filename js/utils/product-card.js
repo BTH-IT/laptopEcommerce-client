@@ -1,4 +1,4 @@
-import { convertCurrency } from './constains';
+import { convertCurrency, urlServer } from './constains';
 
 export function renderProductCard(product, className = '') {
   let oldPrice = convertCurrency(product['gia_goc']);
@@ -14,7 +14,7 @@ export function renderProductCard(product, className = '') {
             ${product['giam_gia']}%<br>OFF
           </span>
           <div class='product-card_image'>
-            <img src='http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
+            <img src='${urlServer}/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
           </div>
           <div class='product-card_info'>
             <h6 class='product-card_title'>${product['ten_san_pham']}</h6>
@@ -27,7 +27,7 @@ export function renderProductCard(product, className = '') {
 
   return `<a class='product-card ${className}' href='/product-detail.html?id=${product['ma_san_pham']}'>
     <div class='product-card_image'>
-      <img src='http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
+      <img src='${urlServer}/images/${product['hinh_anh'][0]}' alt='${product['ten_san_pham']}'>
     </div>
     <div class='product-card_info'>
       <h6 class='product-card_title'>${product['ten_san_pham']}</h6>

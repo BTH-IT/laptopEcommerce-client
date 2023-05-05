@@ -1,5 +1,11 @@
 import accountApi from '../api/accountApi';
-import { getLocalStorage, initCartList, initHeader, setLocalStorage } from '../utils/constains';
+import {
+  getLocalStorage,
+  initCartList,
+  initHeader,
+  setLocalStorage,
+  urlServer,
+} from '../utils/constains';
 import { validation } from '../utils/validation';
 
 initCartList();
@@ -38,15 +44,9 @@ async function initChangePassword() {
       $('#address').val(data['dia_chi']);
 
       if (data['avatar'] !== 'avatar.jpg') {
-        $('.avatar img').attr(
-          'src',
-          `http://localhost:80/laptopEcommerce-server/images/${data['avatar']}`
-        );
+        $('.avatar img').attr('src', `${urlServer}/images/${data['avatar']}`);
       } else {
-        $('.avatar img').attr(
-          'src',
-          'http://localhost:80/laptopEcommerce-server/images/avatar.jpg'
-        );
+        $('.avatar img').attr('src', `${urlServer}/images/avatar.jpg`);
       }
     } catch (error) {
       console.log(error.message);

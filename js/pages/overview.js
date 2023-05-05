@@ -1,7 +1,7 @@
 import moment from 'moment';
 import brandApi from '../api/brandApi';
 import orderApi from '../api/orderApi';
-import { convertCurrency } from '../utils/constains';
+import { convertCurrency, urlServer } from '../utils/constains';
 import { renderChartBrand, renderChartReport } from '../vendor/chart';
 
 let now = new Date();
@@ -89,7 +89,7 @@ export function renderBestsellerReport(data, from, to, limit = 10) {
         <div class="bestseller-product_container">
           <div class="bestseller-product_image">
             <img
-              src="http://localhost:80/laptopEcommerce-server/images/${product['hinh_anh']}"
+              src="${urlServer}/images/${product['hinh_anh']}"
               alt=""
             />
           </div>

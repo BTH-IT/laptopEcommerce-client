@@ -142,7 +142,7 @@ async function CancelOrderHandler() {
 
   let order = {
     ma_don_hang: orderID,
-    trang_thai: 'đã huỷ',
+    trang_thai: 'đã hủy',
     danh_sach_san_pham_da_mua: orderedProducts,
   };
 

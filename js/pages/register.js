@@ -1,4 +1,4 @@
-import authApi from './api/authApi';
+import authApi from '../api/authApi';
 import {
   getLocalStorage,
   initCartList,
@@ -70,6 +70,7 @@ $('.btn-register').click(async (e) => {
         gioi_tinh: gender,
         so_dien_thoai: phone,
         dia_chi: address,
+        avatar: 'avatar.jpg',
       });
 
       toast({

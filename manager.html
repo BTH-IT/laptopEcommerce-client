@@ -280,12 +280,18 @@
                   <input id="address" type="text" placeholder="địa chỉ..." disabled />
                 </div>
               </div>
+              <div class="input_container">
+                <label for="employee" class="label fw-bold">Mã nhân viên</label>
+                <div class="input">
+                  <input id="employee" type="text" placeholder="Chưa có..." disabled />
+                </div>
+              </div>
               <div class="select_container">
                 <label for="pay-method" class="label fw-bold">Phương thức thanh toán</label>
                 <div class="select">
                   <select name="pay-method" id="pay-method" disabled>
                     <option value="postpaid">Trả sau khi nhận hàng</option>
-                    <option value="prepay">Trả trước khi nhận hàng</option>
+                    <option value="prepaid">Trả trước khi nhận hàng</option>
                   </select>
                 </div>
                 <span class="text-danger mb-1 error"></span>
@@ -423,15 +429,27 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
               <div class="input_container">
-                <label for="update_icon" class="label fw-bold">Icon</label>
-                <div class="input">
-                  <input id="update_icon" type="text" placeholder="Icon..." />
+                <label class="label fw-bold">Icon</label>
+                <div class="image-input image-icon">
+                  <label class="label fw-bold" for="update_icon">
+                    <img src="/img.webp" alt="" />
+                    <span class="icon-remove">
+                      <i class="fa-solid fa-trash"></i>
+                    </span>
+                  </label>
+                  <input
+                    id="update_icon"
+                    type="file"
+                    placeholder="Hình ảnh..."
+                    hidden
+                    accept="image/*"
+                  />
                 </div>
                 <span class="text-danger mb-1 error"></span>
               </div>
               <div class="input_container">
                 <label class="label fw-bold">Hình ảnh</label>
-                <div class="image-input update">
+                <div class="image-input image-background">
                   <label class="label fw-bold" for="update_brandImage">
                     <img src="/img.webp" alt="" />
                     <span class="icon-remove">
@@ -491,15 +509,28 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
               <div class="input_container">
-                <label for="create_icon" class="label fw-bold">Icon</label>
-                <div class="input">
-                  <input id="create_icon" type="text" placeholder="Icon..." rules="required" />
+                <label class="label fw-bold">Icon</label>
+                <div class="image-input image-icon">
+                  <label class="label fw-bold" for="create_icon">
+                    <img src="/img.webp" alt="" />
+                    <span class="icon-remove">
+                      <i class="fa-solid fa-trash"></i>
+                    </span>
+                  </label>
+                  <input
+                    id="create_icon"
+                    type="file"
+                    placeholder="Hình ảnh..."
+                    hidden
+                    rules="required"
+                    accept="image/*"
+                  />
                 </div>
                 <span class="text-danger mb-1 error"></span>
               </div>
               <div class="input_container">
                 <label class="label fw-bold">Hình ảnh</label>
-                <div class="image-input">
+                <div class="image-input image-background">
                   <label class="label fw-bold" for="create_brandImage">
                     <img src="/img.webp" alt="" />
                     <span class="icon-remove">
@@ -611,7 +642,7 @@
                       id="product-sale-update"
                       type="number"
                       placeholder="giảm giá..."
-                      rules="positive"
+                      rules="positiveEqualZero"
                     />
                     %
                   </div>
@@ -923,20 +954,6 @@
                 <span class="text-danger mb-1 error"></span>
               </div>
 
-              <div class="input_container">
-                <label for="product-amount-update" class="label fw-bold">Số lượng hiện có</label>
-                <div class="input">
-                  <input
-                    id="product-amount-update"
-                    type="number"
-                    placeholder="Số lượng hiện có..."
-                    rules="required|positive"
-                    disabled
-                  />
-                </div>
-                <span class="text-danger mb-1 error"></span>
-              </div>
-
               <div class="select_container">
                 <label for="product-brand-update" class="label fw-bold">Thương hiệu</label>
                 <div class="select">
@@ -960,13 +977,7 @@
               <div class="input_container">
                 <label for="product-image-update" class="label fw-bold">Hình ảnh</label>
                 <div class="input">
-                  <input
-                    id="product-image-update"
-                    type="file"
-                    rules="required"
-                    multiple
-                    accept="image/*"
-                  />
+                  <input id="product-image-update" type="file" multiple accept="image/*" />
                 </div>
                 <span class="text-danger mb-1 error"></span>
                 <div class="row product-preview-image"></div>
@@ -1065,7 +1076,7 @@
                       id="product-sale-create"
                       type="number"
                       placeholder="giảm giá..."
-                      rules="positive"
+                      rules="positiveEqualZero"
                     />
                     %
                   </div>

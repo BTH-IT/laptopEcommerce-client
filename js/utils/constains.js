@@ -35,8 +35,8 @@ export const filterList = [
   },
 ];
 
-export const priceGap = 10000000;
-export const priceGapMobile = 2000000;
+export const priceGap = 0;
+export const priceGapMobile = 0;
 
 export let max;
 

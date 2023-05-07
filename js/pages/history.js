@@ -311,8 +311,14 @@ function renderHistoryProducts(data, totalMoney) {
                 (item.don_gia * (100 - item.giam_gia_san_pham)) / 100
               )}</span>
               <span class="paid-item_amount"> x${item.so_luong_da_mua}</span><br>
-              <span class="paid-item_cost">${convertCurrency(item.don_gia)}</span>
-              <span class="paid-item_discount">-${item.giam_gia_san_pham}%</span>
+              ${
+                item.giam_gia_san_pham && item.giam_gia_san_pham > 0
+                  ? `
+                    <span class="paid-item_cost">${convertCurrency(item.don_gia)}</span>
+                    <span class="paid-item_discount">-${item.giam_gia_san_pham}%</span>
+                  `
+                  : ''
+              }
             </div>
           </div>
         </div>

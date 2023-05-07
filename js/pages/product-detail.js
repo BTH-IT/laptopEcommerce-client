@@ -45,7 +45,9 @@ async function renderProductDetail() {
           <div class="product__info-img_sub-img">`;
 
   data.hinh_anh.forEach((img, idx) => {
-    productSection += `<img class="sub-img" id="${idx}" src="${urlServer}/images/${img}" alt="" width="50px" height="50px">`;
+    productSection += `<img class="sub-img ${
+      idx === 0 ? 'active' : ''
+    }" id="${idx}" src="${urlServer}/images/${img}" alt="" width="50px" height="50px">`;
   });
   productSection += `</div>
         </div>
@@ -199,6 +201,8 @@ async function renderProductDetail() {
   }
 
   $('.sub-img').on('mouseover', (e) => {
+    $('.sub-img.active').removeClass('active');
+    e.target.classList.add('active');
     $('.main-img').attr('src', `${urlServer}/images/${data.hinh_anh[e.target.id]}`);
     $('#imgZoom').attr('src', `${urlServer}/images/${data.hinh_anh[e.target.id]}`);
   });

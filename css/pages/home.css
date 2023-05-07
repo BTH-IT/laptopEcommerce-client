@@ -47,6 +47,17 @@
   color: var(--primary);
 }
 
+.brand_img {
+  width: 32px;
+  height: 32px;
+}
+
+.brand_img img {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
 .brand_link {
   display: flex;
   align-items: center;

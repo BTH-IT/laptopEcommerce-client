@@ -25,8 +25,12 @@ async function renderBrand(params = '') {
         (brand) => `
         <tr align="center">
           <td>
-            <span class="me-3">${brand['icon']}</span>
-            <span>${brand['ten_thuong_hieu']}</span>
+            <div class="brand-info">
+              <div class="brand-icon">
+                <img src="${urlServer}/images/${brand['icon']}" alt="${brand['ten_thuong_hieu']}" />
+              </div>
+              <span>${brand['ten_thuong_hieu']}</span>
+            </div>
           </td>
           <td>
             <div class="brand-img">
@@ -61,7 +65,7 @@ async function renderBrand(params = '') {
         const data = await brandApi.getById(id);
 
         $('#update_brandName').val(data['ten_thuong_hieu']);
-        $('#update_icon').val(data['icon']);
+        $('label[for="update_icon"] img').attr('src', urlServer + '/images/' + data['icon']);
         $('label[for="update_brandImage"] img').attr(
           'src',
           urlServer + '/images/' + data['hinh_anh']
@@ -78,58 +82,87 @@ async function renderBrand(params = '') {
   }
 }
 
-function displayImagePreview(e, id) {
+function displayImagePreview(e, id, element) {
   const [file] = e.target.files;
   if (file) {
-    $(`${id} .image-input img`).attr('src', URL.createObjectURL(file));
+    $(`${id} .image-input${element} img`).attr('src', URL.createObjectURL(file));
   }
 }
 
-function showRemoveImageIcon(id) {
-  const src = $(`${id} .image-input img`).attr('src');
+function showRemoveImageIcon(id, element) {
+  const src = $(`${id} .image-input${element} img`).attr('src');
 
   if (src !== '/img.webp') {
-    $(`${id} .image-input .icon-remove`).addClass('show');
+    $(`${id} .image-input${element} .icon-remove`).addClass('show');
   }
 }
 
-function hideRemoveImageIcon(id) {
-  $(`${id} .image-input .icon-remove`).removeClass('show');
+function hideRemoveImageIcon(id, element) {
+  $(`${id} .image-input${element} .icon-remove`).removeClass('show');
 }
 
-function handleClickRemoveImage(e, id) {
+function handleClickRemoveImage(e, id, element) {
   e.preventDefault();
-  $(`${id} .image-input img`).attr('src', '/img.webp');
-  $(`${id} .image-input input`)[0].files = null;
+  $(`${id} .image-input${element} img`).attr('src', '/img.webp');
+  $(`${id} .image-input${element} input`)[0].files = null;
 }
 
 $('#create_brandImage').change((e) => {
-  displayImagePreview(e, '#createBrandModal');
+  displayImagePreview(e, '#createBrandModal', '.image-background');
 });
 
 $('#update_brandImage').change((e) => {
-  displayImagePreview(e, '#updateBrandModal');
+  displayImagePreview(e, '#updateBrandModal', '.image-background');
 });
 
-$('#updateBrandModal .image-input').mouseenter(() => {
-  showRemoveImageIcon('#updateBrandModal');
-});
-$('#createBrandModal .image-input').mouseenter(() => {
-  showRemoveImageIcon('#createBrandModal');
+$('#create_icon').change((e) => {
+  displayImagePreview(e, '#createBrandModal', '.image-icon');
 });
 
-$('#updateBrandModal .image-input').mouseleave(() => {
-  hideRemoveImageIcon('#updateBrandModal');
-});
-$('#createBrandModal .image-input').mouseleave(() => {
-  hideRemoveImageIcon('#createBrandModal');
+$('#update_icon').change((e) => {
+  displayImagePreview(e, '#updateBrandModal', '.image-icon');
 });
 
-$('#updateBrandModal .icon-remove').click((e) => {
-  handleClickRemoveImage(e, '#updateBrandModal');
+$('#updateBrandModal .image-input.image-background').mouseenter(() => {
+  showRemoveImageIcon('#updateBrandModal', '.image-background');
 });
-$('#createBrandModal .icon-remove').click((e) => {
-  handleClickRemoveImage(e, '#createBrandModal');
+$('#createBrandModal .image-input.image-background').mouseenter(() => {
+  showRemoveImageIcon('#createBrandModal', '.image-background');
+});
+
+$('#updateBrandModal .image-input.image-icon').mouseenter(() => {
+  showRemoveImageIcon('#updateBrandModal', '.image-icon');
+});
+$('#createBrandModal .image-input.image-icon').mouseenter(() => {
+  showRemoveImageIcon('#createBrandModal', '.image-icon');
+});
+
+$('#updateBrandModal .image-input.image-background').mouseleave(() => {
+  hideRemoveImageIcon('#updateBrandModal', '.image-background');
+});
+$('#createBrandModal .image-input.image-background').mouseleave(() => {
+  hideRemoveImageIcon('#createBrandModal', '.image-background');
+});
+
+$('#updateBrandModal .image-input.image-icon').mouseleave(() => {
+  hideRemoveImageIcon('#updateBrandModal', '.image-icon');
+});
+$('#createBrandModal .image-input.image-icon').mouseleave(() => {
+  hideRemoveImageIcon('#createBrandModal', '.image-icon');
+});
+
+$('#updateBrandModal .image-icon .icon-remove').click((e) => {
+  handleClickRemoveImage(e, '#updateBrandModal', '.image-icon');
+});
+$('#createBrandModal .image-icon .icon-remove').click((e) => {
+  handleClickRemoveImage(e, '#createBrandModal', '.image-icon');
+});
+
+$('#updateBrandModal .image-background .icon-remove').click((e) => {
+  handleClickRemoveImage(e, '#updateBrandModal', '.image-background');
+});
+$('#createBrandModal .image-background .icon-remove').click((e) => {
+  handleClickRemoveImage(e, '#createBrandModal', '.image-background');
 });
 
 $('#updateBrandModal .btn-update').click(async () => {
@@ -151,31 +184,35 @@ $('#updateBrandModal .btn-update').click(async () => {
 
     const id = $('#updateBrandModal').attr('data-id');
     const brandName = $('#update_brandName').val();
-    const icon = $('#update_icon').val();
 
-    const [file] = $('#update_brandImage')[0].files;
+    const [fileImage] = $('#update_brandImage')[0].files;
+    const [fileIcon] = $('#update_icon')[0].files;
 
     const formData = new FormData();
     const data = {
       ma_thuong_hieu: id,
-      ten_thuong_hieu: brandName,
-      icon,
+      ten_thuong_hieu: brandName.charAt(0).toUpperCase() + brandName.slice(1),
     };
 
-    await brandApi.update(data);
     if ($('#update_brandImage')[0].files.length > 0) {
-      formData.append('uploadfile', file);
-      data['hinh_anh'] = file.name;
+      formData.append('uploadfile', fileImage);
+      data['hinh_anh'] = fileImage.name;
       await uploadApi.add(formData);
     }
+
+    if ($('#update_icon')[0].files.length > 0) {
+      formData.append('uploadfile', fileIcon);
+      data['icon'] = fileIcon.name;
+      await uploadApi.add(formData);
+    }
+
+    await brandApi.update(data);
 
     toast({
       title: 'Thay đổi thương hiệu thành công',
       type: 'success',
       duration: 2000,
     });
-
-    $('#updateBrandModal').modal('hide');
 
     renderBrand();
   } catch (error) {
@@ -185,6 +222,8 @@ $('#updateBrandModal .btn-update').click(async () => {
       type: 'error',
       duration: 2000,
     });
+  } finally {
+    $('#updateBrandModal').modal('hide');
   }
 });
 
@@ -205,27 +244,29 @@ $('#createBrandModal .btn-create').click(async () => {
   }
 
   const brandName = $('#create_brandName').val();
-  const icon = $('#create_icon').val();
-  const [file] = $('#create_brandImage')[0].files;
+  const [fileImage] = $('#create_brandImage')[0].files;
+  const [fileIcon] = $('#create_icon')[0].files;
 
-  const formData = new FormData();
-  formData.append('uploadfile', file);
+  const formImageData = new FormData();
+  const formIconData = new FormData();
+  formImageData.append('uploadfile', fileImage);
+  formIconData.append('uploadfile', fileIcon);
 
   try {
     await brandApi.add({
-      ten_thuong_hieu: brandName,
-      icon,
-      hinh_anh: file.name,
+      ten_thuong_hieu: brandName.charAt(0).toUpperCase() + brandName.slice(1),
+      icon: fileIcon.name,
+      hinh_anh: fileImage.name,
     });
 
-    await uploadApi.add(formData);
+    await uploadApi.add(formImageData);
+    await uploadApi.add(formIconData);
+
     toast({
       title: 'Thêm thương hiệu thành công',
       type: 'success',
       duration: 2000,
     });
-
-    $('#createBrandModal').modal('hide');
 
     renderBrand();
   } catch (error) {
@@ -235,6 +276,8 @@ $('#createBrandModal .btn-create').click(async () => {
       type: 'error',
       duration: 2000,
     });
+  } finally {
+    $('#createBrandModal').modal('hide');
   }
 });
 
@@ -252,7 +295,6 @@ $('#deleteBrandModal .btn-yes').click(async () => {
       duration: 2000,
     });
 
-    $('#deleteBrandModal').modal('hide');
     renderBrand();
   } catch (error) {
     toast({
@@ -261,6 +303,8 @@ $('#deleteBrandModal .btn-yes').click(async () => {
       type: 'error',
       duration: 2000,
     });
+  } finally {
+    $('#deleteBrandModal').modal('hide');
   }
 });
 

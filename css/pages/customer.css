@@ -28,7 +28,7 @@
 
 .customer-table-container {
   overflow: auto;
-  max-height: 560px;
+  max-height: calc(100vh - 250px);
 }
 
 .customer-table {
@@ -56,6 +56,6 @@
   }
 
   .customer-table-container {
-    max-height: 495px;
+    max-height: calc(100vh - 312px);
   }
 }

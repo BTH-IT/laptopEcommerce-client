@@ -30,8 +30,12 @@ async function renderAccount(params) {
               ${acc['ten_dang_nhap']}
             </td>
             <td>
-              <span class="account-role" data-id="${acc['ten_dang_nhap']}">
-                ${acc['ma_nhom_quyen']}
+              <span
+                class="account-role"
+                data-id="${acc['ten_dang_nhap']}"
+                data-role-id="${acc['ma_nhom_quyen']}"
+              >
+                ${acc['ten_nhom_quyen']}
               </span>
             </td>
             <td>
@@ -62,6 +66,8 @@ async function renderAccount(params) {
       if (!isAccessAction('accounts', 'UPDATE')) return;
 
       const id = e.target.dataset.id;
+      const roleId = e.target.dataset.roleId;
+      if (roleId === '0') return;
       $('#roleAccountModal').attr('data-id', id);
       $('#roleAccountModal').modal('show');
     });
@@ -87,7 +93,9 @@ async function renderRoleSelect() {
   try {
     const { data } = await authGroupApi.getAll();
 
-    const dataFilter = data.filter((group) => group['trang_thai'] === true);
+    const dataFilter = data.filter(
+      (group) => group['trang_thai'] === true && group['ma_nhom_quyen'] !== 0
+    );
 
     const dataSelect = [
       {
@@ -182,7 +190,7 @@ $('#createAccountModal .btn-add').click(async () => {
       });
 
       toast({
-        title: 'Create account successfully!!',
+        title: 'Tạo tài khoản thành công!!',
         type: 'success',
         duration: 2000,
       });
@@ -317,7 +325,7 @@ $('#deleteAccountModal .btn-yes').click(async () => {
     await accountApi.remove(id);
 
     toast({
-      title: 'Delete account successful',
+      title: 'Xóa tài khoản thành công',
       type: 'success',
       duration: 2000,
     });
@@ -325,7 +333,7 @@ $('#deleteAccountModal .btn-yes').click(async () => {
     renderAccount();
   } catch (error) {
     toast({
-      title: 'Delete account failure',
+      title: 'Xóa tài khoản không thành công',
       type: 'error',
       duration: 2000,
     });
@@ -376,7 +384,7 @@ export function renderAccountPage() {
       </div>
       <div class="search-container">
         <div class="search-box">
-          <input type="text" class="header-input" placeholder="Tìm kiếm theo tên đăng nhập, mã nhóm quyền, ngày cấp tài khoản" />
+          <input type="text" class="header-input" placeholder="Tìm kiếm theo tên đăng nhập, tên nhóm quyền, ngày cấp tài khoản" />
           <button type="button" class="btn primary btn-header">
             <i class="fa-solid fa-magnifying-glass"></i>
           </button>
@@ -394,8 +402,8 @@ export function renderAccountPage() {
               </th>
               <th>
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
-                  Mã nhóm quyền
-                  <div class="icon-sort" data-value="ma_nhom_quyen" data-sort="desc"></div>
+                  Nhóm quyền
+                  <div class="icon-sort" data-value="ten_nhom_quyen" data-sort="desc"></div>
                 </div>
               </th>
               <th>

@@ -141,6 +141,7 @@ function renderSidebar(permissionList) {
   if (!url.searchParams.get('content')) {
     const pageContent = $('.sidebar-item.active').attr('data-value');
     url.searchParams.set('content', pageContent);
+    history.pushState({}, null, url);
   } else {
     $(`.sidebar-item[data-value=${url.searchParams.get('content')}]`).addClass('active');
   }

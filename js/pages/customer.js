@@ -231,9 +231,8 @@ $('#createCustomerModal .btn-add').click(async () => {
       });
 
       toast({
-        title: 'Biểu hiện của tuổi già',
+        title: 'Tạo khách hàng thành công',
         duration: 3000,
-        message: 'Đau lưng, mỏi gối, đau tay',
         type: 'success',
       });
     } catch (error) {
@@ -256,9 +255,8 @@ $('#deleteCustomerModal .btn-yes').click(async () => {
     await customerApi.remove(id);
 
     toast({
-      title: 'Biểu hiện của tuổi già',
+      title: 'Xóa khách hàng thành công',
       duration: 3000,
-      message: 'Đau lưng, mỏi gối, đau tay',
       type: 'success',
     });
 

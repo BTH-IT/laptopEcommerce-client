@@ -293,18 +293,16 @@ $('#updateEmployeeModal .btn-save').click(async () => {
     });
 
     toast({
-      title: 'Biểu hiện của tuổi già',
+      title: 'Chỉnh sửa nhân viên thành công',
       duration: 3000,
-      message: 'Đau lưng, mỏi gối, đau tay',
       type: 'success',
     });
 
     renderEmployee();
   } catch (error) {
     toast({
-      title: 'Biểu hiện của tuổi già',
+      title: 'Chỉnh sửa nhân viên thất bại',
       duration: 3000,
-      message: 'Đau lưng, mỏi gối, đau tay',
       type: 'error',
     });
   } finally {

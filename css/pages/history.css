@@ -308,7 +308,7 @@ option {
     list-style: none;
     padding: 0;
     max-height: 170px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .detail-info_paid-list-title {

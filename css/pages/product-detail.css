@@ -119,10 +119,6 @@ h4 {
     padding-block: 10px;
 }
 
-.row {
-    gap: 10px;
-}
-
 .product__info-img_container {
     width: fit-content;
     margin-left: 20px;
@@ -213,6 +209,8 @@ h4 {
     margin-top: 30px;
     padding-top: 25px;
     border-top: 1px solid var(--gray-300);
+    display: flex;
+    gap: 10px;
 }
 
 .buy-btn {
@@ -402,6 +400,16 @@ h4 {
 .history__table-body-item:last-child {
     color: var(--primary);
     cursor: pointer;
+}
+
+.sub-img {
+    transition: all 0.2s ease;
+    border-radius: 7px;
+    border: 1px solid transparent;
+}
+
+.sub-img.active {
+    border-color: var(--primary);
 }
 
 @media only screen and (width <=1000px) {

@@ -44,6 +44,14 @@
   color: rgb(228, 229, 240);
 }
 
+.range-min {
+  left: -1px;
+}
+
+.range-max {
+  right: -1px;
+}
+
 .field input {
   width: 100%;
   height: 100%;
@@ -62,15 +70,16 @@
 
 .price-slider,
 .price-slider-mobile {
-  height: 4px;
-  border-radius: 4px;
+  height: 8px;
+  border-radius: 6px;
   background-color: #ddd;
   position: relative;
+  cursor: pointer;
 }
 
 .price-slider .price-progress,
 .price-slider-mobile .price-progress-mobile {
-  height: 4px;
+  height: 8px;
   border-radius: 5px;
   left: 0%;
   right: 0%;
@@ -86,8 +95,8 @@
 .price-range-input input, 
 .price-range-input-mobile input {
   position: absolute;
-  top: -4px;
-  height: 4px;
+  top: -7.5px;
+  height: 8px;
   width: 100%;
   pointer-events: none;
   -webkit-appearance: none;
@@ -170,9 +179,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .search-filter h5 {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  margin-right: 20px;
 }
 
 .search-filter_item {
@@ -180,7 +188,7 @@ input[type="range"]::-moz-range-thumb {
   border: 1px solid var(--gray-300);
   background-color: white;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;

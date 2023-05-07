@@ -20,6 +20,115 @@ const textInputMobileList = $('.price-input-mobile input');
 const progress = $('.price-progress');
 const progressMobile = $('.price-progress-mobile');
 
+$('.price-slider').click(async (e) => {
+  const clientStart = $('.price-range_container').offset().left;
+  const clientEnd = Math.floor($('.price-range_container').width()) + clientStart;
+  if (e.clientX < clientStart) return;
+  if (e.clientX > clientEnd) return;
+
+  const url = new URL(window.location);
+
+  const percentRight = Math.floor(
+    100 - ((e.clientX - clientStart) / (clientEnd - clientStart)) * 100
+  );
+
+  const percentLeft = 100 - percentRight;
+
+  const minCurrent = Number(url.searchParams.get('min_price')) ?? 0;
+  const maxCurrent = Number(url.searchParams.get('max_price')) ?? max;
+
+  let value = Math.ceil(-((percentRight - 100) / 100) * max);
+
+  if (value <= 0) value = 0;
+
+  if (value <= minCurrent || value <= (maxCurrent - minCurrent + 1) / 2 + minCurrent) {
+    rangeInputList[0].value = value;
+
+    if (percentLeft <= 50) {
+      progress.css({
+        left: percentLeft + '%',
+      });
+    } else {
+      progress.css({
+        left: percentLeft - 2 + '%',
+      });
+    }
+
+    $('.input-min').val(convertCurrency(value));
+    await handleFilterChange('min_price', value);
+    return;
+  }
+
+  rangeInputList[1].value = value;
+
+  if (percentRight <= 50) {
+    progress.css({
+      right: percentRight + '%',
+    });
+  } else {
+    progress.css({
+      right: percentRight - 2 + '%',
+    });
+  }
+
+  $('.input-max').val(convertCurrency(value));
+  await handleFilterChange('max_price', value);
+});
+
+$('.price-slider-mobile').click(async (e) => {
+  const clientStart = $('.price-range_container-mobile').offset().left;
+  const clientEnd = Math.floor($('.price-range_container-mobile').width()) + clientStart;
+  if (e.clientX < clientStart) return;
+  if (e.clientX > clientEnd) return;
+
+  const url = new URL(window.location);
+
+  const percentRight = Math.floor(
+    100 - ((e.clientX - clientStart) / (clientEnd - clientStart)) * 100
+  );
+  const percentLeft = 100 - percentRight;
+
+  const minCurrent = Number(url.searchParams.get('min_price')) ?? 0;
+  const maxCurrent = Number(url.searchParams.get('max_price')) ?? max;
+
+  let value = Math.ceil(-((percentRight - 100) / 100) * max);
+
+  if (value <= 0) value = 0;
+
+  if (value <= minCurrent || value <= (maxCurrent - minCurrent + 1) / 2 + minCurrent) {
+    rangeInputMobileList[0].value = value;
+
+    if (percentLeft <= 50) {
+      progressMobile.css({
+        left: percentLeft + '%',
+      });
+    } else {
+      progressMobile.css({
+        left: percentLeft - 1 + '%',
+      });
+    }
+
+    $('.input-min-mobile').val(convertCurrency(value));
+    await handleFilterChange('min_price', value);
+    return;
+  }
+
+  rangeInputMobileList[1].value = value;
+
+  if (percentRight <= 50) {
+    progressMobile.css({
+      right: percentRight + '%',
+    });
+  } else {
+    progressMobile.css({
+      right: percentRight - 1 + '%',
+    });
+  }
+
+  $('.input-max-mobile').val(convertCurrency(value));
+  await handleFilterChange('max_price', value);
+});
+
 async function initSearchPage() {
   try {
     initPagination();
@@ -52,7 +161,7 @@ export async function handleFilterChange(filterName, filterValue) {
   renderPagination(pagination);
 }
 
-rangeInputList.on('mouseup', () => {
+rangeInputList.on('mouseup', async () => {
   let minVal = Number(rangeInputList[0].value);
   let maxVal = Number(rangeInputList[1].value);
 
@@ -60,11 +169,11 @@ rangeInputList.on('mouseup', () => {
   url.searchParams.set('_page', 1);
   history.pushState({}, '', url);
 
-  handleFilterChange('min_price', minVal);
-  handleFilterChange('max_price', maxVal);
+  await handleFilterChange('min_price', minVal);
+  await handleFilterChange('max_price', maxVal);
 });
 
-rangeInputMobileList.on('mouseup', () => {
+rangeInputMobileList.on('mouseup', async () => {
   let minVal = Number(rangeInputMobileList[0].value);
   let maxVal = Number(rangeInputMobileList[1].value);
 
@@ -72,8 +181,8 @@ rangeInputMobileList.on('mouseup', () => {
   url.searchParams.set('_page', 1);
   history.pushState({}, '', url);
 
-  handleFilterChange('min_price', minVal);
-  handleFilterChange('max_price', maxVal);
+  await handleFilterChange('min_price', minVal);
+  await handleFilterChange('max_price', maxVal);
 });
 
 rangeInputList.on('input', (e) => {
@@ -93,13 +202,25 @@ rangeInputList.on('input', (e) => {
     let percentLeft = (minVal / rangeInputList[0].max) * 100;
     let percentRight = 100 - (maxVal / rangeInputList[1].max) * 100;
 
-    progress.css({
-      left: percentLeft + '%',
-    });
+    if (percentLeft <= 50) {
+      progress.css({
+        left: percentLeft + '%',
+      });
+    } else {
+      progress.css({
+        left: percentLeft - 2 + '%',
+      });
+    }
 
-    progress.css({
-      right: percentRight + '%',
-    });
+    if (percentRight <= 50) {
+      progress.css({
+        right: percentRight + '%',
+      });
+    } else {
+      progress.css({
+        right: percentRight - 2 + '%',
+      });
+    }
   }
 });
 
@@ -120,13 +241,25 @@ rangeInputMobileList.on('input', (e) => {
     let percentLeft = (minVal / rangeInputMobileList[0].max) * 100;
     let percentRight = 100 - (maxVal / rangeInputMobileList[1].max) * 100;
 
-    progressMobile.css({
-      left: percentLeft + '%',
-    });
+    if (percentLeft <= 50) {
+      progressMobile.css({
+        left: percentLeft + '%',
+      });
+    } else {
+      progressMobile.css({
+        left: percentLeft - 1 + '%',
+      });
+    }
 
-    progressMobile.css({
-      right: percentRight + '%',
-    });
+    if (percentRight <= 50) {
+      progressMobile.css({
+        right: percentRight + '%',
+      });
+    } else {
+      progressMobile.css({
+        right: percentRight - 1 + '%',
+      });
+    }
   }
 });
 
@@ -140,17 +273,29 @@ textInputList.on('change', (e) => {
 
       let percentLeft = (minVal / rangeInputList[0].max) * 100;
 
-      progress.css({
-        left: percentLeft + '%',
-      });
+      if (percentLeft <= 50) {
+        progress.css({
+          left: percentLeft + '%',
+        });
+      } else {
+        progress.css({
+          left: percentLeft - 2 + '%',
+        });
+      }
     } else {
       rangeInputList[1].value = maxVal;
 
       let percentRight = 100 - (maxVal / rangeInputList[1].max) * 100;
 
-      progress.css({
-        right: percentRight + '%',
-      });
+      if (percentRight <= 50) {
+        progress.css({
+          right: percentRight + '%',
+        });
+      } else {
+        progress.css({
+          right: percentRight - 2 + '%',
+        });
+      }
     }
   } else {
     textInputList[0].value = convertCurrency(0);
@@ -169,17 +314,29 @@ textInputMobileList.on('change', (e) => {
 
       let percentLeft = (minVal / rangeInputMobileList[0].max) * 100;
 
-      progressMobile.css({
-        left: percentLeft + '%',
-      });
+      if (percentLeft <= 50) {
+        progressMobile.css({
+          left: percentLeft + '%',
+        });
+      } else {
+        progressMobile.css({
+          left: percentLeft - 1 + '%',
+        });
+      }
     } else {
       rangeInputMobileList[1].value = maxVal;
 
       let percentRight = 100 - (maxVal / rangeInputMobileList[1].max) * 100;
 
-      progressMobile.css({
-        right: percentRight + '%',
-      });
+      if (percentRight <= 50) {
+        progressMobile.css({
+          right: percentRight + '%',
+        });
+      } else {
+        progressMobile.css({
+          right: percentRight - 1 + '%',
+        });
+      }
     }
   } else {
     textInputMobileList[0].value = convertCurrency(0);

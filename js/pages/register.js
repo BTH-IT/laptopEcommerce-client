@@ -74,13 +74,15 @@ $('.btn-register').click(async (e) => {
       });
 
       toast({
-        title: 'Biểu hiện của tuổi già',
+        title: 'Đăng ký tài khoản vào hệ thống thành công',
         duration: 3000,
-        message: 'Đau lưng, mỏi gối, đau tay',
+        message: 'Mời bạn đăng nhập vào hệ thống 	&#10084;',
         type: 'success',
       });
 
-      window.location.href = '/login.html';
+      setTimeout(() => {
+        window.location.href = '/login.html';
+      }, 2000);
     } catch (error) {
       toast({
         title: 'Error Server',

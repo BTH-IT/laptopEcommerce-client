@@ -17,9 +17,12 @@ async function renderBrandList(data) {
     .map((brand) => {
       return `<li class='brand_item'>
         <a href='./search.html?thuong_hieu=${brand['ten_thuong_hieu']}' class='brand_link'>
-          <span>
-            ${brand['icon']}
-          </span>
+          <div class="brand_img">
+            <img
+              src="${urlServer + '/images/' + brand['icon']}"
+              alt="${brand['ten_thuong_hieu']}"
+            />
+          </div>
           <span>
             ${brand['ten_thuong_hieu']}
           </span>

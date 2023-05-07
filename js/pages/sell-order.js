@@ -209,6 +209,7 @@ async function handleUpdateOrder(id) {
     $('#fullname').val(customer['ten_khach_hang']);
     $('#phone').val(customer['so_dien_thoai']);
     $('#address').val(customer['dia_chi']);
+    $('#employee').val(order['ma_nhan_vien']);
     $('#pay-method').val(order['hinh_thuc_thanh_toan']);
 
     const productListHMTL = order['danh_sach_san_pham_da_mua'].map((product) => {

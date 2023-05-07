@@ -30,7 +30,7 @@
 
 .auth-group-table-container {
   overflow: auto;
-  max-height: 560px;
+  max-height: calc(100vh - 250px);
 }
 
 .auth-group-table {
@@ -58,6 +58,6 @@
   }
 
   .auth-group-table-container {
-    max-height: 495px;
+    max-height: calc(100vh - 312px);
   }
 }

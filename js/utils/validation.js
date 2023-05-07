@@ -4,6 +4,7 @@ function validation(input) {
     input.parentElement.parentElement.querySelector('.error');
 
   const rules = input.getAttribute('rules');
+
   if (!rules) return;
   const ruleList = rules.split('|');
   ruleList.forEach((item, idx) => {
@@ -18,7 +19,8 @@ function validation(input) {
 
     switch (item[0]) {
       case 'required':
-        if (!input.value || input.value === 'none') message = 'Trường này là bắt buộc';
+        if (!input.value || input.value === 'none' || input.files?.length === 0)
+          message = 'Trường này là bắt buộc';
         else message = undefined;
         break;
       case 'max':
@@ -58,6 +60,12 @@ function validation(input) {
         const value = Number(input.value);
 
         if (value <= 0) message = 'Trường này phải lớn hơn 0';
+        else message = undefined;
+        break;
+      case 'positiveEqualZero':
+        if (!input.value) break;
+
+        if (Number(input.value) < 0) message = 'Trường này phải lớn hơn hoặc bằng 0';
         else message = undefined;
         break;
       default:

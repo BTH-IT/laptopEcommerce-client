@@ -360,6 +360,20 @@
                 </div>
                 <span class="text-danger mb-1 error"></span>
               </div>
+              <div class="input_container">
+                <label for="percent-profit-import-order" class="label fw-bold"
+                  >Tỉ lệ lợi nhuận</label
+                >
+                <div class="input">
+                  <input
+                    id="percent-profit-import-order"
+                    type="text"
+                    placeholder="Tỉ lệ lợi nhuận..."
+                    disabled
+                  />
+                </div>
+                <span class="text-danger mb-1 error"></span>
+              </div>
               <div class="order-time fw-bold">Ngày lập: <span>03/02/2023</span></div>
               <div class="ordered-product">
                 <label class="label fw-bold">Các sản phẩm đã nhập</label>
@@ -1511,7 +1525,7 @@
                     id="phone-customer-create"
                     type="text"
                     placeholder="Số điện thoại..."
-                    rules="required"
+                    rules="required|phone"
                   />
                 </div>
                 <span class="text-danger mb-1 error"></span>
@@ -1569,6 +1583,15 @@
           </div>
           <div class="modal-body">
             <form class="modal-form">
+              <div class="image_container">
+                <label class="label">Avatar</label>
+                <div class="image_img">
+                  <img
+                    src="https://lh3.googleusercontent.com/DGL9bv2_XyLQJ5N7_jnuXj7kJrPlYDyLnWsRUj24TaCZQoXf8JBqDPzLPp7lmLkIam7v5tUL47n9Z2ct5sOC=w500-rw"
+                    alt=""
+                  />
+                </div>
+              </div>
               <div class="input_container">
                 <label for="username-customer-view" class="label">Tên đăng nhập</label>
                 <div class="input">
@@ -1743,7 +1766,7 @@
                     id="phone-employee-create"
                     type="text"
                     placeholder="Số điện thoại..."
-                    rules="required"
+                    rules="required|phone"
                   />
                 </div>
                 <span class="text-danger mb-1 error"></span>

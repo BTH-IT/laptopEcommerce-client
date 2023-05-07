@@ -526,7 +526,7 @@ $('#deleteProductModal .btn-yes').click(async () => {
   const id = $('#deleteProductModal').attr('data-id');
 
   try {
-    await productApi.delete(id);
+    await productApi.remove(id);
 
     renderProduct();
 
@@ -542,6 +542,8 @@ $('#deleteProductModal .btn-yes').click(async () => {
       type: 'error',
       duration: 2000,
     });
+  } finally {
+    $('#deleteProductModal').modal('hidden');
   }
 });
 
@@ -577,7 +579,7 @@ export function renderProductPage() {
               <th>
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
                   Tên sản phẩm
-                  <div class="icon-sort active before" data-value="ten_san_pham" data-sort="desc"></div>
+                  <div class="icon-sort before" data-value="ten_san_pham" data-sort="desc"></div>
                 </div>
               </th>
               <th>

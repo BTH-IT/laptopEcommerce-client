@@ -34,7 +34,7 @@ export async function renderImportOrder(params) {
     if (importOrderList.length <= 0) {
       $('.import-order-content').html(`
         <tr>
-          <td colspan="5">
+          <td colspan="6">
             <h1 class="text-center my-5 w-100">Không có phiếu nhập nào cả!!!</h1>  
           </td>
         </tr>
@@ -53,6 +53,9 @@ export async function renderImportOrder(params) {
           </td>
           <td>
             ${order['ma_nha_cung_cap']}
+          </td>
+          <td>
+            ${order['ti_le_loi_nhuan']}
           </td>
           <td>
             ${moment(order['ngay_lap']).format('L')}
@@ -99,6 +102,7 @@ async function handleViewOrder(id) {
 
     $('#employee-import-order').val(importOrder['ma_nhan_vien']);
     $('#supplier-import-order').val(importOrder['ma_nha_cung_cap']);
+    $('#percent-profit-import-order').val(importOrder['ti_le_loi_nhuan']);
 
     const productListHMTL = importOrder['danh_sach_san_pham_nhap_hang'].map((product) => {
       const price = convertCurrency(product['don_gia']);
@@ -208,6 +212,12 @@ export function renderImportOrderPage() {
                 <div class="d-flex align-items-center justify-content-center gap-3 ">
                   Mã nhà cung cấp
                   <div class="icon-sort" data-value="ma_nha_cung_cap" data-sort="desc"></div>
+                </div>
+              </th>
+              <th>
+                <div class="d-flex align-items-center justify-content-center gap-3 ">
+                  Tỉ lệ lợi nhuận
+                  <div class="icon-sort" data-value="ti_le_loi_nhuan" data-sort="desc"></div>
                 </div>
               </th>
               <th>

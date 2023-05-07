@@ -213,6 +213,12 @@ h4 {
     gap: 10px;
 }
 
+.product__info-warning-amount {
+    margin-bottom: 20px;
+    color: rgb(247, 130, 18, 0.9);
+    font-size: 0.95rem;
+}
+
 .buy-btn {
     /* width: 25%; */
     font-weight: bold;

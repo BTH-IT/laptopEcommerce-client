@@ -122,7 +122,7 @@ $('#createEmployeeModal .btn-add').click(async () => {
       });
 
       toast({
-        title: 'Create Employee successfully!!',
+        title: 'Tạo nhân viên mới thành công!!',
         type: 'success',
         duration: 2000,
       });
@@ -137,7 +137,7 @@ $('#createEmployeeModal .btn-add').click(async () => {
       renderEmployee();
     } catch (error) {
       toast({
-        title: 'Create Employee failure!!',
+        title: 'Tạo nhân viên mới thất bại!!',
         type: 'error',
         message: error.message,
         duration: 2000,

@@ -343,6 +343,22 @@ $('#deleteGuaranteeModal .btn-yes').click(async () => {
       duration: 3000,
       type: 'success',
     });
+
+    const url = new URL(window.location);
+
+    const from = url.searchParams.get('from') ?? null;
+    const to = url.searchParams.get('to') ?? null;
+    const searchingVal = url.searchParams.get('searching') ?? '';
+    const sortNameVal = url.searchParams.get('sort-name') ?? '';
+    const sortActionVal = url.searchParams.get('sort-action') ?? '';
+
+    renderGuarantee({
+      sortAction: sortActionVal,
+      sortName: sortNameVal,
+      searching: searchingVal,
+      from,
+      to,
+    });
   } catch (error) {
     toast({
       title: 'Xóa không thành công',

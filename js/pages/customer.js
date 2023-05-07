@@ -1,6 +1,6 @@
 import customerApi from '../api/customerApi';
 import { handleSearching, handleSorting } from './manager';
-import { isAccessAction, renderLoadingManager } from '../utils/constains';
+import { isAccessAction, renderLoadingManager, urlServer } from '../utils/constains';
 import { validation } from '../utils/validation';
 import authApi from '../api/authApi';
 import { toast } from '../utils/toast';
@@ -80,6 +80,7 @@ async function renderCustomer(params = '') {
       $('#gender-customer-view').val(customer['gioi_tinh'] ? '1' : '0');
       $('#phone-customer-view').val(customer['so_dien_thoai']);
       $('#address-customer-view').val(customer['dia_chi']);
+      $('.image_img img').attr('src', `${urlServer + '/images/' + customer['avatar']}`);
     });
   } catch (error) {
     console.log(error.message);
@@ -228,6 +229,7 @@ $('#createCustomerModal .btn-add').click(async () => {
         gioi_tinh: gender,
         so_dien_thoai: phone,
         dia_chi: address,
+        avatar: 'avartar.jpg',
       });
 
       toast({
@@ -235,6 +237,8 @@ $('#createCustomerModal .btn-add').click(async () => {
         duration: 3000,
         type: 'success',
       });
+
+      renderCustomer();
     } catch (error) {
       toast({
         title: 'Error Server',

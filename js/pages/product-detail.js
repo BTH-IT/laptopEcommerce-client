@@ -52,15 +52,19 @@ async function renderProductDetail() {
   productSection += `</div>
         </div>
         <div class="product__info-container col-lg">
-          ${
-            data.so_luong > 0
-              ? `<div class="product__info-status">CÒN HÀNG</div>`
-              : `<div class="product__info-status empty">HẾT HÀNG</div>`
-          }
+          ${data.so_luong >= 10 ? `<div class="product__info-status">CÒN HÀNG</div>` : ``}
+          ${data.so_luong === 0 ? `<div class="product__info-status empty">HẾT HÀNG</div>` : ``}
           <div class="product__info-name">${data.ten_san_pham}</div>
           <div class="product__info-brand">Thương hiệu ${
             data.thuong_hieu
           } | Mã sản phẩm: ${productID}</div>
+          <div class="product__info-warning-amount">
+            ${
+              data.so_luong > 0 && data.so_luong < 10
+                ? `<div class="product__info-rest-amount">Còn ${data.so_luong} sản phẩm</div>`
+                : ''
+            }
+          </div>
           <div class="product__info-price_container">
             <div class="product__info-price">${(
               (data.gia_goc * (100 - data.giam_gia)) /
